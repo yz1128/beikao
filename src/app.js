@@ -846,7 +846,7 @@ function renderActionBar(entry) {
   next.type = 'button';
   next.addEventListener('click', nextCard);
   bar.append(next);
-  hint([['Enter', session.index + 1 >= session.queue.length ? '完成' : '下一题']]);
+  hint([['空格', session.index + 1 >= session.queue.length ? '完成' : '下一题']]);
   return bar;
 }
 
@@ -1031,7 +1031,8 @@ function keyAction(key) {
   const entry = currentEntry();
   if (!entry) return null;
   const {card} = entry;
-  if (session.phase === 'feedback') return key === 'Enter' ? ['next'] : null;
+  // 下一题主用空格；Enter 保留兼容。
+  if (session.phase === 'feedback') return key === ' ' || key === 'Enter' ? ['next'] : null;
   if (session.phase === 'answer') return ['1', '2', '3'].includes(key) ? ['rate', Number(key)] : null;
   if (card.type === 'qa') return key === ' ' || key === 'Enter' ? ['reveal'] : null;
   if (card.type === 'multi' && key === 'Enter') return session.selected.size ? ['submit'] : null;
