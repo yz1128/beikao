@@ -152,7 +152,15 @@ main {
   padding: 20px 16px 40px;
   outline: none;
 }
-main.is-session { padding-top: 0; }
+main.is-session {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+  min-height: calc(100vh - 56px);
+  min-height: calc(100dvh - 56px);
+}
+/* 内容短时把操作条压到视口底部，长内容时照常跟随 */
+main.is-session > .actionbar { margin-top: auto; padding-top: 20px; }
 
 /* ---------- 通用块 ---------- */
 

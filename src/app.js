@@ -52,6 +52,9 @@ const entries = DECKS.decks.flatMap(deck =>
   (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])}))
 );
 
+// 独立题库（考前速览之类）不进总进度、今日、按题型，只在题库区单列。
+const coreEntries = entries.filter(entry => !entry.deck.standalone);
+
 const courseName = PAGE_COURSE || '备考';
 
 // 卡片声明的题型优先；老数据没有 kind 时退回内部 type。
@@ -62,7 +65,7 @@ function kindOf(card) {
 // 各科目实际出现的题型，按固定顺序排，缺的自动略过。
 function typeOrder() {
   const wanted = COURSE_TYPES[courseName] || ALL_TYPES;
-  return wanted.filter(kind => entries.some(entry => kindOf(entry.card) === kind));
+  return wanted.filter(kind => coreEntries.some(entry => kindOf(entry.card) === kind));
 }
 const dbName = `beikao-${PAGE_SLUG || 'all'}-v1`;
 const LEGACY_DB = PAGE_COURSE ? 'beikao-progress-v1' : null;
@@ -390,7 +393,7 @@ function renderHome() {
 
 function renderHero() {
   const box = element('section', 'hero');
-  const pool = typedPool(entries);
+  const pool = typedPool(coreEntries);
   const known = pool.filter(entry => states[entry.key]).length;
   const head = element('div', 'hero-head');
   const left = element('div');
@@ -510,7 +513,7 @@ async function hydrateCatalog(list) {
 }
 
 function renderToday() {
-  const pool = typedPool(entries);
+  const pool = typedPool(coreEntries);
   const due = reviewQueue(pool).length;
   const wrong = pool.filter(entry => states[entry.key]?.wrong).length;
   const card = element('section', 'today');
@@ -568,7 +571,7 @@ function renderTypes() {
   label.append(element('h2', '', '按题型背'));
   const grid = element('div', 'chip-grid');
   typeOrder().forEach(type => {
-    const part = entries.filter(entry => kindOf(entry.card) === type);
+    const part = coreEntries.filter(entry => kindOf(entry.card) === type);
     if (!part.length) return;
     const chip = element('button', 'chip');
     chip.type = 'button';
@@ -588,9 +591,11 @@ function renderTypes() {
 }
 
 // 题库副标题：总数 + 题型分布（多于一种题型时才列）。
-function deckSub(pool, known) {
+function deckSub(deck, pool, known) {
   const kinds = typeOrder().filter(kind => pool.some(entry => kindOf(entry.card) === kind));
-  const mix = kinds.length > 1 ? ' · ' + kinds.map(kind => TYPE_LABEL[kind]).join('/') : '';
+  const custom = deck.standalone && deck.desc ? deck.desc : '';
+  const mix = custom ? ' · ' + custom
+    : kinds.length > 1 ? ' · ' + kinds.map(kind => TYPE_LABEL[kind]).join('/') : '';
   const learned = known ? ` · 已学 ${known}` : '';
   return `${pool.length} 张${mix}${learned}`;
 }
@@ -611,7 +616,7 @@ function renderDecks() {
     const text = element('div');
     text.append(
       element('p', 'deck-title', deck.title.replace(/\s*\d+\s*题$/, '')),
-      element('p', 'deck-sub', deckSub(pool, known))
+      element('p', 'deck-sub', deckSub(deck, pool, known))
     );
     const arrow = element('span', 'course-arrow');
     arrow.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
@@ -627,7 +632,7 @@ function renderDecks() {
 /* ---------- 会话 ---------- */
 
 function startSession(kind, deckId) {
-  const base = deckId ? entries.filter(entry => entry.deck.id === deckId) : entries;
+  const base = deckId ? entries.filter(entry => entry.deck.id === deckId) : coreEntries;
   const pool = typedPool(base);
   let queue = kind === 'review' ? reviewQueue(pool)
     : kind === 'mistakes' ? practiceQueue(pool.filter(entry => states[entry.key]?.wrong))
@@ -689,7 +694,7 @@ function renderQuestion(entry) {
   const section = element('section');
   const head = element('div', 'q-head');
   head.append(
-    element('span', 'tag', TYPE_LABEL[kindOf(card)]),
+    element('span', 'tag', deck.standalone ? '速览' : TYPE_LABEL[kindOf(card)]),
     element('span', 'tag tag-neutral', card.num ? `第 ${card.num} 题` : deck.title),
     element('span', 'q-count', `${session.index + 1} / ${session.queue.length}`)
   );
