@@ -1,0 +1,2411 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<title>备考 · 题库</title>
+<style>
+  :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #101114; color: #f4f5f7; --blue: #3595ff; --muted: #a1a6b0; --line: #30333b; --panel: #1b1d23; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); font-size: 16px; line-height: 1.6; }
+  button, textarea, input { font: inherit; }
+  button { min-height: 48px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #272a32; color: inherit; cursor: pointer; touch-action: manipulation; }
+  button:hover:not(:disabled) { background: #333742; }
+  button:disabled { cursor: default; opacity: .6; }
+  button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 3px solid #8bc2ff; outline-offset: 4px; }
+  button.primary { background: #1478df; border-color: #1478df; color: #fff; font-weight: 650; }
+  button.primary:hover:not(:disabled) { background: #2389f1; }
+  button.quiet { background: transparent; color: var(--blue); }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: clamp(28px, 6vw, 36px); line-height: 1.25; letter-spacing: -.6px; }
+  h2 { font-size: 20px; line-height: 1.4; }
+  h3 { font-size: 18px; }
+  p, h1, h2, h3, button, small { overflow-wrap: anywhere; }
+  .shell { width: min(100% - 40px, 800px); margin: auto; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 88px; }
+  .brand { font-size: 20px; font-weight: 750; letter-spacing: 2px; }
+  .brand span { color: var(--blue); margin-right: 8px; }
+  .top-actions, .row, .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .top-actions button { padding: 8px 12px; font-size: 14px; }
+.top-actions .ghost-link { padding: 8px 12px; font-size: 14px; color: var(--blue); text-decoration: none; border-radius: 8px; }
+.top-actions .ghost-link:hover { text-decoration: underline; }
+  main { padding: 16px 0 40px; }
+  main > * + * { margin-top: 24px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .today { padding: 24px; background: #18283e; border: 1px solid #294769; border-radius: 24px; }
+  .today strong { display: block; font-size: 40px; line-height: 1.3; margin: 8px 0 4px; }
+  .today .actions { margin-top: 20px; }
+  .today .actions button { flex: 1; }
+  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .segment { display: flex; gap: 4px; background: #202229; padding: 4px; border-radius: 14px; }
+  .segment button { padding: 8px 16px; border: 0; background: transparent; }
+  .segment button[aria-pressed="true"] { background: #3a3e49; color: #fff; }
+  .course > h2 { margin-bottom: 12px; }
+  .deck-grid { display: grid; gap: 12px; }
+  .deck { background: var(--panel); padding: 20px; border: 1px solid var(--line); border-radius: 20px; min-width: 0; }
+  .deck h3 { margin-bottom: 8px; }
+  .deck .count { margin: 16px 0 8px; color: var(--muted); font-size: 14px; }
+  .deck .actions { margin-top: 16px; }
+  .deck .actions button { flex: 1 1 100px; }
+  progress { width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; background: #343741; accent-color: var(--blue); display: block; }
+  progress::-webkit-progress-bar { background: #343741; }
+  progress::-webkit-progress-value { background: var(--blue); border-radius: 8px; }
+  progress::-moz-progress-bar { background: var(--blue); }
+  .empty { padding: 40px 20px; background: var(--panel); border-radius: 24px; text-align: center; }
+  .empty p { color: var(--muted); margin: 12px 0 24px; }
+  .session-head .row { justify-content: space-between; margin-bottom: 12px; }
+  .badge { display: inline-block; font-size: 13px; color: #bcdcff; padding: 4px 12px; border-radius: 8px; background: #20354f; }
+  .question { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 24px 20px; }
+  .question h2 { font-size: 21px; line-height: 1.7; font-weight: 600; white-space: pre-wrap; margin-top: 16px; }
+  .source { margin-top: 16px; }
+  .options { display: grid; gap: 12px; margin-top: 24px; }
+  .option { display: flex; align-items: flex-start; gap: 12px; text-align: left; padding: 16px; width: 100%; white-space: pre-wrap; }
+  .option .letter { flex: 0 0 28px; font-weight: 700; color: var(--muted); }
+  .option.selected { background: #1b3455; border-color: var(--blue); }
+  .option.correct { border-color: var(--blue); background: #1b3455; }
+  .option.incorrect { border-style: dashed; border-color: #e0a36b; }
+  .option:disabled { opacity: 1; }
+  .option small { display: block; margin-top: 8px; color: #bddcff; font-size: 13px; }
+  .feedback { padding: 20px; border: 1px solid #36577f; background: #19283b; border-radius: 20px; }
+  .feedback p + p { margin-top: 12px; }
+  .explanation { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .answer { white-space: pre-wrap; max-height: min(38vh, 320px); overflow-y: auto; overscroll-behavior: contain; padding: 20px; background: #22252c; border: 1px solid var(--line); border-radius: 16px; margin-top: 20px; overflow-wrap: anywhere; }
+  .rating { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .rating button { padding: 12px 4px; }
+  .wide { width: 100%; }
+  .session-actions { display: grid; gap: 12px; }
+  .notice { background: #33291d; color: #f4d6b0; border: 1px solid #715338; border-radius: 16px; padding: 12px 16px; margin-bottom: 12px; }
+  .notice .row { justify-content: space-between; }
+  [hidden] { display: none !important; }
+  footer { padding: 0 0 24px; color: var(--muted); font-size: 12px; }
+  dialog { color: inherit; background: #1b1d23; border: 1px solid var(--line); border-radius: 24px; padding: 24px; width: min(100% - 32px, 600px); max-height: 85vh; overflow-y: auto; }
+  dialog::backdrop { background: #000a; }
+  dialog > * + * { margin-top: 16px; }
+  dialog .row { justify-content: space-between; }
+  textarea { display: block; width: 100%; min-height: 160px; resize: vertical; background: #101114; color: inherit; border: 1px solid #545a66; border-radius: 12px; padding: 12px; margin-top: 8px; }
+  .check { display: flex; align-items: center; gap: 12px; min-height: 48px; }
+  input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--blue); }
+  .skip { position: absolute; top: -100px; left: 12px; background: #1478df; color: #fff; padding: 12px; z-index: 5; }
+  .skip:focus { top: 12px; }
+  @media (min-width: 640px) {
+    .deck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .question { padding: 32px; }
+  }
+  .course-links { display: flex; gap: 4px; }
+  .course-links a { padding: 8px 12px; font-size: 14px; color: var(--muted); text-decoration: none; border-radius: 8px; }
+  .course-links a[aria-current="page"] { color: #fff; background: #3a3e49; }
+  .course-links a:hover { color: #fff; }
+  @media (max-width: 520px) {
+    .course-links a { padding: 8px 6px; font-size: 13px; }
+    .top-actions { gap: 2px; }
+  }
+  .type-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .type-row button { padding: 6px 12px; font-size: 13px; background: #202229; border: 1px solid var(--line); }
+  .type-row button:hover { background: #2a2d35; }
+  @media (prefers-reduced-motion: no-preference) {
+    button { transition: background-color .12s ease; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><span aria-hidden="true">▣</span><span id="brand-name">备考</span></div>
+    <nav class="top-actions" aria-label="主导航">
+      <span id="course-links" class="course-links" role="group" aria-label="课程切换"></span>
+      <button id="home-button" type="button" disabled>题库</button>
+      <button id="backup-button" type="button" disabled>进度备份</button>
+      <a class="ghost-link" href="https://github.com/yz1128/beikao/issues/new/choose" target="_blank" rel="noopener">报错 / 补题</a>
+    </nav>
+  </header>
+  <div id="notice" class="notice" role="alert" hidden>
+    <div class="row"><p id="notice-text"></p><button id="dismiss" type="button" class="quiet">关闭提示</button></div>
+  </div>
+  <main id="main" tabindex="-1"><p class="muted">正在载入进度…</p></main>
+  <footer><p id="storage-status" role="status" aria-live="polite">正在连接本机存储…</p></footer>
+</div>
+<dialog id="backup-dialog" aria-labelledby="backup-title">
+  <div class="row"><h2 id="backup-title">进度备份</h2><button id="close-dialog" type="button" class="quiet">关闭</button></div>
+  <p class="muted">导出后复制到另一台设备。导入会替换全部本机进度，包括已学状态、到期时间和错题本。</p>
+  <label for="backup-text">进度字符串</label>
+  <textarea id="backup-text" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="粘贴备份，或点击下方导出进度"></textarea>
+  <div class="actions"><button id="export-button" type="button">导出进度</button><button id="copy-button" type="button">复制</button></div>
+  <label class="check"><input id="replace-check" type="checkbox">用此备份替换全部本机进度</label>
+  <button id="import-button" type="button" class="primary wide">导入进度</button>
+  <p id="backup-message" role="status" aria-live="polite"></p>
+</dialog>
+<script>
+'use strict';
+const DECKS = /*@DECK_DATA@*/{
+ "version": 1,
+ "built": "2026-11-18",
+ "decks": [
+  {
+   "id": "zrb-quiz",
+   "course": "自然辩证法",
+   "title": "选择与判断",
+   "desc": "选择18 · 判断32",
+   "cards": [
+    {
+     "id": "zrb-xz-01",
+     "type": "qa",
+     "q": "自然辩证法最早理论体系来源于",
+     "options": [],
+     "answer": "恩格斯《自然辩证法》",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 1
+    },
+    {
+     "id": "zrb-xz-02",
+     "type": "qa",
+     "q": "数理方程中许多不同形态的物理运动规律可以用同一个方程来描述，这表明",
+     "options": [],
+     "answer": "这些物质及其运动规律的一定同一性",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 2
+    },
+    {
+     "id": "zrb-xz-03",
+     "type": "qa",
+     "q": "微分作为无穷小量，其哲学意义是",
+     "options": [],
+     "answer": "微分的零与非零的统一、微分是自然界物质层次划分中代表不同层次质的转化的关节点",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 3
+    },
+    {
+     "id": "zrb-xz-04",
+     "type": "qa",
+     "q": "相对论的创立表明",
+     "options": [],
+     "answer": "时间空间与物质及其运动状态密不可分",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 4
+    },
+    {
+     "id": "zrb-xz-05",
+     "type": "qa",
+     "q": "量子力学的创立表明",
+     "options": [],
+     "answer": "昭示了一种不同于牛顿力学性质的新的因果观和规律观",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 5
+    },
+    {
+     "id": "zrb-xz-06",
+     "type": "qa",
+     "q": "科学划界的标准有",
+     "options": [],
+     "answer": "可观察性、可控制性、可检验性、可重复性",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 6
+    },
+    {
+     "id": "zrb-xz-07",
+     "type": "qa",
+     "q": "非欧几何的创立表明",
+     "options": [],
+     "answer": "欧式几何所描述的空间形式只是自然界多种空间形式的一种、人类可以发展多种形式的几何学",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 7
+    },
+    {
+     "id": "zrb-xz-08",
+     "type": "qa",
+     "q": "量子力学讨论中的“月亮问题”的实质是",
+     "options": [],
+     "answer": "微观客体的本来面目是否可知、对离开主体的客观事物的认识是否可能(月亮在无人看它时是不存在的)",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 8
+    },
+    {
+     "id": "zrb-xz-09",
+     "type": "qa",
+     "q": "系统非加和性的实质",
+     "options": [],
+     "answer": "整体的各部分之间存在彼此制约、作用和选择、整体的性质和功能不等于各部分性质和功能的简单叠加",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 9
+    },
+    {
+     "id": "zrb-xz-10",
+     "type": "qa",
+     "q": "研究系统演化的“时间箭头”的实质是",
+     "options": [],
+     "answer": "它代表真实的自然演化过程具有不可逆性、它揭示了时间一维性的物理内容",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 10
+    },
+    {
+     "id": "zrb-xz-11",
+     "type": "qa",
+     "q": "相对论的创立表明",
+     "options": [],
+     "answer": "时间空间与物质及其运动状态密不可分",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 11
+    },
+    {
+     "id": "zrb-xz-12",
+     "type": "qa",
+     "q": "自然辩证法的学科性质",
+     "options": [],
+     "answer": "马克思主义哲学的一个组成部分、连接马克思主义哲学与科学技术的中介和桥梁",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 12
+    },
+    {
+     "id": "zrb-xz-13",
+     "type": "qa",
+     "q": "自然辩证法产生的部分学科基础是",
+     "options": [],
+     "answer": "达尔文进化论、能量守恒定律",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 13
+    },
+    {
+     "id": "zrb-xz-14",
+     "type": "qa",
+     "q": "科学技术的一般性质",
+     "options": [],
+     "answer": "无阶级性、一般意义上的生产力（或潜在生产力）",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 14
+    },
+    {
+     "id": "zrb-xz-15",
+     "type": "qa",
+     "q": "可持续发展观是",
+     "options": [],
+     "answer": "为了解决人与自然的对立和矛盾、一种价值观",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 15
+    },
+    {
+     "id": "zrb-xz-16",
+     "type": "qa",
+     "q": "结构型数学是",
+     "options": [],
+     "answer": "研究数学结构及其关系的科学、研究结构量及其关系的科学",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 16
+    },
+    {
+     "id": "zrb-xz-17",
+     "type": "qa",
+     "q": "科学与非科学的区别是",
+     "options": [],
+     "answer": "前者可检验、前者满足可重复性",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 17
+    },
+    {
+     "id": "zrb-xz-18",
+     "type": "qa",
+     "q": "系统的整体性原理是指",
+     "options": [],
+     "answer": "整体的性质和功能不等于部分和",
+     "explain": "",
+     "source": "自然辩证法·做选择题",
+     "num": 18
+    },
+    {
+     "id": "zrb-pd-01",
+     "type": "judge",
+     "q": "任何物质系统的整体与部分的关系都是加和性与非加和性的统一。",
+     "options": [],
+     "answer": "T",
+     "explain": "作为系统来讲，它与要素之间有的可以加和，如重力，有的不可加和，如性质和功能。",
+     "source": "自然辩证法·做选择题",
+     "num": 1
+    },
+    {
+     "id": "zrb-pd-02",
+     "type": "judge",
+     "q": "作为系统的物质整体，其根本属性是非加和性。",
+     "options": [],
+     "answer": "T",
+     "explain": "这里主要强调民族精神、民族凝聚力，如抗美援朝。",
+     "source": "自然辩证法·做选择题",
+     "num": 2
+    },
+    {
+     "id": "zrb-pd-03",
+     "type": "judge",
+     "q": "光速c、普朗克常量h 是标志不同层次物质运动转化的关节点。",
+     "options": [],
+     "answer": "T",
+     "explain": "光速c 是高速与低速的关节点，h 是宏观与微观物体的关节点。",
+     "source": "自然辩证法·做选择题",
+     "num": 3
+    },
+    {
+     "id": "zrb-pd-04",
+     "type": "judge",
+     "q": "自组织理论表明,偶然性在进化中起决定作用。",
+     "options": [],
+     "answer": "F",
+     "explain": "偶然性只是在特定时候如远离平衡态时才起决定性作用，而不是所有时候都起决定作用。",
+     "source": "自然辩证法·做选择题",
+     "num": 4
+    },
+    {
+     "id": "zrb-pd-05",
+     "type": "judge",
+     "q": "科学和非科学的区别在于前者使用人工语言，后者使用自然语言。",
+     "options": [],
+     "answer": "F",
+     "explain": "使用人工语言还是自然语言不是区别科学与非科学的关键,而是是否具有可观察性、可检验性、可控制性和可重复性。",
+     "source": "自然辩证法·做选择题",
+     "num": 5
+    },
+    {
+     "id": "zrb-pd-06",
+     "type": "judge",
+     "q": "“方法无用论”和“方法万能论”分别是教条主义和经验主义。",
+     "options": [],
+     "answer": "F",
+     "explain": "“方法无用论”是经验主义，“方法万能论”是教条主义。",
+     "source": "自然辩证法·做选择题",
+     "num": 6
+    },
+    {
+     "id": "zrb-pd-07",
+     "type": "judge",
+     "q": "数学方法是一种逻辑分析方法。",
+     "options": [],
+     "answer": "F",
+     "explain": "数学方法不是单纯的逻辑分析方法，数学需要逻辑，但逻辑不能推出数学所有的内容和理论。",
+     "source": "自然辩证法·做选择题",
+     "num": 7
+    },
+    {
+     "id": "zrb-pd-08",
+     "type": "judge",
+     "q": "科学理论的进步表现为一个不断的渐进过程。",
+     "options": [],
+     "answer": "F",
+     "explain": "科学理论的进步有渐进的过程即量变，也有突变、飞跃的过程即质变，表现为量变与质变的统一。",
+     "source": "自然辩证法·做选择题",
+     "num": 8
+    },
+    {
+     "id": "zrb-pd-09",
+     "type": "judge",
+     "q": "技术本身是中性的，被何主体所用则带有功利性。",
+     "options": [],
+     "answer": "T",
+     "explain": "技术具有无阶级性，无国界性，而利用技术的人带有目的性和功利性。",
+     "source": "自然辩证法·做选择题",
+     "num": 9
+    },
+    {
+     "id": "zrb-pd-10",
+     "type": "judge",
+     "q": "在一个时代的技术中，往往存在一个主导技术。",
+     "options": [],
+     "answer": "T",
+     "explain": "如蒸汽时代、电气时代和信息时代都是以其时代的主导技术命名的。",
+     "source": "自然辩证法·做选择题",
+     "num": 10
+    },
+    {
+     "id": "zrb-pd-11",
+     "type": "judge",
+     "q": "宇宙的无限性既无法证实也无法证伪，因此是无意义的。",
+     "options": [],
+     "answer": "F",
+     "explain": "对宇宙无限性的研究催生了许多新理论和新发现，推动了许多学科的发展，是有意义的。",
+     "source": "自然辩证法·做选择题",
+     "num": 11
+    },
+    {
+     "id": "zrb-pd-12",
+     "type": "judge",
+     "q": "“大爆炸宇宙学”证实了宇宙的有限性。",
+     "options": [],
+     "answer": "F",
+     "explain": "这只是一个假说，尚未证实。",
+     "source": "自然辩证法·做选择题",
+     "num": 12
+    },
+    {
+     "id": "zrb-pd-13",
+     "type": "judge",
+     "q": "公理化的方法是整个科学材料、使之严密化的工具，它的局限性在于它不是科学发现的方法。",
+     "options": [],
+     "answer": "F",
+     "explain": "公理化方法从前提出发，可以帮助人们发现原有理论体系的漏洞和不完善的地方，置换公式可以催生新理论的诞生，是科学发现的方法。",
+     "source": "自然辩证法·做选择题",
+     "num": 13
+    },
+    {
+     "id": "zrb-pd-14",
+     "type": "judge",
+     "q": "理想模型和理想实验充分证明了意识的巨大能动作用，也对物质第一性原则提出挑战。",
+     "options": [],
+     "answer": "F",
+     "explain": "唯物主义立场在任何情况下都不容置疑，理想模型和理想实验的前提是物质第一性，人不会凭空想象，只能以客观现实为基础，因此并没有对物质第一性提出任何挑战。",
+     "source": "自然辩证法·做选择题",
+     "num": 14
+    },
+    {
+     "id": "zrb-pd-15",
+     "type": "judge",
+     "q": "任何科学技术的成果，既有正价值，又有负价值。",
+     "options": [],
+     "answer": "T",
+     "explain": "评价很客观，科学技术是人们有目的创造出来的，以集体利益为目的时，会带来正价值；以个人利益为目的的时，其成果可能给他人带来负面影响。",
+     "source": "自然辩证法·做选择题",
+     "num": 15
+    },
+    {
+     "id": "zrb-pd-16",
+     "type": "judge",
+     "q": "逆向思维的哲学依据是辩证法的对立统一规律。",
+     "options": [],
+     "answer": "T",
+     "explain": "逆向思维是相对于惯性思维的，任何事物都存在对立统一规律，即矛盾规律。",
+     "source": "自然辩证法·做选择题",
+     "num": 16
+    },
+    {
+     "id": "zrb-pd-17",
+     "type": "judge",
+     "q": "托勒密的“地心说”和哥白尼的“日心说”各有自己的理论依据。",
+     "options": [],
+     "answer": "T",
+     "explain": "“地心说”“日心说”分别采用了不同的参考系，观察的角度不同，在其参考系下都有合理依据。",
+     "source": "自然辩证法·做选择题",
+     "num": 17
+    },
+    {
+     "id": "zrb-pd-18",
+     "type": "judge",
+     "q": "按照辩证法，科学问题是个“具体问题具体分析”的过程，因此，并不存在通用的科学方法论。",
+     "options": [],
+     "answer": "F",
+     "explain": "个体中存在共性，各个学科虽各有特点，但不能掩盖规律上的相似性，哲学理论是渗透在各个学科中最基本的依据。",
+     "source": "自然辩证法·做选择题",
+     "num": 18
+    },
+    {
+     "id": "zrb-pd-19",
+     "type": "judge",
+     "q": "许多科学家并不懂哲学，但在科研方面做出卓越的贡献，因此提倡科学家学习哲学是没有意义的。",
+     "options": [],
+     "answer": "F",
+     "explain": "哲学包含了许多思考问题的思维，主动、客观、唯物、辩证的来分析问题，理性的认识事物，可以绕过弯路，尽早取得科研成果。",
+     "source": "自然辩证法·做选择题",
+     "num": 19
+    },
+    {
+     "id": "zrb-pd-20",
+     "type": "judge",
+     "q": "自然界的客观性是指物质不灭性。",
+     "options": [],
+     "answer": "F",
+     "explain": "物质不灭性是客观性的一部分，客观性包括物质客观和关系客观，因此只说物质客观是不对的。",
+     "source": "自然辩证法·做选择题",
+     "num": 20
+    },
+    {
+     "id": "zrb-pd-21",
+     "type": "judge",
+     "q": "宇宙的无限性是指人类对宇宙的认识是无限的。",
+     "options": [],
+     "answer": "F",
+     "explain": "宇宙的无限性在本体论层面上指边界的无限性，在认识论层面上指认识的无限性。只有在本体论的前提下才能有认识论的产生。",
+     "source": "自然辩证法·做选择题",
+     "num": 21
+    },
+    {
+     "id": "zrb-pd-22",
+     "type": "judge",
+     "q": "机械自然观的根本缺陷是把运动的原因归结为外力的作用。",
+     "options": [],
+     "answer": "T",
+     "explain": "机械自然观源于牛顿力学，内外只是相对的，未考虑到内外统一的内部作用。",
+     "source": "自然辩证法·做选择题",
+     "num": 22
+    },
+    {
+     "id": "zrb-pd-23",
+     "type": "judge",
+     "q": "演化的概念与发展的概念不同，前者既包含进化论，也包含退化论。",
+     "options": [],
+     "answer": "T",
+     "explain": "演化是一个交替作用，有进化也有退化，更加全面的反映了事物的变化趋势，而发展是旧事物的灭亡和新事物的诞生，仅仅有进化。",
+     "source": "自然辩证法·做选择题",
+     "num": 23
+    },
+    {
+     "id": "zrb-pd-24",
+     "type": "judge",
+     "q": "“牧场悖论”的实质是个体利益与集体利益的矛盾。",
+     "options": [],
+     "answer": "T",
+     "explain": "“牧场悖论”：单位牧场所能承受的放牧量是有限的，个体只追求利益最大化而忽略集体利益，当畜牧数超过承载力时，牧场不能恢复，反而危害牧民。",
+     "source": "自然辩证法·做选择题",
+     "num": 24
+    },
+    {
+     "id": "zrb-pd-25",
+     "type": "judge",
+     "q": "解决人类和自然界的对立要靠实施科学发展观。",
+     "options": [],
+     "answer": "T",
+     "explain": "科学发展观就是解决人与自然之间的矛盾、对立关系的方法。",
+     "source": "自然辩证法·做选择题",
+     "num": 25
+    },
+    {
+     "id": "zrb-pd-26",
+     "type": "judge",
+     "q": "《周易》是古代的预测学。",
+     "options": [],
+     "answer": "F",
+     "explain": "《周易》是古代算卦用的，违背了科学准则，而预测学是有规律可循，是科学的。",
+     "source": "自然辩证法·做选择题",
+     "num": 26
+    },
+    {
+     "id": "zrb-pd-27",
+     "type": "judge",
+     "q": "中国古典哲学的阴阳分析是古代的辩证法。",
+     "options": [],
+     "answer": "T",
+     "explain": "阴阳分析很好的将事物对立统一的进行描述。",
+     "source": "自然辩证法·做选择题",
+     "num": 27
+    },
+    {
+     "id": "zrb-pd-28",
+     "type": "judge",
+     "q": "中医学靠的是经验看病，因此不是科学。",
+     "options": [],
+     "answer": "F",
+     "explain": "经验不是判定科学和非科学的依据和标准。",
+     "source": "自然辩证法·做选择题",
+     "num": 28
+    },
+    {
+     "id": "zrb-pd-29",
+     "type": "judge",
+     "q": "波普尔认为，哲学是不能检验真伪的，因此不是科学。",
+     "options": [],
+     "answer": "F",
+     "explain": "哲学是不能直接检验真伪，但可间接检验。",
+     "source": "自然辩证法·做选择题",
+     "num": 29
+    },
+    {
+     "id": "zrb-pd-30",
+     "type": "judge",
+     "q": "教学中知识和方法的关系就是“干粮”和“猎枪”的关系。",
+     "options": [],
+     "answer": "F",
+     "explain": "很好地说明了知识和方法的关系，方法是获取知识的途径。",
+     "source": "自然辩证法·做选择题",
+     "num": 30
+    },
+    {
+     "id": "zrb-pd-31",
+     "type": "judge",
+     "q": "归纳方法由于个别事物的不可穷尽，因此它的一般结论是靠不住的。",
+     "options": [],
+     "answer": "F",
+     "explain": "归纳法凸显人的理性和抽象能力，并不能因为个别事物的不可穷尽便说经验靠不住。",
+     "source": "自然辩证法·做选择题",
+     "num": 31
+    },
+    {
+     "id": "zrb-pd-32",
+     "type": "judge",
+     "q": "演绎方法的大前提隐含了要推出（个别）的结论，因此是无意义的。",
+     "options": [],
+     "answer": "F",
+     "explain": "演绎是从一般原理推导出个别结论的过程，从中可以发现问题，纠正错误，带来创新。对预见科学具有重大意义。",
+     "source": "自然辩证法·做选择题",
+     "num": 32
+    }
+   ],
+   "count": 50
+  },
+  {
+   "id": "zrb-backs",
+   "course": "自然辩证法",
+   "title": "背诵与简答",
+   "desc": "一页纸精要 · 简答论述",
+   "cards": [
+    {
+     "id": "zrb-y0",
+     "type": "qa",
+     "q": "绪论",
+     "options": [],
+     "answer": "研究对象＝自然演化规律／科技发展规律／科技研究方法／科技与社会关系。定义＝马克思主义重要组成部分＋一般规律＋一般方法＋一般关系。内容＝自然观·科学观与方法论·技术观与方法论·科技与社会。性质＝哲学性＋交叉性（桥梁）。体系＝自然辩证法史／分论／总论。自然观五形态＝朴素→神学→机械→辩证→现代",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 0
+    },
+    {
+     "id": "zrb-y1",
+     "type": "qa",
+     "q": "古代朴素",
+     "options": [],
+     "answer": "本原某种物质｜永恒流动变化｜生物进化分化出人。特征＝整体直观／思辨臆测／自发不彻底。地位＝理性认识开端／马恩思想渊源／天才预见",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 1
+    },
+    {
+     "id": "zrb-y2",
+     "type": "qa",
+     "q": "中世纪",
+     "options": [],
+     "answer": "阿奎那，理性入神学，自然法则证君权神授，自然神学，托勒密地心说＋教义＝披自然科学外衣的神学",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 2
+    },
+    {
+     "id": "zrb-y3",
+     "type": "qa",
+     "q": "机械",
+     "options": [],
+     "answer": "机械图景（笛卡尔/牛顿）｜严格机械决定论（自然是数学书、一切均已确定）｜静态性（只见树木）｜唯物性｜不完备性。地位＝破除直观思辨与上帝创世／经验实证与分析还原",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 3
+    },
+    {
+     "id": "zrb-y4",
+     "type": "qa",
+     "q": "辩证唯物",
+     "options": [],
+     "answer": "马恩＋自然科学新成果＋德国古典自然哲学。八观点＝物质本原／运动量质不灭／意识是人脑机能／时空是物质存在方式／矛盾推动／普遍联系与永恒生灭／人类与社会是自然产物／实践分化纯自然与人化自然。四特征＝唯物论与辩证法／自然史与人类史／天然与人化自然／能动性与受动性。四意义＝革命变革／奠定科学观方法论基础／提供四观前提／促进三类科学结合",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 4
+    },
+    {
+     "id": "zrb-y5",
+     "type": "qa",
+     "q": "当代三形态",
+     "options": [],
+     "answer": "系统（要素-结构-功能、系统论基础、自组织；系统性·演化性·复杂性·广义性）｜人工（科技创造·源于天然·生态型·低到高演化；主体性·能动性·价值性）｜生态（整体多样层次开放动态自适应自组织、人工化转生态化、可持续；全球性·批判性·和谐性）。习近平生态文明思想＝生态兴则文明兴／两山论／山水林田湖草生命共同体／环境就是民生",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 5
+    },
+    {
+     "id": "zrb-y6",
+     "type": "qa",
+     "q": "科技观",
+     "options": [],
+     "answer": "科学＝知识体系／社会活动／社会建制／文化；特征＝求真理性可检验自然普适知识形态生产力；划界—非科学（宗教艺术道德，不见得不好）—伪科学（伪装＋欺骗）；精神＝理性求实进取协作宽容献身。技术＝手段方式方法总和；人对自然实践关系／人的本质力量展现／直接生产力／五对统一；技术活动＋技术成果。关系＝不同→促进→融合。马克思：科学是生产力，自然科学是知识形态的一般社会生产力。异化＝分裂出对立面成异己力量、产品反过来统治人。体系结构＝现代科学（学科：基础/技术/工程；知识：事实/概念/定律/假说/理论）＋现代技术（门类：实验/基本/产业；形态：经验/实体/知识）",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 6
+    },
+    {
+     "id": "zrb-y7",
+     "type": "qa",
+     "q": "方法论",
+     "options": [],
+     "answer": "科学问题＝知识背景下需解决而未解决的矛盾（有求解目标与应答域，无确定答案）。分类＝是什么/为什么/怎么样；基础理论/应用研究/开发研究。来源＝实践与理论矛盾／理论内部矛盾／学派间矛盾／学科交叉点空白区／社会需要与生产实践。十大批判性问题（布朗和基利）。选题＝狭义定课题、广义含方向＋课题；五原则＝需要·创新·科学·可行·效益。方法体系＝理性（逻辑）／非理性（非逻辑）／经验／技术发明。论证＝正→反→正（合），四种结果",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 7
+    },
+    {
+     "id": "zrb-y8",
+     "type": "qa",
+     "q": "社会论",
+     "options": [],
+     "answer": "功能＝知识生产·文化教育·政治经济＋双刃剑。建制＝学会⇒大学⇒小社会。规范＝普遍主义·公有主义·无私利性·有条理的怀疑主义；伦理＝公众利益优先、社会伦理与动物伦理、增进福祉。中国＝习近平科技创新观，中国式科技现代化推动社会现代化；三个第一＋三大战略；一体改革＋新型举国体制；科技创新靠人才、人才培养靠教育，统筹推进一体布局协同并进",
+     "explain": "一、全课浓缩",
+     "source": "自然辩证法·一页纸背诵版",
+     "num": 8
+    },
+    {
+     "id": "zrb-jd9",
+     "type": "qa",
+     "q": "自然辩证法与具体科学的关系",
+     "options": [],
+     "answer": "总体来说是一般到特殊的关系。①一般寓于特殊之中，不能独立存在。自然辩证法来源于具体科学，同时对具体科学提供理论基础；②特殊包含一般，特殊表现一般。",
+     "explain": "第一讲现代科学技术与自然辩证法",
+     "source": "自然辩证法·简答论述",
+     "num": 9
+    },
+    {
+     "id": "zrb-jd10",
+     "type": "qa",
+     "q": "论哲学与自然科学的关系",
+     "options": [],
+     "answer": "一般和特殊的关系。哲学是一般，自然科学特殊，一般寓于特殊之中，一般本身不能独立存在，特殊表现一般。自然科学仅仅研究特定客观领域的特殊规律，而哲学研究的是自然，社会以及思维的运动发展的最一般规律。哲学存在于科学之中，科学展现出哲学原理，自然科学是哲学的基础，哲学对自然科学有指导作用。",
+     "explain": "第一讲现代科学技术与自然辩证法",
+     "source": "自然辩证法·简答论述",
+     "num": 10
+    },
+    {
+     "id": "zrb-jd11",
+     "type": "qa",
+     "q": "论系统非加和原理的方法论意义",
+     "options": [],
+     "answer": "①系统非加和性原理指系统的整体性质和功能不是各组成要素性质和功能的简单叠加；②原因在于要素间发生了相互作用，主要有协同作用和内耗作用；③意义，在认识论上，要从整体出发，在实践上，要追求整体最优化。",
+     "explain": "第二讲自然界的系统结构",
+     "source": "自然辩证法·简答论述",
+     "num": 11
+    },
+    {
+     "id": "zrb-jd12",
+     "type": "qa",
+     "q": "简述进化与退化的关系。",
+     "options": [],
+     "answer": "进化是指事物从简单到复杂，从无序到有序，从低级到高级的推进的过程。退化是指事物从复杂到简单，由有序到无序，逐步丧失一些功能和特征的过程。进化与退化是自然界演化过程中相反的方面，两者是对立统一的关系，相互依赖，相互影响，进化伴随着退化，进化以退化为前提、代价。",
+     "explain": "第三讲自然界的系统演化",
+     "source": "自然辩证法·简答论述",
+     "num": 12
+    },
+    {
+     "id": "zrb-jd13",
+     "type": "qa",
+     "q": "系统演化中可逆与不可逆的关系",
+     "options": [],
+     "answer": "可逆是不可逆的简化理想状态，不可逆是演化的真实状态，可逆的过程在现实中可以变为不可逆的，不可逆过程在理想状态下可以变为可逆过程；牛顿力学是可逆的，对时间反演对称，则系统可逆。真实的自然界是不可逆的，只有在理想状态下才有可逆的可能，可逆与不可逆是具有相对性。",
+     "explain": "第三讲自然界的系统演化",
+     "source": "自然辩证法·简答论述",
+     "num": 13
+    },
+    {
+     "id": "zrb-jd14",
+     "type": "qa",
+     "q": "对自然界认识中可知和不可知的关系",
+     "options": [],
+     "answer": "两者是相对于一种观控方式而言（观察水平、模式、手段等不同）。两者具有相对性：比如原子在低倍显微镜下看不到，在高倍显微镜下却能看到。",
+     "explain": "第三讲自然界的系统演化",
+     "source": "自然辩证法·简答论述",
+     "num": 14
+    },
+    {
+     "id": "zrb-jd15",
+     "type": "qa",
+     "q": "归纳与演绎方法的联系与区别",
+     "options": [],
+     "answer": "科学的认识是从个别到一般，再从一般到个别的过程。通过个别认识一般的思维方法是归纳，由一般认识个别的思维方法是演绎。归纳为演绎提供前提，演绎用来归纳、证明归纳。在研究中，通常先通过归纳法推导理论，再通过演绎法利用理论形成假设并验证其正确性，从而得到理论支持的证据，因此两者相互渗透、相互补充，应把某个方法应用到适当的地方，不应推崇一个，反对另一个。①归纳是从认识个别事物推出一般原理，演绎则由一般到个别。②归纳是一种或然性的推理；演绎则是一种必然性推理，其结论的正确性取决于前提是否正确，以及推理形式是否符合逻辑规则。③归纳的结论超出了前提的范围，演绎结论则没有超出前提所断定的范围。",
+     "explain": "第三讲自然界的系统演化",
+     "source": "自然辩证法·简答论述",
+     "num": 15
+    },
+    {
+     "id": "zrb-jd16",
+     "type": "qa",
+     "q": "按照自组织理论，一个系统具备哪些条件才会进入有序状态？(广义进化的条件)",
+     "options": [],
+     "answer": "系统必须是开放系统、各要素间应该是非线性相互作用、系统远离平衡态、具有临界涨落条件。",
+     "explain": "第三讲自然界的系统演化",
+     "source": "自然辩证法·简答论述",
+     "num": 16
+    },
+    {
+     "id": "zrb-jd17",
+     "type": "qa",
+     "q": "人与自然界的基本关系",
+     "options": [],
+     "answer": "对立统一的关系：①人在自然面前的受动性：人是自然界的产物，生存离不开自然，活动受自然条件和规律的限制。②人的主动性：人具有抽象能力可以洞察规律，通过实践达到合规律和目的统一。对立：人类需求的无限与自然界供给的有限 统一：人类源于自然界，依赖自然界，要遵守自然规律。",
+     "explain": "第四讲：从人与自然的关系谈科学发展观",
+     "source": "自然辩证法·简答论述",
+     "num": 17
+    },
+    {
+     "id": "zrb-jd18",
+     "type": "qa",
+     "q": "人工自然和天然自然的关系",
+     "options": [],
+     "answer": "是对立统一的关系。天然自然是人工自然的基础，人工自然是由天然自然转化而来，是为了满足人类的需求而建立的，适合人类的生存，有可能破坏天然自然。人工自然的产品是人们根据一定的自然规律，有的甚至还是在直接模拟天然物质系统的结构和功能的基础上创造出来的。因而，无论是天然自然，还是人工自然，都服从统一的自然规律。它们又是相互区别的：①天然自然早在人类出现之前就存在着，并经历了漫长的演化过程；而人工自然则是随着人类的出现，通过人生产出来的。②天然自然只具有自然属性，服从于自然规律。人工自然既具有自然属性，又具有社会属性；既服从于自然规律,又服从于社会经济、文化等的发展规律。③天然自然的演化过程一般比较缓慢，而人工自然的演化发展则很迅速。④天然自然的状况对人类的早期文明有很大的影响 ,但随着生产和科技的发展,人类文明的发展与天然自然的关系趋于减弱,而更多地依赖于人工自然。总之，既要满足当代人的需求，又不能过度索取，两者应该协调发展。",
+     "explain": "第四讲：从人与自然的关系谈科学发展观",
+     "source": "自然辩证法·简答论述",
+     "num": 18
+    },
+    {
+     "id": "zrb-jd19",
+     "type": "qa",
+     "q": "人工自然的两面性",
+     "options": [],
+     "answer": "人工自然，如楼房，大坝等，这些是人工制造的，但他们又是自然界的。一方面，它们满足人们的某种需要。另一方面，它对环境会造成一些影响，特别是一些不利的影响。",
+     "explain": "第四讲：从人与自然的关系谈科学发展观",
+     "source": "自然辩证法·简答论述",
+     "num": 19
+    },
+    {
+     "id": "zrb-jd20",
+     "type": "qa",
+     "q": "分析近代以来，人类和自然界矛盾激化的原因",
+     "options": [],
+     "answer": "人口的急剧增长；人类的科技力量急剧增强，人类改造自然的能力的变大；片面的发展观；人类发展悖论（牧场悖论）；工业发展中的重工业污染。",
+     "explain": "第四讲：从人与自然的关系谈科学发展观",
+     "source": "自然辩证法·简答论述",
+     "num": 20
+    },
+    {
+     "id": "zrb-jd21",
+     "type": "qa",
+     "q": "科学与技术的联系与区别",
+     "options": [],
+     "answer": "联系：科学需要技术做支撑，技术需要科学做指导。科学研究和科学成果为技术的发展提供指导，技术为科学研究提出新的课题，并且提供技术平台和物质手段。两者相互促进相互渗透，融为一体。区别：①科学揭示客观事实与内在规律，技术则创造出原来客观没有的物质产品和技术方案；②科学的本质主要体现在认识论意义上，技术的本质则主要体现在改造、变革意义上；③科学回答是什么，为什么的问题，技术回答做什么，怎么做的问题。所以科学追求的是发现，技术追求的是发明；④从科学技术与生产力的关系来看，科学是潜在的生产力，技术是直接的生产力；科学是技术的基础，但科学只有通过技术（特别是制造技术）才能成为现实的生产力。",
+     "explain": "第五讲：科学技术性质特点",
+     "source": "自然辩证法·简答论述",
+     "num": 21
+    },
+    {
+     "id": "zrb-jd22",
+     "type": "qa",
+     "q": "“科学技术是第一生产力”的含义",
+     "options": [],
+     "answer": "“科学技术是生产力”是马克思主义的观点，他指出“生产力也包括科学”并进一步阐明“社会劳动生产力，首先是科学的力量”的论断。邓小平创造性地提出：“科学技术是第一生产力”这是对马克思主义理论的重大发展。①科学技术是特殊的生产力。科学在未与生产结合之前，它是以知识形态存在的一般生产力，一旦应用于生产，便物化为直接的生产力，可渗透在生产力系统的各要素之中。②科学技术是推动现代化生产力发展的关键性因素和重要力量。现代科学技术飞速发展并向现实生产力需求的转化，改变了生产力中的劳动者、劳动工具、劳动对象和管理水平，极大的提高了人们认识自然、改造自然的能力。③科学技术是现代生产力发展和经济增长的第一要素。④现代化科学技术的超前性对生产力发展起先导作用，科学技术越来越走在社会生产的前面，开辟着生产发展的新领域，引导生产力发展的方向。",
+     "explain": "第五讲：科学技术性质特点",
+     "source": "自然辩证法·简答论述",
+     "num": 22
+    },
+    {
+     "id": "zrb-jd23",
+     "type": "qa",
+     "q": "科学技术无法定义为第一生产力的理由？",
+     "options": [],
+     "answer": "①生产力一般指现实的生产力，是改造和征服自然的能力，早在人类产生的初期生产力就已经形成，而真正意义的科学技术至今才400 多年历史；②人们以科学技术对生产力有巨大的推动作用为理由也说不通；③就生产力作用作为历史唯物主义的依据而言，科学技术也无法定义为生产力；④讨论科学技术是生产力，事实上忽略了科学技术向生产力转化的中间环节。",
+     "explain": "第五讲：科学技术性质特点",
+     "source": "自然辩证法·简答论述",
+     "num": 23
+    },
+    {
+     "id": "zrb-jd24",
+     "type": "qa",
+     "q": "科学与非科学的区别",
+     "options": [],
+     "answer": "科学划界标准：可观察性、可检验性、可控制性、可重复性。非科学不满足部分或全部的标准。",
+     "explain": "第五讲：科学技术性质特点",
+     "source": "自然辩证法·简答论述",
+     "num": 24
+    },
+    {
+     "id": "zrb-jd25",
+     "type": "qa",
+     "q": "科学与技术的概念",
+     "options": [],
+     "answer": "科学是以概念命题等形式反映自然界、社会、思维领域规律的理论体系（认识自然）。技术是根据生产实践、经验和科学原理发展成的操作方法，工艺流程和技能等（改造自然）。",
+     "explain": "第五讲：科学技术性质特点",
+     "source": "自然辩证法·简答论述",
+     "num": 25
+    },
+    {
+     "id": "zrb-jd26",
+     "type": "qa",
+     "q": "科学发展的内在动力有哪些？",
+     "options": [],
+     "answer": "①新事实与旧理论的矛盾，推动了旧理论的反思和新理论的形成；②学术争鸣，正确的理论代替错误的理论，深入的知识代替表象的知识，更普遍的认识代替原有理论；③理论本身的的逻辑矛盾；④学科内部的分化与综合；⑤科学的继承与创新，推动了革命性与渐进性的更替，带来了科学的不断的扩大和发展。",
+     "explain": "第六讲：科学技术发展的动力系统",
+     "source": "自然辩证法·简答论述",
+     "num": 26
+    },
+    {
+     "id": "zrb-jd27",
+     "type": "qa",
+     "q": "科学技术发展的外部动力",
+     "options": [],
+     "answer": "①生产实践的巨大推动；②军事斗争的推动；③权力机关的政策导向；④意识形态的影响。",
+     "explain": "第六讲：科学技术发展的动力系统",
+     "source": "自然辩证法·简答论述",
+     "num": 27
+    },
+    {
+     "id": "zrb-jd28",
+     "type": "qa",
+     "q": "波普尔的科学发展模式",
+     "options": [],
+     "answer": "波普尔的“证伪”模式：P1（问题）-TT（试探性理论）-EE（排除错误）-P2（新问题）。科学不是始于观察，而是始于问题。肯定：①科学源于问题，富有创新性；②科学始于问题，又终于问题，把科学看做一个永不停息的动力系统，符合科学发展实际。不足：①把科学的标准视为可证伪性，太过标新立异；②把科学的与真理分开或对立起来，有悖于科学发展的原则，在认识上脱离唯物主义；③强调大胆猜测而忽视了逻辑思维的作用；④过分强调科学的发展是从一个革命到另一个革命的飞跃，忽略了量的积累。",
+     "explain": "第六讲：科学技术发展的动力系统",
+     "source": "自然辩证法·简答论述",
+     "num": 28
+    },
+    {
+     "id": "zrb-jd29",
+     "type": "qa",
+     "q": "库恩的科学发展模式",
+     "options": [],
+     "answer": "库恩“范式”模式：前科学-常规科学-反常-危机-科学革命-新的常规科学。范式：特定的科学共同体在从事某一类科学活动所必须遵守的共同模式。包括共有的世界观、基本理论、范例方法、仪器、标准等与科学研究相关的所有东西。当新的范式建立起来后，一场革命宣告结束，在新范式的指导下，科学又进入了一个新的常规发展时期，科学发展就是常规科学和科学革命不断交替、循环往复的过程。库恩的科学发展模式是在克服了积累式和证伪主义两种模式片面性的基础上，综合了二者的合理因素所提出的一种新模式。该模式在一定程度上反映了科学发展过程中实际存在着量变和质变，肯定与否定的辩证关系，从理论形态上表达了科学家们朴素的科学革命观。肯定：①范式概念的引入符合科学的事实；②把进化和革命结合起来，把科学发展看做是一个量变和质变交替进行的无限过程，符合科学发展的实际。不足：①范式概念本身模糊；②认为常规科学阶段就是科学定为一尊无争议，过于绝对化，不符合事实。",
+     "explain": "第六讲：科学技术发展的动力系统",
+     "source": "自然辩证法·简答论述",
+     "num": 29
+    },
+    {
+     "id": "zrb-jd30",
+     "type": "qa",
+     "q": "科学研究中继承与创新的关系",
+     "options": [],
+     "answer": "继承是科学研究中的连续性，是量变；创新是科学研究中的间断性，是质变。创新以继承为前提，继承以创新为目标，创新是继承的发展和突破。",
+     "explain": "第六讲：科学技术发展的动力系统",
+     "source": "自然辩证法·简答论述",
+     "num": 30
+    },
+    {
+     "id": "zrb-jd31",
+     "type": "qa",
+     "q": "观察方法与实验方法的区别",
+     "options": [],
+     "answer": "观察方法是不带控制的天然观察，实验方法是带控制性的观察，可排除其他因素，来寻找单独的影响因素。通过人为控制可以造出自然界没有的条件进行试验，易曝露出自然界的本来面目。",
+     "explain": "第七讲科学方法论",
+     "source": "自然辩证法·简答论述",
+     "num": 31
+    },
+    {
+     "id": "zrb-jd32",
+     "type": "qa",
+     "q": "什么是“科学渗透理论”？",
+     "options": [],
+     "answer": "①纯客观的观察事实是不存在的，即单纯的观察是不存在的。观察中总是渗透着理论，渗透着观察者的理解。②视觉经验的表述依赖特定的理论和术语。③观察者的欲望、理解、猜想决定着观察的内容、对象和角度、层次，不同的知识背景观察不一样，视角不一样其结论也不一样，这种理论称为观察渗透理论。",
+     "explain": "第七讲科学方法论",
+     "source": "自然辩证法·简答论述",
+     "num": 32
+    },
+    {
+     "id": "zrb-jd33",
+     "type": "qa",
+     "q": "论科学实验对科学技术发展的作用",
+     "options": [],
+     "answer": "①通过人为的控制环境，避免对其外界的干扰。例，热的产生②创造自然没有的条件或环境，迫使自然界的事物暴露本质。例，高压，高温③实验是检验科学技术是否正确的一种方法④实验能够再现加速、延缓，模拟研究对象的属性及其变化过程⑤通过实验发现新现象，提出新问题，如光电效应",
+     "explain": "第七讲科学方法论",
+     "source": "自然辩证法·简答论述",
+     "num": 33
+    },
+    {
+     "id": "zrb-jd34",
+     "type": "qa",
+     "q": "类比移植方法的内容？",
+     "options": [],
+     "answer": "就是利用两个不同对象之间的相似之处把适用于一个对象的概念、原理或方法用于另一个对象，从而获得对另一个对象研究上的突破。采用类比移植方法，要认真研究客体与本体间是否存在可以类比的共性，准确把握客体具备而本体尚未具备的特点的实质，并对移植内容进行可比性论证。",
+     "explain": "",
+     "source": "自然辩证法·简答论述",
+     "num": 34
+    },
+    {
+     "id": "zrb-jd35",
+     "type": "qa",
+     "q": "公理体系需要满足的条件",
+     "options": [],
+     "answer": "公理体系是由一组基本概念、一系列的基本公理和一整套的定理体系组成的。它具有：无矛盾性-公理前后不能相互矛盾；独立性-公理间不能相互导出；完备性-公理个数足够。",
+     "explain": "",
+     "source": "自然辩证法·简答论述",
+     "num": 35
+    },
+    {
+     "id": "zrb-jd36",
+     "type": "qa",
+     "q": "人工语言与自然语言的优缺点",
+     "options": [],
+     "answer": "人工语言指人工符号系统、数学公式等。优点：含义准确、表达准确。缺点：比较单一，不能表达复杂的感情。自然语言是指日常生活用语，优点：含义丰富，能表达细腻的思想。缺点：易发生歧义。",
+     "explain": "",
+     "source": "自然辩证法·简答论述",
+     "num": 36
+    },
+    {
+     "id": "zrb-jd37",
+     "type": "qa",
+     "q": "科学观察法的要求",
+     "options": [],
+     "answer": "避免主观性，力求客观性；全面系统的观察；选择典型材料，包括对象和条件；进行连续性观察；注意精确性观察，注意细节和微小变化。",
+     "explain": "",
+     "source": "自然辩证法·简答论述",
+     "num": 37
+    },
+    {
+     "type": "qa",
+     "q": "量子力学的创立昭示了一种什么样的因果观和规律观？",
+     "options": [],
+     "answer": "量子力学的创立昭示了一种不同于牛顿学性质的新的因果观和规律观。",
+     "explain": "出自自然辩证法核心考点速记，属客观知识点，答案即结论，建议整句记忆。",
+     "source": "外部补充·自辩完全版·选择",
+     "num": 900,
+     "id": "zrb-x900"
+    },
+    {
+     "type": "qa",
+     "q": "穆勒五法",
+     "options": [],
+     "answer": "求同法、求异法、求同差异法、共变法、剩余法",
+     "explain": "出自自然辩证法核心考点速记，属客观知识点，答案即结论，建议整句记忆。",
+     "source": "外部补充·自辩完全版·选择",
+     "num": 901,
+     "id": "zrb-x901"
+    },
+    {
+     "type": "qa",
+     "q": "自然辩证法是关于什么的研究？其学科性质是什么？",
+     "options": [],
+     "answer": "自然辩证法是关于自然界和自然科学一般规律、科学技术一般方法论的研究。",
+     "explain": "出自自然辩证法核心考点速记，属客观知识点，答案即结论，建议整句记忆。",
+     "source": "外部补充·自辩完全版·选择",
+     "num": 902,
+     "id": "zrb-x902"
+    },
+    {
+     "type": "judge",
+     "q": "康德的“星云学说”证明了事物的运动变化主要靠外力的作用。",
+     "options": [],
+     "answer": "F",
+     "explain": "康德的星云学说认为星云是通过自身引力和内力演化的，主要靠内力。",
+     "source": "外部补充·自辩完全版·判断",
+     "num": 903,
+     "id": "zrb-x903"
+    },
+    {
+     "type": "qa",
+     "q": "系统的概念、性质、特征、分类",
+     "options": [],
+     "answer": "（1）概念：若干相互作用的要素组成的具有一定结构和功能的有机整体。 （2）性质：要素关联性、动态相关性、系统整体性。 （3）特征：整体性、结构性、层次性、开放性。 （4）分类：❶规模：大、中、小型；❷规律性质：确定、随机型；❸组织方式：自组织、他 组织；❹与环境关系：孤立、封闭、开放；❺动态：静态、动态；❻是否可逆：可逆（有记 忆）、不可逆（无记忆）。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 904,
+     "id": "zrb-x904"
+    },
+    {
+     "type": "qa",
+     "q": "系统非加和性（整体性原理）的实质和意义",
+     "options": [],
+     "answer": "（1）实质：整体的各个部分之间存在彼此制约、作用和选择（主要是协同作用，内耗作用）； 整体的性质和功能不等于各部分性质和功能的简单叠加。 （2）意义：①在认识论上，要从整体出发；②实践上，要追求整体最优化。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 905,
+     "id": "zrb-x905"
+    },
+    {
+     "type": "qa",
+     "q": "系统演化的老三论和新三论",
+     "options": [],
+     "answer": "①老三论：❶控制论❷信息论❸一般系统论；②新三论：❶协同论❷突变论❸耗散结构论",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 906,
+     "id": "zrb-x906"
+    },
+    {
+     "type": "qa",
+     "q": "人工自然的两面性 人工自然，如楼房，大坝等，这些是人工制造的，但他们又是自然界的。",
+     "options": [],
+     "answer": "一方面，它们 满足人们的某种需要；另一方面，它们会对环境造成一些影响，尤其是一些不利影响。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 907,
+     "id": "zrb-x907"
+    },
+    {
+     "type": "qa",
+     "q": "从人类与自然界协调发展的角度，论可持续发展的意义",
+     "options": [],
+     "answer": "①人类和自然界处于对立状况：资源危机、生态危机、环境危机日益严重，自然灾害的频率 也越来越大；②为了减轻环境恶化、使得人与自然界协调发展，我们必须实行可持续发展战 略；③措施：控制人口、实行计划生育，发展新技术、从源头上治理污染，开发可替代的新 的无污染能源，在全球范围内实施可持续发展战略。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 908,
+     "id": "zrb-x908"
+    },
+    {
+     "type": "qa",
+     "q": "科学的概念和特点 以概念命题等形式反映自然界、社会、思维领域规律的理论体系（认识自然）。",
+     "options": [],
+     "answer": "❶必要性❷抽象性❸真理性❹简单性❺简化性",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 909,
+     "id": "zrb-x909"
+    },
+    {
+     "type": "qa",
+     "q": "技术的概念和特点是什么？",
+     "options": [],
+     "answer": "概念：根据生产实践、经验和科学原理发展成的操作方法、工艺流程和技能等（改造自然）。特点：❶实用性❷综合性❸社会性❹经验性",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 910,
+     "id": "zrb-x910"
+    },
+    {
+     "type": "qa",
+     "q": "从科学划界的角度，批判伪科学（科学与非科学的区别）",
+     "options": [],
+     "answer": "科学具有：①可观察性：研究对象可观察；②可控制性：实验环境和条件可控制；③可 检验性：结果和过程可检验；④可重复性：同一实验可重复。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 911,
+     "id": "zrb-x911"
+    },
+    {
+     "type": "qa",
+     "q": "什么是科学的基本精神？",
+     "options": [],
+     "answer": "①理性精神（以逻辑和证据为基础认识世界）、②实证精神（通过观察、实验验证理论）、 ③怀疑与批判精神（不盲从权威，勇于质疑）、④创新精神（探索未知，推动知识进步）等。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 912,
+     "id": "zrb-x912"
+    },
+    {
+     "type": "qa",
+     "q": "科学方法的概念及分类",
+     "options": [],
+     "answer": "（1）概念：为达到某目标、目的采取的步骤、措施、程序。 （2）分类：一般方法、特殊方法。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 913,
+     "id": "zrb-x913"
+    },
+    {
+     "type": "qa",
+     "q": "科学方法论的分类及价值",
+     "options": [],
+     "answer": "（1）分类：科研选题、观察实验、概括方法、逻辑方法、数学方法、系统方法、技术方法。 （2）价值：两个极端 ①方法无用论（经验主义）②方法万能论（教条主义）。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 914,
+     "id": "zrb-x914"
+    },
+    {
+     "type": "qa",
+     "q": "科学建模的步骤（五步建模法）",
+     "options": [],
+     "answer": "①确定研究对象所属的系统；②确定基本量及其性质；③根据相关知识学科的知识，确定基 本量的关系；④求解模型；⑤解的解释分析和评价。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 915,
+     "id": "zrb-x915"
+    },
+    {
+     "type": "qa",
+     "q": "论科学技术数学化的趋势和意义 能够利用数学更加精确和完善科学技术。",
+     "options": [],
+     "answer": "①数学向哲学领域渗透，推动了哲学研究的发展； ②数学向逻辑学的相互渗透，产生了数学逻辑这一新学科； ③数学向语言学渗透，加速了语言研究的现代化和科学化。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 916,
+     "id": "zrb-x916"
+    },
+    {
+     "type": "qa",
+     "q": "简述：什么是“科学渗透理论” 纯客观的观察事实……",
+     "options": [],
+     "answer": "什么是“科学渗透理论” 纯客观的观察事实是不存在的，即单纯的观察是不存在的，观察中总是渗透着理论、渗 透着观察者的理解。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 917,
+     "id": "zrb-x917"
+    },
+    {
+     "type": "qa",
+     "q": "通过学习自然辩证法，谈谈该学科对于改善人的思维方式的意义",
+     "options": [],
+     "answer": "①帮助我们建立正确的自然观、技术观，提高哲学修养；②使我们获得科学认识论和科学方 法论的知识；③改善我们的思维，拓宽思路，增强科学创新能力。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 918,
+     "id": "zrb-x918"
+    },
+    {
+     "type": "qa",
+     "q": "科研选题应遵循的原则",
+     "options": [],
+     "answer": "①需要性原则：需要是选题的前提和目的； ②创新性原则：创造是科研的灵魂； ③科学性原则：所选的课题必须具有一定的知识背景； ④可行性原则：所选的课题应与自己的主客观条件相适应； ⑤效益性原则：应根据情况的变化适当调整课题。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 919,
+     "id": "zrb-x919"
+    },
+    {
+     "type": "qa",
+     "q": "在教学中如何培养创新型人才",
+     "options": [],
+     "answer": "①授之以鱼，不如授之以渔，既要传授知识，又要传授方法； ②因材施教，因人而异，在不同的阶段采用不同的方法教学； ③重视实践环节，善于发现问题，重视人文素养与科学精神； ④培养学生高度的责任感、开放的心态以及团结协作的精神。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 920,
+     "id": "zrb-x920"
+    },
+    {
+     "type": "qa",
+     "q": "用层次原理阐发微分的现实模型",
+     "options": [],
+     "answer": "①自然界有无穷多个层次；②每个层次有自己的特性和规律；③每个层次间都存在过渡区。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 921,
+     "id": "zrb-x921"
+    },
+    {
+     "type": "qa",
+     "q": "我们如何知道，在没有人类之前，自然界就存在着？",
+     "options": [],
+     "answer": "①哲学意义角度，物质是第一性的，意识是第二性的； ②历史发展角度，人类的产生是自然界长期发展的结果； ③人类诞生之前，便已经有了其他生物，比如恐龙； ④人类产生之后，自然界的存在与发展也不以人的意识为转移。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 922,
+     "id": "zrb-x922"
+    },
+    {
+     "type": "qa",
+     "q": "自然观的主要历史形态",
+     "options": [],
+     "answer": "①古代的朴素唯物主义自然观；②17-18 世纪的机械唯物主义自然观；③19 世纪的辩证唯物 主义自然观",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 923,
+     "id": "zrb-x923"
+    },
+    {
+     "type": "qa",
+     "q": "在热力学问题中，自发热过程系统的熵总是增大，试用相应的哲学观点分析其物理机制",
+     "options": [],
+     "answer": "①系统由高序到低序，由有序到无序的退化是自发进行的，而由无序到有序，低序到高序的 进化则需要一个组织过程，有被组织、自组织两类，自组织产生的内在机制为竞争和协同； ②熵就是无知的混乱程度，绝对零度熵为零，一个自发进行的过程熵永远是上升的，热量从 高温物体流向低温物体时不可逆的，这表明自然界中出现的过程是具有方向性的，且不可逆。 ③熵定律可简化而通俗的表述为：万物皆走向衰退，这是自然界普遍适用的规律。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 924,
+     "id": "zrb-x924"
+    },
+    {
+     "type": "qa",
+     "q": "谈谈相对论提出的科学和哲学意义",
+     "options": [],
+     "answer": "（1）科学意义：①打破了牛顿绝对时空观的长期束缚；②开辟了认识自然现象的新途径；③ 标志着科学从古典时期进入新纪元。 （2）哲学意义：①维护了实在论在科学中的地位；②揭示了事物运动的辩证性；③突破了经 典力学的形而上学时空观。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 925,
+     "id": "zrb-x925"
+    },
+    {
+     "type": "qa",
+     "q": "试分析列宁提出物质定义的原因（物理学背景）",
+     "options": [],
+     "answer": "①19 世纪末 20 世纪初，物理学出现“危机”：电子、X 射线等的发现打破“原子不可再分、 属性不变”的旧物质观；②马赫主义等唯心主义借机宣称“物质消失了”，否定物质客观存 在；③列宁为批判这种唯心主义错误、澄清物质概念的混乱，提出物质定义（物质是标志客 观实在的哲学范畴，不依赖于意识，为意识所反映），明确物质的唯一特性是客观实在性，无 论物质形态如何变化，这一本质不变。",
+     "explain": "出自自然辩证法简答题库，答题时按要点分条作答，答对得分点即可。",
+     "source": "外部补充·自辩完全版·简答",
+     "num": 926,
+     "id": "zrb-x926"
+    },
+    {
+     "type": "qa",
+     "q": "波普尔的证伪模式（科学进步模式）的优缺点是什么？",
+     "options": [],
+     "answer": "模式：问题→试探性理论→排除错误→新问题。优点：①科学始于问题，富有创新性；②始于问题又终于问题，把科学发展看作永不停息的动力系统，符合科学发展实际。缺点：①过分强调大胆猜测，忽视逻辑思维；②过分强调飞跃，忽视积累渐变；③可证伪标准太过标新立异；④把科学与真理区别甚至对立，有悖现代科学发展。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 927,
+     "id": "zrb-x927"
+    },
+    {
+     "type": "qa",
+     "q": "简述：库恩的范式模式的优缺点是什么？",
+     "options": [],
+     "answer": "模式：学派之争→前科学…… 库恩的范式模式的优缺点 学派之争→前科学→常规科学→反常→危机→科学革命→新常规科学范式，指特定的科学 共同体在从事某一类科学活动所必须遵守的共同原则和模式，包括共有的世界观、基本理论、 范例、方法以及仪器等同科学研究相关的所有东西。 （1）优点：①把进化与革命结合起来，就把科学的发展看成了量变与质变交替进行的无限过 程，这符合科学发展的大部分情况；②范式概念的引入，也符合科学发展的事实。 （2）缺点：①未阐明新范式的进步性；②对科学革命的描述过于理想化；③忽视科学实践的 多样性；④过分强调新旧范式间的差别。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 928,
+     "id": "zrb-x928"
+    },
+    {
+     "type": "qa",
+     "q": "简述：拉卡托斯的“科学纲领”模式的优缺点 进化……",
+     "options": [],
+     "answer": "拉卡托斯的“科学纲领”模式的优缺点 进化的研究纲领→退化的研究纲领→新的进化纲领取代旧的退化纲领 （1）优点：①指出科学理论有明确的结构（有核）；②给出了科学纲领进化与退化的标准。 （2）缺点：①研究纲领的有核结构只适合于成熟理论；②硬核不可变的思想不符合事实。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 929,
+     "id": "zrb-x929"
+    },
+    {
+     "type": "qa",
+     "q": "简述：“科学研究纲领”与“范式”比较 拉卡托斯……",
+     "options": [],
+     "answer": "“科学研究纲领”与“范式”比较 拉卡托斯清除了库恩的心理主义的影响，把科学研究纲领归结为对客观世界的认识或猜测， 具体地探讨了科学理论的内在结构。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 930,
+     "id": "zrb-x930"
+    },
+    {
+     "type": "qa",
+     "q": "星野模式三次技术更迭理论 优点：符合近代技术历史；不足：考虑因素太少。",
+     "options": [],
+     "answer": "①第一次技术体系（18 世纪末—19 世纪末）：纺织业带动蒸汽机技术，主导技术：蒸汽机； ②第二次技术体系（19 世纪末—20 世纪中）：发动机、电动机，主导技术：电力，内燃机； ③第三次技术体系（20 世纪中至今）：火箭、雷达、核能、电子计算机。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 931,
+     "id": "zrb-x931"
+    },
+    {
+     "type": "qa",
+     "q": "简述：试从自然辩证法角度和宇宙大爆炸视角分析“……",
+     "options": [],
+     "answer": "试从自然辩证法角度和宇宙大爆炸视角分析“热寂说”的错误之处 “热寂说”是基于热力学第二定律的一种宇宙演化假说，核心是宇宙最终温度均匀、能量 不再转化。推导过程需结合热力学第二定律的核心内容（熵增原理、热量传递方向），说明将 宇宙视为孤立系统时，熵增会导致温差消失，最终达到热寂。 错误缘由则要指出热力学第二定律的适用局限性，即其是在有限时空内得出的规律，不 能直接推广到整个宇宙这一未知是否为孤立系统的范畴，强调科学规律推广需考虑适用条件。 “热寂说”违反了辩证唯物主义的基本原理（运动不灭原理）。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 932,
+     "id": "zrb-x932"
+    },
+    {
+     "type": "qa",
+     "q": "如何进行正反正思维？",
+     "options": [],
+     "answer": "即正—反—反正思维，是一种动态的、矛盾推动发展的思维方式，核心在于通过矛盾的 对立统一推动认识深化和事物发展。强调从矛盾中寻找发展动力，推动认识和实践不断深化。 ①正：首先从正面出发，肯定事物的现状或主流观点，如肯定科技进步对社会发展的积极作 用。②反：接着从反面进行反思，指出其局限性或负面影响，如科技发展可能带来的伦理问 题等。③反正：最后在更高层次上实现综合，既不否定正也不否定反，而是通过矛盾的统一， 提出更全面、更合理的解决方案，如在发展科技的同时注重可持续发展和伦理规范。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 933,
+     "id": "zrb-x933"
+    },
+    {
+     "type": "qa",
+     "q": "简述：根据广义系统的四个条件论述“一带一路”倡……",
+     "options": [],
+     "answer": "根据广义系统的四个条件论述“一带一路”倡议 “一带一路”倡议的核心是推动基础设施建设与区域合作，建立亚投行和丝路基金支持项 目。该倡议既促进了发展中国家的经济增长与互联互通，也面临债务可持续性、地缘政治风 险及环境保护等挑战。 “一带一路”倡议高度契合广义系统特征：①整体性上，它打破地域界限，多国携手共商 共建；②相关性方面，贸易、投资、文化等领域紧密交织；③目的性明确，旨在实现共同发 展繁荣；④环境适应性强，能依据沿线国家不同国情、发展阶段，灵活调整合作模式与重点。",
+     "explain": "出自自然辩证法论述题库，按“是什么—为什么—怎么办”展开，答案中的分点即为得分点。",
+     "source": "外部补充·自辩完全版·论述",
+     "num": 934,
+     "id": "zrb-x934"
+    },
+    {
+     "type": "qa",
+     "q": "自然辩证法的研究对象是什么？",
+     "options": [],
+     "answer": "1.自然界演化和发展的一般规律\n2.科学技术发展的一般规律\n3.科学技术研究的一般方法\n4.科学技术与社会发展的一般关系\n自然辩证法是马克思主义的重要组成部分，是关于自然界和科学技术发展的一般规律、人类认识和改造自然的一般方法以及社会发展一般关系的科学。",
+     "explain": "第一讲：绪论 · 自然辩证法的研究对象与主要内容",
+     "source": "背诵小站·第一讲：绪论",
+     "num": 1000,
+     "id": "zrb-r1000"
+    },
+    {
+     "type": "qa",
+     "q": "自然辩证法的主要内容包括哪些方面？",
+     "options": [],
+     "answer": "1. 辩证唯物主义自然观\n1. 科学观与科学方法论\n2. 技术观与技术方法论\n3. 科学技术与社会\n自然观是关于自然界及其与人类关系的总的观点。它既是世界观的重要组成部分，又是人们认识和改造自然的本体论基础和方法论前提。\n其主要内容包括人们对自然界的本原、自然界的结构、自然界的演化规律以及人与自然的关系等方面的根本观点。",
+     "explain": "第一讲：绪论 · 自然辩证法的研究对象与主要内容",
+     "source": "背诵小站·第一讲：绪论",
+     "num": 1001,
+     "id": "zrb-r1001"
+    },
+    {
+     "type": "qa",
+     "q": "自然辩证法的体系结构是怎样的？",
+     "options": [],
+     "answer": "自然辩证法：自然辩证法史：自然辩证法前史、自然辩证法本史\n自然辩证法分论：科学技术中的哲学问题、科学技术的分科哲学\n自然辩证法总论：辩证唯物主义自然观、科学观与科学方法论、\n技术观与技术方法论、科学技术与社会\n2、 自然辩证法与相近科学的关系\n3、 自然辩证法的创立与发展\n4、 自然辩证法的研究意义和方法",
+     "explain": "第一讲：绪论 · 自然辩证法的学科性质与体系结构",
+     "source": "背诵小站·第一讲：绪论",
+     "num": 1002,
+     "id": "zrb-r1002"
+    },
+    {
+     "type": "qa",
+     "q": "古代朴素唯物主义自然观的基本观点",
+     "options": [],
+     "answer": "1. 万物的本原：自然界的本原是一种或几种物质或抽象物质\n1. 自然界结构及其运动变化：自然界“处于永恒的产生和消灭中，处于不断的流动中，处于无休止的运动和变化中”\n2. 人与自然界的关系：生物是进化的，并在其中分化出了人",
+     "explain": "第二讲：马克思主义自然观 · 专题一 古代朴素唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1003,
+     "id": "zrb-r1003"
+    },
+    {
+     "type": "qa",
+     "q": "朴素唯物主义自然观的基本特征",
+     "options": [],
+     "answer": "1. 整体性和直观性\n1. 思辨性和臆测性\n2. 自发性和不彻底性",
+     "explain": "第二讲：马克思主义自然观 · 专题一 古代朴素唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1004,
+     "id": "zrb-r1004"
+    },
+    {
+     "type": "qa",
+     "q": "朴素唯物主义自然观的历史地位",
+     "options": [],
+     "answer": "1. 人类运用理性思维认识自然界的标志\n人类认识思想史上的一次巨大进步\n1. 马克思恩格斯创立辩证唯物主义的思想渊源\n2. 孕育了以后得到证实和发展的天才预见",
+     "explain": "第二讲：马克思主义自然观 · 专题一 古代朴素唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1005,
+     "id": "zrb-r1005"
+    },
+    {
+     "type": "qa",
+     "q": "中世纪宗教神学自然观的主要内容",
+     "options": [],
+     "answer": "中世纪宗教神学自然观\n经院哲学的集大成者、意大利的托马斯·阿奎那把理性引进神学，用“自然法则”来论证“君权神授”说，最早提倡自然神学。\n歪曲利用托勒密的地球中心说，把托勒密的天文体系和天主教教义相结合，宣传地球是上帝特意安排人类居住的宇宙中心，并把托勒密体系改造成披着自然科学外衣的神学体系。",
+     "explain": "第二讲：马克思主义自然观 · 专题二 近代机械唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1006,
+     "id": "zrb-r1006"
+    },
+    {
+     "type": "qa",
+     "q": "机械唯物主义（形而上学）自然观的基本内容",
+     "options": [],
+     "answer": "形而上学自然观的基本内容：\n把自然界的一切事物、一切事物的种类和形态都看成是彼此孤立和永不变化的。如果说有变化，也只是物体的机械运动和能量的变化或场所的变更，是数量的增减而不是质上的变化。而且，所有变化和运动的原因都不在事物的内部，而在于事物的外部，而在于事物的外部，在于事物外部力量的推动。\n（质量和固有惯性不变；运动循环遵循机械决定论的因果关系）",
+     "explain": "第二讲：马克思主义自然观 · 专题二 近代机械唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1007,
+     "id": "zrb-r1007"
+    },
+    {
+     "type": "qa",
+     "q": "机械唯物主义自然观的核心特征",
+     "options": [],
+     "answer": "机械唯物主义自然观的核心特征：\n（1） 机械的自然图景\n笛卡尔：自然界是受数学法则分配的机器；动物是纯粹的机器。\n牛顿：宇宙是一架巨大的机器；机器制造者是上帝。\n（1） 严格的机械决定论（机械性）\n笛卡尔、伽利略：自然界是数学设计的\n自然（宇宙）是一本数学书，可以读懂。宇宙是一条原因和结果的无穷锁链，必然性就是原因和结果间的恒常联系。一切运动都包括在公式里。一切均已确定。\n（2） 静态性\n细节分析高于古代；整体把握低于古代。只见树木不见森林\n（3） 唯物性\n自然是自在的。精神现象有物质依据。心身二元论没有根据。\n（4） 不完备性\n割裂整体与部分的关系、自然界与人类社会的关系，结论不完备。",
+     "explain": "第二讲：马克思主义自然观 · 专题二 近代机械唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1008,
+     "id": "zrb-r1008"
+    },
+    {
+     "type": "qa",
+     "q": "机械唯物主义自然观的历史地位",
+     "options": [],
+     "answer": "机械唯物主义自然观的历史地位：\n（1） 摒弃了古代朴素自然观的直观性、思辨性和猜测性\n为辩证唯物主义自然观的形成创造了条件\n（1） 强调自然界的外在独立性，否定“上帝创世说”\n冲破了宗教神学自然观的羁绊\n（2） 反对抽象的思辨，强调经验和实证\n分析还原方法有利于自然科学的发展\n为辩证唯物主义自然观的形成提供前提",
+     "explain": "第二讲：马克思主义自然观 · 专题二 近代机械唯物主义自然观",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1009,
+     "id": "zrb-r1009"
+    },
+    {
+     "type": "qa",
+     "q": "辩证唯物主义自然观是如何创立的？",
+     "options": [],
+     "answer": "辩证唯物主义自然观的创立：\n马克思和恩格斯分析研究了历史上各种自然观产生的必然性和局限性，正确概括了当时自然科学的新成果，吸取了德国古典自然哲学中的辩证法思想和唯物主义观点，创立了辩证唯物主义自然观。",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1010,
+     "id": "zrb-r1010"
+    },
+    {
+     "type": "qa",
+     "q": "辩证唯物主义自然观的基本观点和原理",
+     "options": [],
+     "answer": "辩证唯物主义自然观的基本观点和原理：\n（1） 自然界是物质的，物质是万物的本源和基础\n（1） 运动在量上和质上都是不灭的\n（2） 意识、思维是物质发展高度发展的产物，即人脑的属性和技能\n（3） 时间和空间是物质的固有属性和存在方式\n（4） 自然界的一切事物和现象都是矛盾统一体，矛盾推动自然界运动、发展\n（5） 自然界的一切事物都处于普遍联系和相互作用之中，处于永恒的产生和消亡之中，处于不断的运动和转化过程之中\n（6） 人类和社会是自然发展到一定阶段的产物\n（7） 实践导致自然界分化为“纯自然”和“人化自然”",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1011,
+     "id": "zrb-r1011"
+    },
+    {
+     "type": "qa",
+     "q": "辩证唯物主义自然观的基本特征",
+     "options": [],
+     "answer": "辩证唯物主义自然观的基本特征：\n（1） 唯物论与辩证法的统一\n（1） 自然史与人类史的统一（只要有人存在，自然史、人类史就相互制约）\n（2） 天然自然和人化自然的统一（人化的自然界）\n（3） 人与自然的对象性关系是能动性与受动性的统一",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1012,
+     "id": "zrb-r1012"
+    },
+    {
+     "type": "qa",
+     "q": "辩证唯物主义自然观的重大意义",
+     "options": [],
+     "answer": "辩证唯物主义自然观的重大意义：\n（1） 实现了自然观发展史上的革命性变革\n（1） 为马克思主义的科学馆、科学方法论以及科学与社会的研究奠定了理论基础\n（2） 为科学与技术提供了世界观、认识论、方法论与价值观的理论前提\n（3） 为自然科学、社会科学以及关于人的科学的结合提供了理论根据\n自然科学真正意义上得以确立，科学从哲学中分离出来",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1013,
+     "id": "zrb-r1013"
+    },
+    {
+     "type": "qa",
+     "q": "辩证唯物主义自然观当代发展的三种形态是什么？",
+     "options": [],
+     "answer": "辩证唯物主义自然观当代发展的三种形态（20C-）\n（1） 系统自然观\n（1） 人工自然观\n（2） 生态自然观",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1014,
+     "id": "zrb-r1014"
+    },
+    {
+     "type": "qa",
+     "q": "什么是系统自然观？其理论基础和基本特征",
+     "options": [],
+     "answer": "（1） 系统自然观\n“系统”从词源学上来说历史悠久，简单地说，系统是由相互作用着的若干要素组成的具有一定结构与功能的有机整体。\n1. 系统由要素组成。要素可以相互独立。\n1. 系统的要素之间存在相互作用。\n2. 系统具有整体性能、行为、结构和功能。时/空结构、静态/动态\n3. 系统与其他系统之间存在相互作用。如：人与自然，地球与......\n系统自然观是以系统的观点来观察、思考、处理自然界中的各种事物，是用系统的观点来看待自然界。\n理论基础：系统论。\n系统论的基本思想是把研究和处理的对象看作一个整体系统，从整体出发来研究系统的结构、功能、行为、动态、原则、规律以及系统间的联系。\n系统自然观的基本特征：\n（1） 系统性（整体性）。\n（1） 演化性（动态性、辩证性）。\n（2） 复杂性。自然界在本质上是复杂的。\n（3） 广义性。揭示了自然界系统和社会系统的存在和演化规律。",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1015,
+     "id": "zrb-r1015"
+    },
+    {
+     "type": "qa",
+     "q": "什么是人工自然观？其主要观点和基本特征",
+     "options": [],
+     "answer": "（1） 人工自然观\n1. 人工自然观是关于人类改造自然界的总的观点，是以科学技术成果为基础，对人工自然界的存在、创造与发展规律及其与天然自然界的关系进行概括和总结，是马克思主义自然观发展的当代形态之一。\n1. 人工自然观的主要观点\n（1） 人工自然界是运用科技创造的系统自然界\n（1） 人工自然界源于天然自然界\n（2） 创建生态型人工自然界\n（3） 人工自然界从低级到高级演化\n2. 人工自然观的基本特征\n主体性、能动性、价值性（社会性）",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1016,
+     "id": "zrb-r1016"
+    },
+    {
+     "type": "qa",
+     "q": "什么是生态自然观？其主要观点和基本特征",
+     "options": [],
+     "answer": "（2） 生态自然观\n1.生态自然观是以现代科学技术为基础，概括和总结生态自然界的存在和发展规律形成的总的观点。\n2.生态自然观的主要观点\n（1）生态自然界系统具有整体性、多样性、层次性、开放性、动态性、自适应性和自组织性等特征；是天然自然界和人共自然界的统一。\n（2）从自然界的人工化转向生态化，从非生态型人工自然界转向生态型人工自然界，实现人和自然界的可持续发展。\n（3）贯彻落实新发展理念，“加大生态系统保护力度”，“改革生态环境监管体制”，实施节能减排和发展低碳经济，构建和谐社会，建设生态文明。\n3.生态自然观的基本特征\n（1）全球性。他是以生态视角，代表地球人类（包括后代人）的利益，研究全球生态或环境问题形成的自然观（人类命运共同体）。\n（2）批判性。它从生态视角或人类的视角，反思和批判人类的理念和行为及其后果，强调人与自然界是和谐统一的生命共同体。\n（3）和谐性。它强调科学技术与自然界及社会之间的全面、协调、可持续发展，强调人类社会和其他生命体和非生命体的和谐统一。",
+     "explain": "第二讲：马克思主义自然观 · 专题三 辩证唯物主义自然观及其当代形态",
+     "source": "背诵小站·第二讲：马克思主义自然观",
+     "num": 1017,
+     "id": "zrb-r1017"
+    },
+    {
+     "type": "qa",
+     "q": "科学的本质是什么？",
+     "options": [],
+     "answer": "科学：系统化、理论化的知识体系\n发展规律、生产知识的社会活动\n社会建制\n一种文化",
+     "explain": "第三讲：马克思主义科学技术观 · 科学的本质与精神",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1018,
+     "id": "zrb-r1018"
+    },
+    {
+     "type": "qa",
+     "q": "科学的基本特征",
+     "options": [],
+     "answer": "科学的基本特征：\n1.求真 2.理性\n3.可检验性 4.自然性\n5.普适性 6.知识形态生产力",
+     "explain": "第三讲：马克思主义科学技术观 · 科学的本质与精神",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1019,
+     "id": "zrb-r1019"
+    },
+    {
+     "type": "qa",
+     "q": "技术的本质是什么？",
+     "options": [],
+     "answer": "技术的本质\n马克思主义认为，技术是人类为满足自身的需要，在实践活动中根据实践经验或科学原理所创造发明的各种手段和方式方法的总和。\n技术在本质上体现了人对自然的实践关系，是人的本质力量的展现，属于直接生产力，是自然性和社会性、物质性和精神性、中立性和价值性、主体性和客体性、跃迁性和积累性的统一。",
+     "explain": "第三讲：马克思主义科学技术观 · 技术的本质与科学技术关系",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1020,
+     "id": "zrb-r1020"
+    },
+    {
+     "type": "qa",
+     "q": "技术主要体现在哪两个方面？",
+     "options": [],
+     "answer": "主要体现在两个方面：\n一是技术活动。\n二是技术成果。包括技术理论、技能技巧、技术工艺与技术产品（物质设备）。",
+     "explain": "第三讲：马克思主义科学技术观 · 技术的本质与科学技术关系",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1021,
+     "id": "zrb-r1021"
+    },
+    {
+     "type": "qa",
+     "q": "为什么说科学技术是生产力？",
+     "options": [],
+     "answer": "科学技术是生产力\n马克思提出了科学是生产力的思想。\n社会生产力不仅以物质形态存在，而且以知识形态存在，自然科学就是以知识形态为特征的一般社会生产力。",
+     "explain": "第三讲：马克思主义科学技术观 · 技术的本质与科学技术关系",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1022,
+     "id": "zrb-r1022"
+    },
+    {
+     "type": "qa",
+     "q": "什么是科学技术异化？",
+     "options": [],
+     "answer": "科学技术异化\n异化：主体发展到一定阶段，分裂出自己的对立面，变为了外在的异己的力量。\n马克思主义哲学认为，异化是人的生产及其产品反过来统治人的一种社会现象。",
+     "explain": "第三讲：马克思主义科学技术观 · 技术的本质与科学技术关系",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1023,
+     "id": "zrb-r1023"
+    },
+    {
+     "type": "qa",
+     "q": "现代科学的体系结构",
+     "options": [],
+     "answer": "现代科学的体系结构\n现代科学：学科结构（基础科学，技术科学，工程科学）\n知识结构（科学事实，科学概念，科学定律，科学假说，科学理论）",
+     "explain": "第三讲：马克思主义科学技术观 · 现代科学技术的体系结构",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1024,
+     "id": "zrb-r1024"
+    },
+    {
+     "type": "qa",
+     "q": "现代技术的体系结构",
+     "options": [],
+     "answer": "现代技术的体系结构\n现代技术：门类结构（实验技术，基本技术，产业技术）\n形态结构（经验技术，实体技术，知识技术）\n该体系结构表现出现代技术的发展过程。\n形态结构的各要素渗透在门类结构相对应的要素之中。实验技术、基本技术和产业技术都包含经验技能，都使用工具机器，都蕴含了知识。",
+     "explain": "第三讲：马克思主义科学技术观 · 现代科学技术的体系结构",
+     "source": "背诵小站·第三讲：马克思主义科学技术观",
+     "num": 1025,
+     "id": "zrb-r1025"
+    },
+    {
+     "type": "qa",
+     "q": "什么是科学问题？",
+     "options": [],
+     "answer": "科学问题的规定\n科学问题是指一定时代的科学认识主体在当时的知识背景下提出的关于科学认识和科学实践中需要解决而又未解决的矛盾。它包含着一定的求解目标和应答域，但尚无确定的答案。",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科学问题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1026,
+     "id": "zrb-r1026"
+    },
+    {
+     "type": "qa",
+     "q": "科学问题如何分类？（按求解类型与学科性质）",
+     "options": [],
+     "answer": "科学问题的分类（1）\n根据问题求解的类型：\n（1） 关于研究对象的识别与判定，回答“是什么”的问题；\n（1） 关于事物内在机理和规律性的研究，分析事物现象之间的因果关系，回答“为什么”的问题；\n（2） 关于研究对象的状态及运动转化过程，回答“怎么样”的问题。\n科学问题的分类（2）\n根据问题的不同学科性质：\n（1） 基础理论问题：关于分析事物的性质、结构、关系、规律；\n（1） 应有研究问题：关于解决生产和生活中提出的实际技术问题；\n（2） 开发研究问题：把科学技术转化为现实生产力的问题。",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科学问题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1027,
+     "id": "zrb-r1027"
+    },
+    {
+     "type": "qa",
+     "q": "科学问题来源于哪些方面？",
+     "options": [],
+     "answer": "科学问题的来源：\n来源于社会生产实践与科学实践。具体如下：\n1、 源于科学实践与科学理论的矛盾。\n1、 源于科学理论内部的矛盾。\n2、 源于不同学派理论之间的矛盾。\n3、 源于学科交叉点、空白区。\n4、 源于社会需要与生产实践。",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科学问题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1028,
+     "id": "zrb-r1028"
+    },
+    {
+     "type": "qa",
+     "q": "为什么说科学研究始于问题？",
+     "options": [],
+     "answer": "科学研究始于问题\n科学问题的提出不仅决定观察什么，也决定着如何观察和能观察到什么。\n“提出一个问题比解决一个问题更重要。”",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科学问题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1029,
+     "id": "zrb-r1029"
+    },
+    {
+     "type": "qa",
+     "q": "布朗和基利的十大批判性问题",
+     "options": [],
+     "answer": "布朗和基利的十大批判性问题：\n（1） 论题与结论是什么？\n（1） 理由是什么？\n（2） 哪些词句有歧义？\n（3） 价值与描述性假设是什么？\n（4） 推理中是否存在谬误？\n（5） 证据的可靠性有多大？\n（6） 是否存在竞争性原因？\n（7） 统计数据是否具有欺骗性？\n（8） 哪些重要信息被遗漏了？\n（9） 可能的出哪些合理的结论？",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科学问题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1030,
+     "id": "zrb-r1030"
+    },
+    {
+     "type": "qa",
+     "q": "什么是科研选题？其意义何在？",
+     "options": [],
+     "answer": "科研选题及其意义：\n1. 科研选题，从狭义上来说，就是形成、选择和确定所要研究和解决的研究课题。从广义上来说，包括确定研究方向和选择研究课题两个方面。\n1. 研究课题，是为了实现某个特定目标所需要研究的一个或一组科学问题。形成研究课题的过程，就是发现问题、提出问题的过程。\n2. 研究方向，是指研究者在一个较长时期内从事研究活动的领域。",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科研选题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1031,
+     "id": "zrb-r1031"
+    },
+    {
+     "type": "qa",
+     "q": "选题的基本规则",
+     "options": [],
+     "answer": "选题的基本规则：\n1.需要性原则 2.创新性原则 3.科学性原则 4.可行性原则 5.效益性原则",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科研选题",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1032,
+     "id": "zrb-r1032"
+    },
+    {
+     "type": "qa",
+     "q": "方法、方法论与科学技术方法论的定义",
+     "options": [],
+     "answer": "方法是人们在行为过程中所遵循的特定程序、规则，是达到某种特定目的的手段的总称。\n方法论就是关于行事方法之普遍规律的理论或知识体系。\n科学技术方法论就是探讨人们在科学研究与技术开发过程中必须遵循的普遍行为途径与规则的学说。",
+     "explain": "第四讲：科学问题、科研选题及科学思维方法 · 科学思维方法",
+     "source": "背诵小站·第四讲：科学问题、科研选题及科学思维方法",
+     "num": 1033,
+     "id": "zrb-r1033"
+    },
+    {
+     "type": "qa",
+     "q": "现代科技的社会功能",
+     "options": [],
+     "answer": "现代科技的社会功能\n知识生产功能：认识自然界的本质和规律\n提供科学认识世界的手段和方法\n文化教育功能：创造新的文化形式\n实现人的全面发展\n政治经济功能：经济发展的助推器和引擎\n国际竞争力实力的核心\n科技“双刃剑”效应",
+     "explain": "第五讲：马克思主义科学技术社会论 · 科学技术的社会功能与建制",
+     "source": "背诵小站·第五讲：马克思主义科学技术社会论",
+     "num": 1034,
+     "id": "zrb-r1034"
+    },
+    {
+     "type": "qa",
+     "q": "科学的社会建制是如何形成的？",
+     "options": [],
+     "answer": "科学的社会建制\n科学的社会建制是从创建科学学会进而组成特殊的小社会开始，逐渐形成壮大\n学会=>大学=>小社会",
+     "explain": "第五讲：马克思主义科学技术社会论 · 科学技术的社会功能与建制",
+     "source": "背诵小站·第五讲：马克思主义科学技术社会论",
+     "num": 1035,
+     "id": "zrb-r1035"
+    },
+    {
+     "type": "qa",
+     "q": "科学共同体的价值规范（行为规范）",
+     "options": [],
+     "answer": "科学共同体的价值规范（行为规范）\n（1） 普遍主义\n（1） 共有主义（公有主义）\n（2） 无私立性\n（3） 有条理的怀疑主义",
+     "explain": "第五讲：马克思主义科学技术社会论 · 科学技术的社会功能与建制",
+     "source": "背诵小站·第五讲：马克思主义科学技术社会论",
+     "num": 1036,
+     "id": "zrb-r1036"
+    },
+    {
+     "type": "qa",
+     "q": "科学共同体的研究伦理",
+     "options": [],
+     "answer": "科学共同体的研究伦理\n遵循“公众利益优先原则”。\n科学共同体的科研活动应该符合社会伦理和动物伦理的基本要求，应该增加人类福祉。",
+     "explain": "第五讲：马克思主义科学技术社会论 · 科学技术的社会功能与建制",
+     "source": "背诵小站·第五讲：马克思主义科学技术社会论",
+     "num": 1037,
+     "id": "zrb-r1037"
+    },
+    {
+     "type": "qa",
+     "q": "中国科学技术观与创新型国家建设",
+     "options": [],
+     "answer": "中国科学技术观与创新型国家建设\n习近平新时代中国特色社会主义思想中的科学技术创新观。\n大力推进科技创新，以中国式科技现代化推动社会现代化。\n以习近平生态文明思想为指导，加强生态文明建设的科技创新。\n必须坚持科技是第一生产力、人才是第一资源、创新是第一动力，深入实施科教兴国战略、人才强国战略、创新驱动发展战略。",
+     "explain": "第五讲：马克思主义科学技术社会论 · 中国科学技术观与创新型国家建设",
+     "source": "背诵小站·第五讲：马克思主义科学技术社会论",
+     "num": 1038,
+     "id": "zrb-r1038"
+    }
+   ],
+   "count": 112
+  }
+ ]
+}/*@DECK_DATA_END@*/;
+
+// 题库只读，进度以「题库标识、卡片标识」共同定位。
+const $ = id => document.getElementById(id);
+const DAY = 86400000;
+const MAX_DAYS = 36500;
+const entries = DECKS.decks.flatMap(deck => (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])})));
+// 题型筛选：用于题库页上的「按题型单独背」入口。
+//@PAGE_META@
+const PAGES = {"新中特": "zhongte.html", "自然辩证法": "ziran.html"};
+const PAGE_COURSE = "自然辩证法";
+//@PAGE_META_END@
+const TYPE_ORDER = ['single', 'multi', 'judge', 'qa'];
+const TYPE_LABEL = {single: '单选', multi: '多选', judge: '判断', qa: '背诵'};
+const params = new URLSearchParams(location.search);
+// 当前课程页：null = 全部课程；否则只显示该课程。独立页面由 PAGE_COURSE 决定。
+let course = PAGE_COURSE;
+if (course && !DECKS.decks.some(deck => deck.course === course)) course = null;
+let shuffled = params.get('shuffle') === '1';
+let states = Object.create(null);
+let session = null;
+let ready = false;
+let busy = false;
+
+function element(tag, className = '', text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function button(text, action, argument, className = '') {
+  const node = element('button', className, text);
+  node.type = 'button';
+  node.dataset.action = action;
+  if (argument !== undefined) node.dataset.value = String(argument);
+  node.addEventListener('click', () => dispatch(action, argument));
+  return node;
+}
+
+function notify(text) {
+  $('notice-text').textContent = text;
+  $('notice').hidden = false;
+}
+
+function setBusy(value) {
+  busy = value;
+  $('home-button').disabled = !ready || value;
+  $('backup-button').disabled = !ready || value;
+  ['import-button', 'export-button', 'copy-button', 'close-dialog'].forEach(id => { $(id).disabled = value; });
+}
+
+// FSRS-4.5：原作者 The-Algorithm 历史版本 bc401d9ed5093c66358738f4b8834f8d24ab211b。
+const w = [0.4, 0.6, 2.4, 5.8, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.18, 0.05, 0.34, 1.26, 0.29, 2.61];
+const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
+
+function scheduling(state, rating, now = Date.now()) {
+  if (![1, 2, 3, 4].includes(rating)) throw new Error('评分无效');
+  const learned = state && state.reps > 0;
+  let stability = w[rating - 1];
+  let difficulty = clamp(w[4] - w[5] * (rating - 3), 1, 10);
+  if (learned) ({stability, difficulty} = updateMemory(state, rating, now));
+  stability = clamp(stability, 0.01, MAX_DAYS);
+  // 90% 保持率反解间隔约为 S；短期重学简化为至少一天，最长一百年。
+  const interval = clamp(Math.round(81 * stability / 19 * (Math.pow(0.9, -2) - 1)), 1, MAX_DAYS);
+  return {stability, difficulty, due: now + interval * DAY, reps: (state?.reps || 0) + 1, lapses: (state?.lapses || 0) + (rating === 1 ? 1 : 0), last: new Date(now).toISOString()};
+}
+
+function updateMemory(state, rating, now) {
+  const t = Math.max(0, (now - Date.parse(state.last)) / DAY);
+  const r = Math.pow(1 + 19 * t / (81 * state.s), -0.5);
+  const difficulty = clamp(w[7] * w[4] + (1 - w[7]) * (state.d - w[6] * (rating - 3)), 1, 10);
+  if (rating === 1) return {difficulty, stability: Math.min(state.s, w[11] * Math.pow(state.d, -w[12]) * (Math.pow(state.s + 1, w[13]) - 1) * Math.exp((1 - r) * w[14]))};
+  const hard = rating === 2 ? w[15] : 1;
+  const easy = rating === 4 ? w[16] : 1;
+  const growth = Math.exp(w[8]) * (11 - state.d) * Math.pow(state.s, -w[9]) * (Math.exp((1 - r) * w[10]) - 1);
+  return {difficulty, stability: state.s * (1 + growth * hard * easy)};
+}
+
+// 严格校验备份及本机存储；不接受隐式数值转换或多余字段。
+function hasFields(value, fields) {
+  return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === fields.length && fields.every(key => Object.hasOwn(value, key));
+}
+
+function validState(value) {
+  if (!hasFields(value, ['s', 'd', 'due', 'reps', 'lapses', 'last', 'wrong'])) return false;
+  if (!Number.isFinite(value.s) || value.s < 0.01 || value.s > MAX_DAYS) return false;
+  if (!Number.isFinite(value.d) || value.d < 1 || value.d > 10) return false;
+  if (!Number.isSafeInteger(value.due) || value.due < 0 || value.due > 8640000000000000) return false;
+  if (!Number.isSafeInteger(value.reps) || value.reps < 1 || value.reps >= Number.MAX_SAFE_INTEGER) return false;
+  if (!Number.isSafeInteger(value.lapses) || value.lapses < 0 || value.lapses > value.reps) return false;
+  if (typeof value.wrong !== 'boolean' || typeof value.last !== 'string') return false;
+  const last = Date.parse(value.last);
+  return Number.isFinite(last) && last >= 0 && new Date(last).toISOString() === value.last && value.due >= last;
+}
+
+function validateSnapshot(value) {
+  if (!hasFields(value, ['version', 'states']) || value.version !== 1) throw new Error('备份版本或结构无效');
+  if (!value.states || typeof value.states !== 'object' || Array.isArray(value.states)) throw new Error('进度集合无效');
+  const clean = Object.create(null);
+  Object.entries(value.states).forEach(([key, state]) => {
+    const ids = JSON.parse(key);
+    if (!Array.isArray(ids) || ids.length !== 2 || ids.some(id => typeof id !== 'string' || !id.trim()) || JSON.stringify(ids) !== key) throw new Error('卡片标识无效');
+    if (!validState(state)) throw new Error('卡片状态无效');
+    clean[key] = {...state};
+  });
+  return clean;
+}
+
+function snapshot(value = states) {
+  return JSON.stringify({version: 1, states: value});
+}
+
+function encodeBackup() {
+  const bytes = new TextEncoder().encode(snapshot());
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.subarray(i, i + 32768));
+  return btoa(binary);
+}
+
+function decodeBackup(text) {
+  const encoded = text.trim();
+  if (!encoded || encoded.length % 4 !== 0 || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(encoded)) throw new Error('编码无效');
+  const binary = atob(encoded);
+  if (btoa(binary) !== encoded) throw new Error('编码无效');
+  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+  return validateSnapshot(JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(bytes)));
+}
+
+// IndexedDB 是主存储。同步恢复快照覆盖尚未完成的写入，事务完成才显示已保存。
+const RECOVERY_KEY = 'bk-progress-pending-v1';
+let database = null;
+let saveChain = Promise.resolve();
+let pendingSaves = 0;
+let latestPayload = null;
+
+function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('beikao-progress-v1', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('progress');
+    request.onerror = () => reject(new Error('存储连接失败'));
+    request.onblocked = () => reject(new Error('存储被占用'));
+    request.onsuccess = () => { request.result.onversionchange = () => request.result.close(); resolve(request.result); };
+  });
+}
+
+function databaseTransaction(mode, payload) {
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction('progress', mode);
+    const store = transaction.objectStore('progress');
+    const request = mode === 'readonly' ? store.get('snapshot') : store.put(payload, 'snapshot');
+    transaction.oncomplete = () => resolve(request.result);
+    transaction.onabort = transaction.onerror = () => reject(new Error('存储事务失败'));
+  });
+}
+
+function disableDatabase() {
+  if (database) database.close();
+  database = null;
+  notify('浏览器数据库不可用，已切换到本地存储。');
+}
+
+async function loadProgress() {
+  let stored;
+  try { database = await openDatabase(); stored = await databaseTransaction('readonly'); }
+  catch { disableDatabase(); }
+  if (stored !== undefined) {
+    try { states = validateSnapshot(JSON.parse(stored)); }
+    catch { notify('本机数据库进度格式无效，可导入有效备份恢复。'); }
+  }
+  try {
+    const recovery = localStorage.getItem(RECOVERY_KEY);
+    if (recovery !== null) { states = validateSnapshot(JSON.parse(recovery)); await persist(states); }
+  } catch { notify('本地恢复快照无法读取或写回，请检查存储权限并保留备份。'); }
+  $('storage-status').textContent = database ? '进度保存在此浏览器 · 数据库' : '进度保存在此浏览器 · 本地存储';
+}
+
+function persist(value) {
+  const payload = snapshot(value);
+  latestPayload = payload;
+  let recoverySaved = false;
+  try { localStorage.setItem(RECOVERY_KEY, payload); recoverySaved = true; }
+  catch { notify('刷新恢复快照不可用，请等待保存完成后再刷新。'); }
+  pendingSaves++;
+  $('storage-status').textContent = '正在保存进度…';
+  const operation = saveChain.then(() => writeProgress(payload, recoverySaved));
+  saveChain = operation.catch(() => {});
+  return operation.finally(() => { pendingSaves--; });
+}
+
+async function writeProgress(payload, recoverySaved) {
+  if (database) {
+    try { await databaseTransaction('readwrite', payload); }
+    catch { disableDatabase(); }
+  }
+  if (!database && !recoverySaved) {
+    try { localStorage.setItem(RECOVERY_KEY, latestPayload); }
+    catch { $('storage-status').textContent = '保存失败 · 请重试或导出备份'; throw new Error('无法保存'); }
+  }
+  if (database && recoverySaved) {
+    try { if (localStorage.getItem(RECOVERY_KEY) === payload) localStorage.removeItem(RECOVERY_KEY); }
+    catch { /* 已有数据库副本，保留恢复快照供下次启动读取。 */ }
+  }
+  $('storage-status').textContent = database ? '已保存 · 浏览器数据库' : '已保存 · 本地存储';
+}
+
+// 首页与今日复习共用本地当日末截止时间；未学卡以本次取队列时间作为到期时间。
+function endOfToday(now = Date.now()) {
+  const date = new Date(now);
+  date.setHours(23, 59, 59, 999);
+  return date.getTime();
+}
+
+function isDue(entry, cutoff, now) {
+  return (states[entry.key]?.due ?? now) <= cutoff;
+}
+
+function reviewQueue(pool, now = Date.now()) {
+  const cutoff = endOfToday(now);
+  return pool.filter(entry => isDue(entry, cutoff, now)).sort((a, b) => (states[a.key]?.due ?? now) - (states[b.key]?.due ?? now) || a.card.num - b.card.num);
+}
+
+function practiceQueue(pool) {
+  const queue = [...pool].sort((a, b) => a.card.num - b.card.num);
+  if (!shuffled) return queue;
+  for (let i = queue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [queue[i], queue[j]] = [queue[j], queue[i]];
+  }
+  return queue;
+}
+
+function progressBar(value, max, label) {
+  const bar = element('progress');
+  bar.max = Math.max(1, max);
+  bar.value = value;
+  bar.setAttribute('aria-label', label);
+  return bar;
+}
+
+// 当前课程下的卡片；未选课程时返回全部。
+function courseEntries() {
+  return course ? entries.filter(entry => entry.deck.course === course) : entries;
+}
+
+function renderHome() {
+  const main = $('main');
+  main.replaceChildren();
+  if (!entries.length) { renderEmpty(main, '题库还没有准备好', '注入题库后即可开始，已有进度会保留。'); return; }
+  const pool = courseEntries();
+  const intro = element('section', 'intro');
+  intro.append(element('h1', '', course ? course : '全部课程'));
+  main.append(intro);
+  const daily = element('section', 'today');
+  const count = reviewQueue(pool).length;
+  daily.append(element('h2', '', '今日复习'), element('strong', '', `${count} 张`), element('p', 'muted', '包含未学卡片，以及本地今日结束前到期的卡片。'));
+  const dailyActions = element('div', 'actions');
+  dailyActions.append(button('开始今日复习', 'review', undefined, 'primary'), button(`错题本 · ${pool.filter(entry => states[entry.key]?.wrong).length}`, 'mistakes'));
+  daily.append(dailyActions);
+  main.append(daily, renderMode(), renderTypeBar(pool));
+  // 单一课程页面只列出该课程的题库；未定课程时按课程分组。
+  const courses = course ? [course] : [...new Set(DECKS.decks.map(deck => deck.course))];
+  courses.forEach(name => renderCourse(main, name));
+}
+
+// 全站按题型单独背：跨课程汇总某一种题型。
+function renderTypeBar(pool) {
+  const section = element('section', 'today');
+  section.append(element('h2', '', '按题型背'), element('p', 'muted', `只刷一种题型${course ? '' : '，跨课程汇总'}。`));
+  const row = element('div', 'type-row');
+  TYPE_ORDER.forEach(type => {
+    const part = pool.filter(entry => entry.card.type === type);
+    if (!part.length) return;
+    row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typeall', type));
+  });
+  section.append(row);
+  return section;
+}
+
+function renderMode() {
+  const section = element('div', 'section-head');
+  section.append(element('h2', '', '我的题库'));
+  const segment = element('div', 'segment');
+  segment.setAttribute('role', 'group');
+  segment.setAttribute('aria-label', '练习顺序');
+  ['顺序', '乱序'].forEach((label, index) => {
+    const control = button(label, 'mode', Boolean(index));
+    control.setAttribute('aria-pressed', String(shuffled === Boolean(index)));
+    segment.append(control);
+  });
+  section.append(segment);
+  return section;
+}
+
+function renderCourse(main, course) {
+  const section = element('section', 'course');
+  section.append(element('h2', '', course));
+  const grid = element('div', 'deck-grid');
+  DECKS.decks.filter(deck => deck.course === course).forEach(deck => grid.append(renderDeck(deck)));
+  section.append(grid);
+  main.append(section);
+}
+
+function renderDeck(deck) {
+  const pool = entries.filter(entry => entry.deck.id === deck.id);
+  const learned = pool.filter(entry => states[entry.key]).length;
+  const card = element('article', 'deck');
+  card.dataset.deck = deck.id;
+  card.append(element('h3', '', deck.title), element('p', 'muted', deck.desc), element('p', 'count', `共 ${pool.length} 题 · 已学 ${learned} / ${pool.length}`), progressBar(learned, pool.length, `${deck.title}已学进度`));
+  const actions = element('div', 'actions');
+  actions.append(button('练习', 'practice', deck.id, 'primary'), button(`今日复习 ${reviewQueue(pool).length}`, 'review', deck.id, 'quiet'));
+  card.append(actions);
+  // 按题型单独练习
+  const kinds = TYPE_ORDER.filter(type => pool.some(entry => entry.card.type === type));
+  if (kinds.length > 1) {
+    const row = element('div', 'type-row');
+    kinds.forEach(type => {
+      const part = pool.filter(entry => entry.card.type === type);
+      row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typec', JSON.stringify([deck.id, type])));
+    });
+    card.append(row);
+  }
+  return card;
+}
+
+function renderEmpty(parent, title, description, home = false) {
+  const section = element('section', 'empty');
+  section.append(element('h2', '', title), element('p', '', description));
+  if (home) section.append(button('返回题库', 'home', undefined, 'primary'));
+  parent.append(section);
+}
+
+function updateUrl(deckId, type) {
+  const url = new URL(location.href);
+  if (deckId) url.searchParams.set('deck', deckId);
+  else url.searchParams.delete('deck');
+  if (type) url.searchParams.set('type', type);
+  else url.searchParams.delete('type');
+  if (course) url.searchParams.set('course', course);
+  else url.searchParams.delete('course');
+  if (shuffled) url.searchParams.set('shuffle', '1');
+  else url.searchParams.delete('shuffle');
+  try { history.replaceState(null, '', url); }
+  catch { /* 某些本地文件环境限制修改地址，练习仍可正常进行。 */ }
+}
+
+function startSession(kind, deckId, type) {
+  const pool = deckId ? entries.filter(entry => entry.deck.id === deckId) : courseEntries();
+  const typed = type ? pool.filter(entry => entry.card.type === type) : pool;
+  let queue = practiceQueue(typed);
+  if (kind === 'review') queue = reviewQueue(typed);
+  if (kind === 'mistakes') queue = practiceQueue(typed.filter(entry => states[entry.key]?.wrong));
+  const typeTag = type ? ` · ${TYPE_LABEL[type]}` : '';
+  const label = (kind === 'review' ? '今日复习' : kind === 'mistakes' ? '错题本' : (shuffled ? '乱序练习' : '顺序练习')) + typeTag;
+  session = {queue, index: 0, phase: 'question', selected: new Set(), ratings: [], label, saveFailed: false};
+  updateUrl(kind === 'practice' ? deckId : null, type);
+  renderSession(true);
+}
+
+function currentEntry() {
+  return session?.queue[session.index];
+}
+
+function renderSession(focus = false) {
+  const main = $('main');
+  main.replaceChildren();
+  const entry = currentEntry();
+  if (!entry) { renderFinished(main); if (focus) main.focus(); return; }
+  const head = element('section', 'session-head');
+  const row = element('div', 'row');
+  row.append(element('p', 'muted', `${session.label} · ${session.index + 1} / ${session.queue.length}`), element('p', 'muted', `剩余 ${session.queue.length - session.index - (session.phase === 'feedback' ? 1 : 0)} 题`));
+  head.append(row, progressBar(session.ratings.length, session.queue.length, '本轮已完成进度'));
+  main.append(head, renderQuestion(entry));
+  if (entry.card.type === 'qa' && session.phase !== 'question') main.append(renderAnswer(entry.card));
+  if (session.phase === 'feedback') main.append(renderFeedback(entry));
+  main.append(renderControls(entry.card));
+  const hint = entry.card.type === 'qa' ? '空格看答案 · 1 忘了 / 2 模糊 / 3 记得 · 回车下一题' : '字母选择选项 · 回车提交或下一题';
+  main.append(element('p', 'muted', hint));
+  if (focus) { main.focus({preventScroll: true}); window.scrollTo(0, 0); }
+}
+
+function renderQuestion(entry) {
+  const {card, deck} = entry;
+  const section = element('section', 'question');
+  const types = {single: '单选', multi: '多选', judge: '判断', qa: '问答'};
+  section.append(element('span', 'badge', `${types[card.type]} · 第 ${card.num} 题`), element('h2', '', card.q));
+  if (card.type === 'multi') section.append(element('p', 'muted', '选择所有正确选项后提交。'));
+  if (card.type !== 'qa') section.append(renderOptions(card));
+  section.append(element('p', 'muted source', `${deck.course} · ${card.source || deck.title}`));
+  return section;
+}
+
+function cardOptions(card) {
+  return card.type === 'judge' ? [{k: 'T', t: '正确'}, {k: 'F', t: '错误'}] : (card.options || []);
+}
+
+function renderOptions(card) {
+  const list = element('div', 'options');
+  cardOptions(card).forEach(option => list.append(renderOption(card, option)));
+  return list;
+}
+
+function renderOption(card, option) {
+  const control = button('', 'select', option.k, 'option');
+  const selected = session.selected.has(option.k);
+  const answered = session.phase === 'feedback';
+  control.classList.toggle('selected', selected);
+  control.setAttribute('aria-pressed', String(selected));
+  control.disabled = answered || busy;
+  const content = element('span', '', option.t);
+  control.append(element('span', 'letter', option.k), content);
+  if (!answered) return control;
+  const correct = card.answer.includes(option.k);
+  control.classList.toggle('correct', correct);
+  control.classList.toggle('incorrect', selected && !correct);
+  if (correct || selected) content.append(element('small', '', correct ? '正确选项' : '你的选择 · 错误'));
+  return control;
+}
+
+function renderAnswer(card) {
+  const section = element('section');
+  const label = element('h2', '', '参考答案');
+  label.id = 'answer-title';
+  const answer = element('div', 'answer', card.answer);
+  answer.id = 'qa-answer';
+  answer.tabIndex = 0;
+  answer.setAttribute('role', 'region');
+  answer.setAttribute('aria-labelledby', 'answer-title');
+  section.append(label, answer);
+  return section;
+}
+
+function renderFeedback(entry) {
+  const section = element('section', 'feedback');
+  section.setAttribute('aria-live', 'polite');
+  const rating = session.ratings.at(-1);
+  const labels = {1: '这道题，再巩固一次', 2: '有些模糊，已安排复习', 3: '记得，继续保持'};
+  const title = entry.card.type === 'qa' ? labels[rating] : rating === 3 ? '回答正确' : '回答错误';
+  section.append(element('h2', '', title));
+  if (entry.card.type !== 'qa') section.append(element('p', '', `正确答案：${entry.card.type === 'judge' ? (entry.card.answer === 'T' ? '正确' : '错误') : [...entry.card.answer].join('、')}`));
+  if (entry.card.explain) section.append(element('p', 'explanation', `解析：${entry.card.explain}`));
+  const state = states[entry.key];
+  section.append(element('p', 'muted', `下次复习：${new Date(state.due).toLocaleDateString('zh-CN')} · ${state.wrong ? '已在错题本' : '未在错题本'}`));
+  return section;
+}
+
+function renderControls(card) {
+  const section = element('div', 'session-actions');
+  if (session.phase === 'feedback') {
+    section.append(button(session.saveFailed ? '重试保存' : busy ? '正在保存…' : session.index + 1 === session.queue.length ? '完成本轮' : '下一题', session.saveFailed ? 'retry' : 'next', undefined, 'primary wide'));
+  } else if (card.type === 'qa' && session.phase === 'revealed') {
+    const row = element('div', 'rating');
+    row.append(button('忘了', 'rate', 1), button('模糊', 'rate', 2), button('记得', 'rate', 3, 'primary'));
+    section.append(row);
+  } else if (card.type === 'qa') section.append(button('看答案', 'reveal', undefined, 'primary wide'));
+  else if (card.type === 'multi') section.append(button('提交答案', 'submit', undefined, 'primary wide'));
+  section.querySelectorAll('button').forEach(control => { control.disabled = busy; });
+  return section;
+}
+
+function renderFinished(main) {
+  if (!session.queue.length) { renderEmpty(main, '这一组没有待练习的题', '可以回到题库选择练习，或等下一次复习到期。', true); return; }
+  const remembered = session.ratings.filter(rating => rating === 3).length;
+  renderEmpty(main, '本轮完成，辛苦了', `已完成 ${session.ratings.length} 题 · 记得 ${remembered} 题 · 需巩固 ${session.ratings.length - remembered} 题`, true);
+}
+
+// 按钮与键盘共用状态转换；评分后等待落盘，下一次操作才可跳题。
+function dispatch(action, argument) {
+  if (!ready || busy) return;
+  if (action === 'home') { session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
+  if (action === 'mode') { shuffled = argument; updateUrl(null); renderHome(); return; }
+  if (action === 'course') { course = argument || null; session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
+  if (['practice', 'review', 'mistakes'].includes(action)) { startSession(action, argument); return; }
+  if (action === 'typec') { const [deckId, type] = JSON.parse(argument); startSession('practice', deckId, type); return; }
+  if (action === 'typeall') { startSession('practice', undefined, argument); return; }
+  const entry = currentEntry();
+  if (!entry) return;
+  if (action === 'select' && session.phase === 'question') selectOption(entry.card, argument);
+  if (action === 'submit' && entry.card.type === 'multi' && session.phase === 'question') submitMulti(entry.card);
+  if (action === 'reveal' && entry.card.type === 'qa' && session.phase === 'question') { session.phase = 'revealed'; renderSession(); $('qa-answer').focus(); }
+  if (action === 'rate' && entry.card.type === 'qa' && session.phase === 'revealed') void grade(argument);
+  if (action === 'retry' && session.phase === 'feedback' && session.saveFailed) void saveAnswer();
+  if (action === 'next' && session.phase === 'feedback' && !session.saveFailed) nextQuestion();
+}
+
+function selectOption(card, key) {
+  if (!cardOptions(card).some(option => option.k === key)) return;
+  if (card.type !== 'multi') { session.selected = new Set([key]); void grade(card.answer === key ? 3 : 1); return; }
+  if (session.selected.has(key)) session.selected.delete(key);
+  else session.selected.add(key);
+  renderSession();
+  $('main').querySelectorAll('[data-action="select"]').forEach(control => { if (control.dataset.value === key) control.focus({preventScroll: true}); });
+}
+
+function submitMulti(card) {
+  if (!session.selected.size) { notify('请至少选择一个选项，再提交答案。'); return; }
+  const correct = [...session.selected].sort().join('') === [...card.answer].sort().join('');
+  void grade(correct ? 3 : 1);
+}
+
+async function grade(rating) {
+  if (![1, 2, 3].includes(rating) || session.phase === 'feedback') return;
+  const entry = currentEntry();
+  const previous = states[entry.key];
+  const result = scheduling(previous, rating);
+  states[entry.key] = {s: result.stability, d: result.difficulty, due: result.due, reps: result.reps, lapses: result.lapses, last: result.last, wrong: rating === 1 ? true : rating === 3 ? false : (previous?.wrong || false)};
+  session.phase = 'feedback';
+  session.ratings.push(rating);
+  await saveAnswer();
+}
+
+async function saveAnswer() {
+  setBusy(true);
+  session.saveFailed = false;
+  renderSession();
+  try { await persist(states); }
+  catch { session.saveFailed = true; notify('进度尚未保存。请重试保存，或使用进度备份导出当前记录。'); }
+  setBusy(false);
+  renderSession();
+  $('main').querySelector('.session-actions button')?.focus({preventScroll: true});
+}
+
+function nextQuestion() {
+  session.index++;
+  session.phase = 'question';
+  session.selected = new Set();
+  renderSession(true);
+}
+
+const heldKeys = new Set();
+function handleKey(event) {
+  if (!session || $('backup-dialog').open || event.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+  if (event.target.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+  if (event.target.closest?.('nav, a, #dismiss')) return;
+  const key = event.key.toLowerCase();
+  if (!['a', 'b', 'c', 'd', 'enter', ' ', '1', '2', '3'].includes(key)) return;
+  if (event.repeat || heldKeys.has(event.code || key)) { event.preventDefault(); return; }
+  heldKeys.add(event.code || key);
+  if (busy) { event.preventDefault(); return; }
+  const action = keyAction(key);
+  if (!action) return;
+  event.preventDefault();
+  dispatch(...action);
+}
+
+function keyAction(key) {
+  const card = currentEntry()?.card;
+  if (!card) return null;
+  if (session.phase === 'feedback') return key === 'enter' ? [session.saveFailed ? 'retry' : 'next'] : null;
+  if (card.type === 'qa' && session.phase === 'question') return key === ' ' ? ['reveal'] : null;
+  if (card.type === 'qa' && session.phase === 'revealed') return ['1', '2', '3'].includes(key) ? ['rate', Number(key)] : null;
+  if (card.type === 'multi' && key === 'enter') return ['submit'];
+  if (card.type === 'judge') return key === 'a' ? ['select', 'T'] : key === 'b' ? ['select', 'F'] : null;
+  return /^[a-d]$/.test(key) ? ['select', key.toUpperCase()] : null;
+}
+
+// 备份采用 UTF-8 JSON 的标准 Base64，导入通过全部校验后再整体替换。
+async function importProgress() {
+  let imported;
+  try { imported = decodeBackup($('backup-text').value); }
+  catch { $('backup-message').textContent = '导入失败：请提供有效的 Base64 UTF-8 进度备份，版本、字段或数值不合法。原有进度已保留。'; return; }
+  if (!$('replace-check').checked) { $('backup-message').textContent = '请先勾选替换全部本机进度。'; return; }
+  setBusy(true);
+  try {
+    await persist(imported);
+    states = imported;
+    session = null;
+    updateUrl(null);
+    renderHome();
+    $('backup-message').textContent = `导入成功：已恢复 ${Object.keys(states).length} 张卡片的进度。`;
+  } catch { $('backup-message').textContent = '保存失败：本次导入未在当前页面生效，请恢复存储权限后重试。'; }
+  setBusy(false);
+}
+
+async function copyBackup() {
+  if (!$('backup-text').value) { $('backup-message').textContent = '请先导出进度。'; return; }
+  try { await navigator.clipboard.writeText($('backup-text').value); $('backup-message').textContent = '已复制进度备份。'; }
+  catch { $('backup-text').focus(); $('backup-text').select(); $('backup-message').textContent = '已选中备份，请使用系统复制功能。'; }
+}
+
+// 顶部课程切换：每个课程一个独立页面，链接直接跳转（进度同源共享）。
+function renderCourseLinks() {
+  const box = $('course-links');
+  if (!box) return;
+  box.replaceChildren();
+  Object.entries(PAGES).forEach(([name, file]) => {
+    const a = element('a', '', name);
+    a.href = file;
+    a.setAttribute('aria-current', PAGE_COURSE === name ? 'page' : 'false');
+    box.append(a);
+  });
+  $('brand-name').textContent = PAGE_COURSE || '备考';
+}
+
+function bindControls() {
+  $('home-button').addEventListener('click', () => dispatch('home'));
+  $('dismiss').addEventListener('click', () => { $('notice').hidden = true; });
+  $('backup-button').addEventListener('click', () => { $('backup-message').textContent = ''; $('replace-check').checked = false; $('backup-dialog').showModal(); });
+  $('close-dialog').addEventListener('click', () => $('backup-dialog').close());
+  $('backup-dialog').addEventListener('cancel', event => { if (busy) event.preventDefault(); });
+  $('export-button').addEventListener('click', () => { $('backup-text').value = encodeBackup(); $('backup-message').textContent = '导出完成，请复制并妥善保存。'; });
+  $('copy-button').addEventListener('click', () => { void copyBackup(); });
+  $('import-button').addEventListener('click', () => { void importProgress(); });
+  document.addEventListener('keydown', handleKey);
+  document.addEventListener('keyup', event => heldKeys.delete(event.code || event.key.toLowerCase()));
+  window.addEventListener('blur', () => heldKeys.clear());
+  window.addEventListener('beforeunload', event => { if (pendingSaves) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('pagehide', () => { if (pendingSaves && latestPayload) { try { localStorage.setItem(RECOVERY_KEY, latestPayload); } catch { /* 保存中的刷新由离开提示保护。 */ } } });
+}
+
+async function boot() {
+  bindControls();
+  await loadProgress();
+  ready = true;
+  setBusy(false);
+  renderCourseLinks();
+  const deckId = params.get('deck');
+  const typeParam = params.get('type');
+  const type = TYPE_ORDER.includes(typeParam) ? typeParam : null;
+  if (deckId && DECKS.decks.some(deck => deck.id === deckId)) { startSession('practice', deckId, type); return; }
+  if (type) { startSession('practice', undefined, type); return; }
+  if (params.has('deck')) { notify('链接中的题库不存在，已返回题库首页。'); updateUrl(null); }
+  renderHome();
+}
+void boot().catch(() => { notify('页面初始化失败，请重新打开；已有备份可在存储恢复后导入。'); $('storage-status').textContent = '载入失败'; });
+</script>
+</body>
+</html>
