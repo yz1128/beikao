@@ -15,7 +15,22 @@ import time
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 REPO = "yz1128/beikao"
 BRANCH = "main"
-PROXY = "http://127.0.0.1:7890"
+PROXY = None
+
+
+def pick_proxy():
+    """代理开着就走代理，关着就直连——本机 FlClash 时常关闭，不能写死。"""
+    for candidate in ("http://127.0.0.1:7890",):
+        probe = subprocess.run(
+            ["curl", "-s", "-m", "4", "-x", candidate, "-o", os.devnull,
+             "-w", "%{http_code}", "https://api.github.com/"],
+            capture_output=True, text=True,
+        )
+        if probe.stdout.strip().startswith(("2", "3")):
+            print(f"代理可用：{candidate}")
+            return candidate
+    print("代理不可用，直连 GitHub")
+    return None
 
 
 def token():
@@ -32,13 +47,16 @@ def token():
 
 
 TOK = token()
+PROXY = pick_proxy()
 BODY_FILE = os.path.join(ROOT, ".publish_body.json")
 
 
 def api(url: str, method: str = "GET", body: dict | None = None, tries: int = 3) -> dict:
     """打 GitHub API。返回解析后的 dict；失败返回 {'error': str}。"""
-    cmd = ["curl", "-s", "-X", method, "-m", "120", "-x", PROXY,
-           "-H", f"Authorization: token {TOK}",
+    cmd = ["curl", "-s", "-X", method, "-m", "120"]
+    if PROXY:
+        cmd += ["-x", PROXY]
+    cmd += ["-H", f"Authorization: token {TOK}",
            "-H", "Accept: application/vnd.github+json",
            "-H", "Content-Type: application/json"]
     if body is not None:
