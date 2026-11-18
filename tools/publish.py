@@ -60,11 +60,9 @@ def api(url: str, method: str = "GET", body: dict | None = None, tries: int = 3)
 
 
 def upload(path, local, message):
-    """新建或覆盖一个文件。先取 sha，命中则带上。"""
-    tree: dict = api(f"https://api.github.com/repos/{REPO}/git/trees/{BRANCH}?recursive=1")
-    nodes: list[dict] = tree.get("tree") or []
-    sha = next((n["sha"] for n in nodes
-                if n.get("type") == "blob" and n.get("path") == path), None)
+    """新建或覆盖一个文件。逐个文件直接查 sha，避免用 tree 缓存的旧结果。"""
+    info: dict = api(f"https://api.github.com/repos/{REPO}/contents/{path}?ref={BRANCH}")
+    sha = info.get("sha") if isinstance(info, dict) and "sha" in info else None
     body = {"message": message,
             "content": base64.b64encode(open(local, "rb").read()).decode(),
             "branch": BRANCH}

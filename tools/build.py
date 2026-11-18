@@ -1,81 +1,97 @@
 """
-从 src/app.html 生成多页面：
+把 src/ 下的源码与 data/decks.json 组装成每个科目一个自包含 HTML。
 
-  index.html      全部课程（首页）
+  index.html      科目目录
   zhongte.html    新中特
   ziran.html      自然辩证法
 
-三个页面共用同一份源码和同一份题库数据，只是 PAGE_COURSE 不同。
-题库数据按页面只注入该课程，减小体积；进度按「题库 id + 卡 id」区分，跨页面共享。
-改页面结构请改 src/app.html，不要直接改生成的三个 html。
+每个页面内联自己的 CSS、JS、题库，以及自己的存储库名，
+所以两个科目在浏览器里进度、备份、错题本完全隔离。
+
+改界面请改 src/shell.html、src/style.css、src/app.js，然后跑本脚本。
 """
 import json
 import os
 import sys
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-TEMPLATE = os.path.join(ROOT, "src", "app.html")
+SRC = os.path.join(ROOT, "src")
 DECKS = os.path.join(ROOT, "data", "decks.json")
 
-START = "/*@DECK_DATA@*/"
-END = "/*@DECK_DATA_END@*/"
-META_START = "//@PAGE_META@"
-META_END = "//@PAGE_META_END@"
+DATA_START, DATA_END = "/*@DECK_DATA@*/", "/*@DECK_DATA_END@*/"
+CSS_MARK, JS_MARK = "/*@CSS@*/", "/*@APP_JS@*/"
+META_START, META_END = "/*@PAGE_META@*/", "/*@PAGE_META_END@*/"
 
-# 文件名 -> 课程名（None 表示全部课程）
+# 输出文件 -> (科目名, 存储标识)
 PAGES = {
-    "index.html": None,
-    "zhongte.html": "新中特",
-    "ziran.html": "自然辩证法",
+    "index.html": (None, "all"),
+    "zhongte.html": ("新中特", "zhongte"),
+    "ziran.html": ("自然辩证法", "ziran"),
 }
 
+LINKS = {name: filename for filename, (name, _) in PAGES.items() if name}
 
-def meta_block(course):
-    """按页面替换导航常量块。"""
-    # PAGES 是 {文件名: 课程名}，注入页面里要反过来成 {课程名: 文件名}
-    pages = '{' + ', '.join(f'"{course}": "{filename}"'
-                            for filename, course in PAGES.items() if course) + '}'
-    page_course = "null" if course is None else json.dumps(course, ensure_ascii=False)
-    return f"const PAGES = {pages};\nconst PAGE_COURSE = {page_course};"
+
+def render_shell(shell, css, js, decks, course, slug, catalog):
+    meta = (
+        f"const PAGE_COURSE = {json.dumps(course, ensure_ascii=False) if course else 'null'};\n"
+        f"const PAGE_SLUG = {json.dumps(slug)};\n"
+        f"const PAGE_LINKS = {json.dumps(LINKS, ensure_ascii=False)};\n"
+        f"const CATALOG = {json.dumps(catalog, ensure_ascii=False)};"
+    )
+    payload = json.dumps(decks, ensure_ascii=False, indent=1).replace("</", "<\\/")
+    out = shell.replace(CSS_MARK, css).replace(JS_MARK, js)
+    # 用切片替换整段占位内容，避免残留旧 JSON 造成语法错误
+    i = out.index(DATA_START) + len(DATA_START)
+    j = out.index(DATA_END)
+    out = out[:i] + payload + out[j:]
+    mi = out.index(META_START) + len(META_START)
+    mj = out.index(META_END)
+    return out[:mi] + "\n" + meta + "\n" + out[mj:]
+
+
+def check_once(text, marks):
+    for mark in marks:
+        count = text.count(mark)
+        if count != 1:
+            raise SystemExit(f"占位 {mark} 出现 {count} 次，应为 1 次")
 
 
 def main():
-    tpl = open(TEMPLATE, encoding="utf-8").read()
-    if tpl.count(START) != 1 or tpl.count(END) != 1:
-        print(f"数据占位异常：{START}x{tpl.count(START)} {END}x{tpl.count(END)}", file=sys.stderr)
-        return 1
-    if tpl.count(META_START) != 1 or tpl.count(META_END) != 1:
-        print("页面元信息占位异常", file=sys.stderr)
-        return 1
+    shell = open(os.path.join(SRC, "shell.html"), encoding="utf-8").read()
+    css = open(os.path.join(SRC, "style.css"), encoding="utf-8").read()
+    js = open(os.path.join(SRC, "app.js"), encoding="utf-8").read()
+    check_once(shell, [DATA_START, DATA_END, CSS_MARK, JS_MARK, META_START, META_END])
 
     data = json.load(open(DECKS, encoding="utf-8"))
     for deck in data["decks"]:
         deck["count"] = len(deck["cards"])
+    total = sum(len(d["cards"]) for d in data["decks"])
+    print(f"题库 {len(data['decks'])} 个 / {total} 张卡")
 
-    total_all = sum(len(d["cards"]) for d in data["decks"])
-    print(f"题库总计 {len(data['decks'])} 个 / {total_all} 张卡")
+    # 目录页要显示每个科目的卡片数
+    catalog = []
+    for name, filename in LINKS.items():
+        cards = sum(len(d["cards"]) for d in data["decks"] if d["course"] == name)
+        decks_count = sum(1 for d in data["decks"] if d["course"] == name)
+        slug = next(s for f, (n, s) in PAGES.items() if n == name)
+        catalog.append({"name": name, "file": filename, "cards": cards, "decks": decks_count, "slug": slug})
 
-    for filename, course in PAGES.items():
-        page = dict(data)
-        page["decks"] = [d for d in data["decks"] if course is None or d["course"] == course]
-        subtotal = sum(len(d["cards"]) for d in page["decks"])
-
-        # 防止数据里出现 </script> 截断脚本
-        payload = json.dumps(page, ensure_ascii=False, indent=1).replace("</", "<\\/")
-
-        i = tpl.index(START) + len(START)
-        j = tpl.index(END)
-        out = tpl[:i] + payload + tpl[j:]
-
-        mi = out.index(META_START) + len(META_START)
-        mj = out.index(META_END)
-        out = out[:mi] + "\n" + meta_block(course) + "\n" + out[mj:]
-
+    for filename, (course, slug) in PAGES.items():
+        subset = dict(data)
+        subset["decks"] = [d for d in data["decks"] if course is None or d["course"] == course]
+        # 目录页不装题库，只列科目
+        if course is None:
+            subset["decks"] = []
+        count = sum(len(d["cards"]) for d in subset["decks"])
+        html = render_shell(shell, css, js, subset, course, slug, catalog)
         path = os.path.join(ROOT, filename)
-        open(path, "w", encoding="utf-8").write(out)
-        label = course or "全部"
-        print(f"  {filename:14} {label:6} {len(page['decks'])} 个题库 / {subtotal} 张  "
-              f"({os.path.getsize(path) / 1024:.0f} KB)")
+        open(path, "w", encoding="utf-8").write(html)
+        label = course or "科目目录"
+        detail = f"{len(subset['decks'])} 个题库 / {count} 张" if course else "无题库"
+        print(f"  {filename:14} {label:6} {detail:18} {os.path.getsize(path)/1024:.0f} KB")
+
+    # 目录页也带字典，前端首屏要按科目跳转
     return 0
 
 

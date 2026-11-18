@@ -1,0 +1,56 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#0b0d10">
+<meta name="description" content="离线背诵与刷题">
+<title>备考</title>
+<style>/*@CSS@*/</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="app">
+  <header class="topbar">
+    <button id="back-button" class="icon-btn" type="button" aria-label="返回科目目录" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h1 class="topbar-title" id="topbar-title">备考</h1>
+    <button id="data-button" class="icon-btn" type="button" aria-label="数据管理" title="数据管理">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+    </button>
+  </header>
+  <main id="main" tabindex="-1"></main>
+</div>
+
+<dialog id="data-dialog" aria-labelledby="data-title">
+  <div class="dialog-body">
+    <h2 id="data-title">数据管理</h2>
+    <p class="muted" id="data-note"></p>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-secondary" type="button" id="export-button">导出进度</button>
+      <button class="btn btn-secondary" type="button" id="import-button">导入进度</button>
+    </div>
+    <label class="caption" for="data-field" style="display:block;margin-top:16px">备份文本（导入时粘贴到这里）</label>
+    <textarea class="field" id="data-field" spellcheck="false" placeholder="导出后这段文本可复制保存"></textarea>
+    <div class="dialog-actions">
+      <button class="btn btn-quiet" type="button" id="data-close">关闭</button>
+      <button class="btn btn-primary" type="button" id="data-apply">应用</button>
+    </div>
+    <p class="caption" id="data-status" aria-live="polite" style="margin-top:10px"></p>
+  </div>
+</dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
+<script>
+'use strict';
+const DECKS = /*@DECK_DATA@*/{"version":1,"decks":[]}/*@DECK_DATA_END@*/;
+/*@PAGE_META@*/
+/*@PAGE_META_END@*/
+</script>
+<script>
+/*@APP_JS@*/
+</script>
+</body>
+</html>
