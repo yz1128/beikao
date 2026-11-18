@@ -1,10 +1,8 @@
 # 备考 · 背诵网页
 
-双击 `index.html` 用 Chrome / Edge 打开即可，**完全离线**，无外部依赖。
+https://yz1128.github.io/beikao/
 
-## 给朋友
-
-把 `index.html` 整个文件发过去（微信文件传输即可，330 KB），对方双击就能背。不用装东西、不用注册、不用联网。
+双击 `index.html` 也能用，**完全离线**，无外部依赖。
 
 ## 题库
 
@@ -28,13 +26,13 @@
 进度存在浏览器本地（IndexedDB，降级 localStorage）。**换设备、换浏览器、移动文件都会丢进度**，走备份：
 
 1. 「进度备份」→「导出进度」→ 复制那串 Base64
-2. 新设备打开同一文件 →「进度备份」→ 粘贴 → 勾选「替换全部本机进度」→ 导入
+2. 新设备打开同一页面 →「进度备份」→ 粘贴 → 勾选「替换全部本机进度」→ 导入
 
 导入是整体替换，不合并。
 
-## 换题库
+## 补题 / 纠错
 
-题库内联在 `index.html` 的 `const DECKS = /*@DECK_DATA@*/ ... /*@DECK_DATA_END@*/;` 之间。卡片字段见 `SPEC.md`，`id` 保持不变可以续用已有进度。
+见 [CONTRIBUTING.md](CONTRIBUTING.md)。一题一 Issue，或者邮件发整份资料到 **871022082@qq.com**。
 
 ## 快捷键
 
@@ -42,6 +40,17 @@
 
 URL 参数：`?deck=zt-quiz` 直进题库，`?shuffle=1` 乱序，可组合。
 
-## 重新生成题库
+## 维护
 
-题库来自 `C:\Users\Yanz\Desktop\复习` 下的 md 整理稿，解析后写入 `data/decks.json`，再注入 `index.html` 的占位段。
+```bash
+# 加题（自动校验字段、自动重建）
+python tools/add_cards.py --deck zt-quiz --file 新题.json
+
+# 只重建单文件
+python tools/build.py
+
+# 构建并上线
+python tools/publish.py
+```
+
+题库内联在 `index.html` 的 `/*@DECK_DATA@*/ ... /*@DECK_DATA_END@*/` 之间，由 `tools/build.py` 从 `data/decks.json` 生成，不要手改那段 JSON。卡片字段与约束见 `CONTRIBUTING.md` 和 `SPEC.md`。

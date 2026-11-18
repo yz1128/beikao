@@ -1,0 +1,108 @@
+"""
+一条命令上线：重建 index.html → 上传 GitHub → 等 Pages 构建 → 打印链接。
+
+用 curl 走系统代理发请求：本机 urllib 经代理会 SSL EOF，curl 稳定。
+前置：~/.git-credentials 里有 github.com 的 PAT（见 skill static-site-publishing）。
+用法：python tools/publish.py
+"""
+import base64
+import json
+import os
+import subprocess
+import sys
+import time
+
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+REPO = "yz1128/beikao"
+BRANCH = "main"
+PROXY = "http://127.0.0.1:7890"
+
+
+def token():
+    """从 ~/.git-credentials 取 github.com 的 PAT。"""
+    path = os.path.expanduser("~/.git-credentials")
+    for line in open(path, encoding="utf-8", errors="replace"):
+        line = line.strip()
+        if not line.startswith("https://") or "github.com" not in line:
+            continue
+        cred = line[len("https://"):].split("@")[0]
+        if ":" in cred:
+            return cred.split(":", 1)[1]
+    raise SystemExit("在 ~/.git-credentials 里找不到 github.com 的 token")
+
+
+TOK = token()
+BODY_FILE = os.path.join(ROOT, ".publish_body.json")
+
+
+def api(url: str, method: str = "GET", body: dict | None = None, tries: int = 3) -> dict:
+    """打 GitHub API。返回解析后的 dict；失败返回 {'error': str}。"""
+    cmd = ["curl", "-s", "-X", method, "-m", "120", "-x", PROXY,
+           "-H", f"Authorization: token {TOK}",
+           "-H", "Accept: application/vnd.github+json",
+           "-H", "Content-Type: application/json"]
+    if body is not None:
+        with open(BODY_FILE, "w", encoding="utf-8") as f:
+            json.dump(body, f, ensure_ascii=False)
+        cmd += ["-d", "@" + BODY_FILE]
+    cmd.append(url)
+    raw = ""
+    for _ in range(tries):
+        raw = subprocess.run(cmd, capture_output=True, text=True,
+                             encoding="utf-8", errors="replace").stdout.strip()
+        if raw[:1] in "{[":
+            try:
+                return json.loads(raw)
+            except json.JSONDecodeError:
+                pass
+        time.sleep(2)
+    return {"error": raw[:160]}
+
+
+def upload(path, local, message):
+    """新建或覆盖一个文件。先取 sha，命中则带上。"""
+    tree: dict = api(f"https://api.github.com/repos/{REPO}/git/trees/{BRANCH}?recursive=1")
+    nodes: list[dict] = tree.get("tree") or []
+    sha = next((n["sha"] for n in nodes
+                if n.get("type") == "blob" and n.get("path") == path), None)
+    body = {"message": message,
+            "content": base64.b64encode(open(local, "rb").read()).decode(),
+            "branch": BRANCH}
+    if sha:
+        body["sha"] = sha
+    res: dict = api(f"https://api.github.com/repos/{REPO}/contents/{path}", "PUT", body)
+    ok = res.get("content", {}).get("path") == path
+    print(f"  {'OK' if ok else 'FAIL'} {path}" + ("" if ok else f"  {res}"))
+    return ok
+
+
+def main():
+    # 1. 重建
+    print("重建 index.html ...")
+    build = os.path.join(ROOT, "tools", "build.py")
+    if subprocess.call([sys.executable, build], cwd=ROOT) != 0:
+        return 1
+
+    # 2. 上传
+    print("上传 ...")
+    if not upload("index.html", os.path.join(ROOT, "index.html"), "更新题库"):
+        return 1
+
+    # 3. 等构建
+    print("等待 Pages 构建 ...")
+    for _ in range(20):
+        st: dict = api(f"https://api.github.com/repos/{REPO}/pages/builds/latest")
+        status = st.get("status")
+        if status not in ("building", "queued", None):
+            print(f"  {status} {st.get('error', {}).get('message') or ''}".rstrip())
+            break
+        time.sleep(8)
+
+    if os.path.exists(BODY_FILE):
+        os.remove(BODY_FILE)
+    print(f"\n链接： https://yz1128.github.io/{REPO.split('/')[1]}/")
+    return 0
+
+
+if __name__ == "__main__":
+    sys.exit(main())
