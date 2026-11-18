@@ -351,7 +351,24 @@ function renderHome() {
   main.append(wrap);
 }
 
-// 科目目录：每个科目一张卡，点进去才是该科目的独立页面。
+function renderHero() {
+  const box = element('section', 'hero');
+  const pool = typedPool(entries);
+  const known = pool.filter(entry => states[entry.key]).length;
+  const head = element('div', 'hero-head');
+  const left = element('div');
+  left.append(element('p', 'eyebrow', '总进度'), element('p', 'hero-stat', `${known} / ${pool.length}`));
+  head.append(left);
+  if (typeFilter) {
+    const clear = element('button', 'text-btn', '取消筛选');
+    clear.type = 'button';
+    clear.addEventListener('click', () => { typeFilter = null; updateUrl(); renderHome(); });
+    head.append(clear);
+  }
+  box.append(head, meter(known, Math.max(1, pool.length), '总进度'));
+  return box;
+}
+
 // 科目目录：只放科目名与项目介绍，进度和入口都在各自科目页里。
 function renderCatalog() {
   const wrap = element('div', 'stack-32');
@@ -404,6 +421,7 @@ function renderToday() {
   left.append(element('p', 'eyebrow', review > 0 ? '今日复习' : '今日新卡'), num);
   top.append(left);
   card.append(top, element('p', 'today-label', review > 0 ? `新卡 ${fresh} · 到期 ${review}` : '还没学过，从头开始'));
+  card.append(renderOrder());
   const start = element('button', 'btn btn-primary btn-block', review > 0 ? '开始今日复习' : '开始学新卡');
   start.type = 'button';
   start.addEventListener('click', () => startSession(due ? 'review' : 'practice'));
@@ -416,6 +434,30 @@ function renderToday() {
     card.append(mistakes);
   }
   return card;
+}
+
+// 出题顺序：顺序走题库原始次序，随机每次开始重新洗牌。
+function renderOrder() {
+  const row = element('div', 'order-row');
+  row.style.margin = '16px 0 14px';
+  const label = element('span', 'order-label', '出题顺序');
+  const group = element('div', 'segmented');
+  group.setAttribute('role', 'group');
+  group.setAttribute('aria-label', '出题顺序');
+  [['sequential', '顺序'], ['random', '随机']].forEach(([value, text]) => {
+    const on = (value === 'random') === shuffled;
+    const button = element('button', 'segment', text);
+    button.type = 'button';
+    button.setAttribute('aria-pressed', String(on));
+    button.addEventListener('click', () => {
+      shuffled = value === 'random';
+      updateUrl();
+      renderHome();
+    });
+    group.append(button);
+  });
+  row.append(label, group);
+  return row;
 }
 
 function renderTypes() {
@@ -477,15 +519,30 @@ function renderDecks() {
 function startSession(kind, deckId) {
   const base = deckId ? entries.filter(entry => entry.deck.id === deckId) : entries;
   const pool = typedPool(base);
-  let queue = practiceQueue(pool);
-  if (kind === 'review') queue = reviewQueue(pool);
-  if (kind === 'mistakes') queue = practiceQueue(pool.filter(entry => states[entry.key]?.wrong));
+  let queue = kind === 'review' ? reviewQueue(pool)
+    : kind === 'mistakes' ? practiceQueue(pool.filter(entry => states[entry.key]?.wrong))
+    : orderedPool(pool);
+  if (shuffled) queue = shuffle(queue);
   if (!queue.length) {
     toast(kind === 'mistakes' ? '还没有错题' : '这一类暂时没有需要复习的卡');
     return;
   }
   session = {queue, index: 0, phase: 'question', selected: new Set(), done: 0, label: labelFor(kind)};
   renderSession();
+}
+
+// 顺序模式严格按题库原始次序走，不受「没学过/待复习」筛选影响。
+function orderedPool(pool) {
+  return pool.slice();
+}
+
+function shuffle(list) {
+  const out = list.slice();
+  for (let i = out.length - 1; i > 0; i -= 1) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [out[i], out[j]] = [out[j], out[i]];
+  }
+  return out;
 }
 
 function labelFor(kind) {
@@ -770,11 +827,19 @@ function bindControls() {
   $('export-button').addEventListener('click', exportData);
   $('import-button').addEventListener('click', importData);
   $('data-apply').addEventListener('click', importData);
-  $('back-button').addEventListener('click', () => {
-    if (PAGE_LINKS && PAGE_LINKS.index) location.href = PAGE_LINKS.index;
-    else renderHome();
-  });
+  // 返回：答题中先退到本科目首页，科目首页再退回科目目录。
+  $('back-button').addEventListener('click', goBack);
   $('main').addEventListener('keydown', handleKeys);
+}
+
+function goBack() {
+  if (session) {
+    session = null;
+    updateUrl();
+    renderHome();
+    return;
+  }
+  if (typeof PAGE_HOME === 'string' && PAGE_HOME) location.assign(PAGE_HOME);
 }
 
 function handleKeys(event) {

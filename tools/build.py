@@ -37,6 +37,7 @@ def render_shell(shell, css, js, decks, course, slug, catalog, site):
         f"const PAGE_COURSE = {json.dumps(course, ensure_ascii=False) if course else 'null'};\n"
         f"const PAGE_SLUG = {json.dumps(slug)};\n"
         f"const PAGE_LINKS = {json.dumps(LINKS, ensure_ascii=False)};\n"
+        f"const PAGE_HOME = 'index.html';\n"
         f"const CATALOG = {json.dumps(catalog, ensure_ascii=False)};\n"
         f"const SITE = {json.dumps(site, ensure_ascii=False)};"
     )
