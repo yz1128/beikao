@@ -446,6 +446,8 @@ main.is-session { padding-top: 0; }
   gap: 8px;
   align-items: stretch;
 }
+/* 奇数个题型时，最后一项横跨整行，避免右侧留空 */
+.chip-grid > :last-child:nth-child(odd) { grid-column: 1 / -1; }
 
 .chip {
   display: flex;

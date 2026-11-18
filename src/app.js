@@ -7,14 +7,23 @@
 
 const $ = id => document.getElementById(id);
 
-const TYPE_LABEL = {single: '单选', multi: '多选', judge: '判断', qa: '背诵'};
-const TYPE_ORDER = ['single', 'multi', 'judge', 'qa'];
+// kind = 对外展示的题型（单选/多选/判断/选择/简答/背诵）；type = 内部交互方式。
+const TYPE_LABEL = {
+  single: '单选', multi: '多选', judge: '判断', choice: '选择', short: '简答', qa: '背诵',
+};
+const ALL_TYPES = ['single', 'multi', 'judge', 'choice', 'short', 'qa'];
+
+// 各科目对外展示的题型顺序（缺的自动略过）。
+const COURSE_TYPES = {
+  '新中特': ['single', 'multi', 'judge', 'short', 'qa'],
+  '自然辩证法': ['choice', 'judge', 'short', 'qa'],
+};
 const DAY = 86400000;
 const MAX_DAYS = 36500;
 
 const params = new URLSearchParams(location.search);
 let shuffled = params.get('shuffle') === '1';
-let typeFilter = TYPE_ORDER.includes(params.get('type')) ? params.get('type') : null;
+let typeFilter = ALL_TYPES.includes(params.get('type')) ? params.get('type') : null;
 
 let states = Object.create(null);
 let session = null;
@@ -28,6 +37,17 @@ const entries = DECKS.decks.flatMap(deck =>
 );
 
 const courseName = PAGE_COURSE || '备考';
+
+// 卡片声明的题型优先；老数据没有 kind 时退回内部 type。
+function kindOf(card) {
+  return card.kind || card.type;
+}
+
+// 各科目实际出现的题型，按固定顺序排，缺的自动略过。
+function typeOrder() {
+  const wanted = COURSE_TYPES[courseName] || ALL_TYPES;
+  return wanted.filter(kind => entries.some(entry => kindOf(entry.card) === kind));
+}
 const dbName = `beikao-${PAGE_SLUG || 'all'}-v1`;
 const LEGACY_DB = PAGE_COURSE ? 'beikao-progress-v1' : null;
 const recoveryKey = `beikao-${PAGE_SLUG || 'all'}-recovery`;
@@ -305,7 +325,7 @@ function practiceQueue(pool) {
 }
 
 function typedPool(pool) {
-  return typeFilter ? pool.filter(entry => entry.card.type === typeFilter) : pool;
+  return typeFilter ? pool.filter(entry => kindOf(entry.card) === typeFilter) : pool;
 }
 
 function currentEntry() {
@@ -465,8 +485,8 @@ function renderTypes() {
   const label = element('div', 'section-label');
   label.append(element('h2', '', '按题型背'));
   const grid = element('div', 'chip-grid');
-  TYPE_ORDER.forEach(type => {
-    const part = entries.filter(entry => entry.card.type === type);
+  typeOrder().forEach(type => {
+    const part = entries.filter(entry => kindOf(entry.card) === type);
     if (!part.length) return;
     const chip = element('button', 'chip');
     chip.type = 'button';
@@ -485,6 +505,14 @@ function renderTypes() {
   return section;
 }
 
+// 题库副标题：总数 + 题型分布（多于一种题型时才列）。
+function deckSub(pool, known) {
+  const kinds = typeOrder().filter(kind => pool.some(entry => kindOf(entry.card) === kind));
+  const mix = kinds.length > 1 ? ' · ' + kinds.map(kind => TYPE_LABEL[kind]).join('/') : '';
+  const learned = known ? ` · 已学 ${known}` : '';
+  return `${pool.length} 张${mix}${learned}`;
+}
+
 function renderDecks() {
   const section = element('section');
   const label = element('div', 'section-label');
@@ -501,7 +529,7 @@ function renderDecks() {
     const text = element('div');
     text.append(
       element('p', 'deck-title', deck.title.replace(/\s*\d+\s*题$/, '')),
-      element('p', 'deck-sub', `${pool.length} 张${known ? ` · 已学 ${known}` : ''}`)
+      element('p', 'deck-sub', deckSub(pool, known))
     );
     const arrow = element('span', 'course-arrow');
     arrow.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
@@ -579,7 +607,7 @@ function renderQuestion(entry) {
   const section = element('section');
   const head = element('div', 'q-head');
   head.append(
-    element('span', 'tag', TYPE_LABEL[card.type]),
+    element('span', 'tag', TYPE_LABEL[kindOf(card)]),
     element('span', 'tag tag-neutral', card.num ? `第 ${card.num} 题` : deck.title),
     element('span', 'q-count', `${session.index + 1} / ${session.queue.length}`)
   );
@@ -658,30 +686,43 @@ function isCorrect(card, selected) {
   return answer === picked;
 }
 
+// 触屏设备上没有空格/回车，快捷键提示只在桌面显示。
+function kbdHint(text) {
+  const fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
+  return fine ? element('p', 'kbd-hint', text) : null;
+}
+
 function renderActionBar(entry) {
   const bar = element('div', 'actionbar');
   const {card} = entry;
+  const kind = kindOf(card);
+  const hint = text => {
+    const node = kbdHint(text);
+    if (node) bar.append(node);
+  };
+
   if (session.phase === 'question') {
     if (card.type === 'single' || card.type === 'judge') {
-      bar.append(element('p', 'kbd-hint', card.type === 'judge' ? '点「对」或「错」即判分' : '点选项即判分'));
+      hint(card.type === 'judge' ? '点「对」或「错」即判分' : '点选项即判分');
       return bar;
     }
     if (card.type === 'qa') {
-      const show = element('button', 'btn btn-primary btn-block', '看答案');
+      const show = element('button', 'btn btn-primary btn-block', kind === 'qa' ? '看答案' : '查看参考答案');
       show.type = 'button';
       show.addEventListener('click', () => { session.phase = 'answer'; renderSession(false); });
       bar.append(show);
-      bar.append(element('p', 'kbd-hint', '空格看答案'));
-    } else if (card.type === 'multi') {
-      const submit = element('button', 'btn btn-primary btn-block', '提交答案');
-      submit.type = 'button';
-      submit.disabled = busy || session.selected.size === 0;
-      submit.addEventListener('click', submitAnswer);
-      bar.append(submit);
-      bar.append(element('p', 'kbd-hint', 'A–D 选择 · 回车提交'));
+      hint('空格看答案');
+      return bar;
     }
+    const submit = element('button', 'btn btn-primary btn-block', '提交答案');
+    submit.type = 'button';
+    submit.disabled = busy || session.selected.size === 0;
+    submit.addEventListener('click', submitAnswer);
+    bar.append(submit);
+    hint('A–D 选择 · 回车提交');
     return bar;
   }
+
   if (session.phase === 'answer') {
     const row = element('div', 'btn-row');
     [['忘了', 1], ['模糊', 2], ['记得', 3]].forEach(([label, rating]) => {
@@ -690,14 +731,17 @@ function renderActionBar(entry) {
       btn.addEventListener('click', () => rate(rating));
       row.append(btn);
     });
-    bar.append(row, element('p', 'kbd-hint', '1 忘了 · 2 模糊 · 3 记得'));
+    bar.append(row);
+    hint('1 忘了 · 2 模糊 · 3 记得');
     return bar;
   }
+
   const next = element('button', 'btn btn-primary btn-block',
     session.index + 1 >= session.queue.length ? '完成' : '下一题');
   next.type = 'button';
   next.addEventListener('click', nextCard);
-  bar.append(next, element('p', 'kbd-hint', '回车继续'));
+  bar.append(next);
+  hint('回车继续');
   return bar;
 }
 
