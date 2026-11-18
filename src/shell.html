@@ -19,6 +19,9 @@
     <button id="data-button" class="icon-btn" type="button" aria-label="数据管理" title="数据管理">
       <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
     </button>
+    <button id="settings-button" class="icon-btn" type="button" aria-label="设置" title="设置" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.65 1.65 0 0 0 .33 1.82l.06.06a2 2 0 1 1-2.83 2.83l-.06-.06a1.65 1.65 0 0 0-1.82-.33 1.65 1.65 0 0 0-1 1.51V21a2 2 0 1 1-4 0v-.09A1.65 1.65 0 0 0 9 19.4a1.65 1.65 0 0 0-1.82.33l-.06.06a2 2 0 1 1-2.83-2.83l.06-.06a1.65 1.65 0 0 0 .33-1.82 1.65 1.65 0 0 0-1.51-1H3a2 2 0 1 1 0-4h.09A1.65 1.65 0 0 0 4.6 9a1.65 1.65 0 0 0-.33-1.82l-.06-.06a2 2 0 1 1 2.83-2.83l.06.06a1.65 1.65 0 0 0 1.82.33H9a1.65 1.65 0 0 0 1-1.51V3a2 2 0 1 1 4 0v.09a1.65 1.65 0 0 0 1 1.51 1.65 1.65 0 0 0 1.82-.33l.06-.06a2 2 0 1 1 2.83 2.83l-.06.06a1.65 1.65 0 0 0-.33 1.82V9a1.65 1.65 0 0 0 1.51 1H21a2 2 0 1 1 0 4h-.09a1.65 1.65 0 0 0-1.51 1z"/></svg>
+    </button>
   </header>
   <main id="main" tabindex="-1"></main>
 </div>
@@ -38,6 +41,32 @@
       <button class="btn btn-primary" type="button" id="data-apply">应用</button>
     </div>
     <p class="caption" id="data-status" aria-live="polite" style="margin-top:10px"></p>
+  </div>
+</dialog>
+
+<dialog id="settings-dialog" aria-labelledby="settings-title">
+  <div class="dialog-body">
+    <h2 id="settings-title">设置</h2>
+    <p class="muted">快捷键偏好只存在这台设备上，对两个科目页都生效。</p>
+    <div class="switch-list">
+      <label class="switch-row">
+        <span class="switch-copy">
+          <span class="switch-title">显示快捷键提示</span>
+          <span class="caption">在答题操作区显示当前可用的按键</span>
+        </span>
+        <span class="switch"><input id="pref-hints" type="checkbox" role="switch"><i aria-hidden="true"></i></span>
+      </label>
+      <label class="switch-row">
+        <span class="switch-copy">
+          <span class="switch-title">启用键盘快捷键</span>
+          <span class="caption">关闭后只能用鼠标或触屏操作</span>
+        </span>
+        <span class="switch"><input id="pref-keys" type="checkbox" role="switch"><i aria-hidden="true"></i></span>
+      </label>
+    </div>
+    <div class="dialog-actions">
+      <button class="btn btn-quiet" type="button" id="settings-close">关闭</button>
+    </div>
   </div>
 </dialog>
 

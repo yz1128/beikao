@@ -87,7 +87,6 @@ def main():
             "decks": decks_count,
             "slug": slug,
             "desc": item.get("desc", ""),
-            "tags": item.get("tags", []),
         })
     site = {"title": meta.get("title", "备考"), "intro": meta.get("intro", "")}
 

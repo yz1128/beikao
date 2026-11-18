@@ -287,36 +287,31 @@ main.is-session { padding-top: 0; }
   justify-content: space-between;
   gap: 12px;
 }
+.course-copy { flex: 1; min-width: 0; }
 .course-name {
   font-size: 20px;
   font-weight: 650;
   letter-spacing: -.2px;
 }
-.tag-row {
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: 6px;
-  margin-top: 14px;
-}
-.tiny-tag b { color: var(--text); font-weight: 700; }
-.tiny-tag {
-  padding: 5px 10px;
-  text-align: center;
-  font-size: 12px;
-  color: var(--text-2);
-  background: var(--surface-3);
-  border: 0;
-  border-radius: 999px;
-  font-variant-numeric: tabular-nums;
-  white-space: nowrap;
-}
-
 .course-desc {
-  margin-top: 8px;
+  margin-top: 6px;
   font-size: 13px;
   line-height: 1.65;
   color: var(--text-2);
 }
+
+.course-foot {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-top: 16px;
+  font-size: 12px;
+  font-variant-numeric: tabular-nums;
+}
+.course-stats { color: var(--text-2); }
+.course-today { color: var(--text-3); text-align: right; }
+.course-card .meter { margin-top: 8px; }
 
 .intro {
   max-width: 34em;
@@ -325,12 +320,19 @@ main.is-session { padding-top: 0; }
   line-height: 1.75;
   color: var(--text-2);
 }
+.catalog-meta {
+  margin-top: 14px;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
 .course-arrow {
   flex: 0 0 auto;
   color: var(--text-3);
   margin-top: 2px;
+  transition: color .14s ease, transform .14s ease;
 }
-.course-card:hover .course-arrow { color: var(--accent); }
+.course-card:hover .course-arrow { color: var(--accent); transform: translateX(2px); }
 
 /* ---------- 进度条 ---------- */
 
@@ -672,11 +674,35 @@ main.is-session { padding-top: 0; }
 }
 
 .kbd-hint {
-  margin-top: 10px;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
   font-size: 12px;
+  line-height: 1.4;
   color: var(--text-3);
-  text-align: center;
 }
+.kbd-item {
+  display: inline-flex;
+  align-items: center;
+  gap: 5px;
+}
+.kbd-hint kbd {
+  display: inline-block;
+  min-width: 20px;
+  padding: 1px 6px;
+  font: inherit;
+  font-size: 11px;
+  font-weight: 650;
+  text-align: center;
+  color: var(--text-2);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-bottom-width: 2px;
+  border-radius: 6px;
+}
+.kbd-sep { color: var(--text-3); opacity: .7; }
 
 /* ---------- 完成页 ---------- */
 
@@ -729,6 +755,70 @@ dialog::backdrop { background: rgba(0, 0, 0, .62); }
   margin-top: 18px;
 }
 .dialog-actions > .btn { flex: 1; }
+
+.switch-list {
+  margin-top: 18px;
+  border-top: 1px solid var(--border-soft);
+}
+.switch-row {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 16px;
+  padding: 14px 0;
+  border-bottom: 1px solid var(--border-soft);
+  cursor: pointer;
+}
+.switch-copy { display: block; min-width: 0; }
+.switch-title { display: block; font-size: 14px; font-weight: 600; }
+.switch-copy .caption { display: block; margin-top: 2px; line-height: 1.5; }
+.switch {
+  position: relative;
+  flex: 0 0 auto;
+  width: 46px;
+  height: 28px;
+}
+.switch input {
+  position: absolute;
+  inset: 0;
+  width: 100%;
+  height: 100%;
+  margin: 0;
+  opacity: 0;
+  cursor: pointer;
+}
+.switch i {
+  position: absolute;
+  inset: 0;
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 999px;
+  transition: background-color .15s ease, border-color .15s ease;
+  pointer-events: none;
+}
+.switch i::after {
+  content: "";
+  position: absolute;
+  top: 3px;
+  left: 3px;
+  width: 20px;
+  height: 20px;
+  background: var(--text-2);
+  border-radius: 50%;
+  transition: transform .15s ease, background-color .15s ease;
+}
+.switch input:checked + i {
+  background: var(--accent);
+  border-color: var(--accent);
+}
+.switch input:checked + i::after {
+  background: #fff;
+  transform: translateX(18px);
+}
+.switch input:focus-visible + i {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
 
 .field {
   display: block;

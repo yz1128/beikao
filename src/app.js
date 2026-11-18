@@ -25,6 +25,22 @@ const params = new URLSearchParams(location.search);
 let shuffled = params.get('shuffle') === '1';
 let typeFilter = ALL_TYPES.includes(params.get('type')) ? params.get('type') : null;
 
+// 界面偏好与学习进度分开存：快捷键相关的开关对所有科目页共用。
+const PREFS_KEY = 'beikao-prefs-v1';
+const prefs = {hints: true, keys: true};
+try {
+  const saved = JSON.parse(localStorage.getItem(PREFS_KEY) || 'null');
+  if (saved && typeof saved === 'object') {
+    if (typeof saved.hints === 'boolean') prefs.hints = saved.hints;
+    if (typeof saved.keys === 'boolean') prefs.keys = saved.keys;
+  }
+} catch { /* 偏好损坏或不可读时使用默认值。 */ }
+
+function savePrefs() {
+  try { localStorage.setItem(PREFS_KEY, JSON.stringify({hints: prefs.hints, keys: prefs.keys})); }
+  catch { toast('设置暂时无法保存'); }
+}
+
 let states = Object.create(null);
 let session = null;
 let busy = false;
@@ -361,6 +377,7 @@ function renderHome() {
   setTitle(courseName);
   showBack(Boolean(PAGE_COURSE));
   $('data-button').hidden = !PAGE_COURSE;
+  $('settings-button').hidden = !PAGE_COURSE;
   if (!PAGE_COURSE) { main.append(renderCatalog()); return; }
   if (!entries.length) {
     main.append(element('p', 'empty', '题库还没有准备好。'));
@@ -389,42 +406,107 @@ function renderHero() {
   return box;
 }
 
-// 科目目录：只放科目名与项目介绍，进度和入口都在各自科目页里。
+// 科目目录：只放科目名与项目介绍，不列题型分类；各科目进度异步读出来汇总。
 function renderCatalog() {
   const wrap = element('div', 'stack-32');
+  const courses = CATALOG || [];
+  const totalCards = courses.reduce((sum, item) => sum + (item.cards || 0), 0);
+  const totalDecks = courses.reduce((sum, item) => sum + (item.decks || 0), 0);
   const hero = element('section', 'hero');
   hero.append(element('p', 'eyebrow', '科目'));
+  if (SITE && SITE.title) hero.append(element('h1', '', SITE.title));
   if (SITE && SITE.intro) hero.append(element('p', 'intro', SITE.intro));
+  hero.append(element('p', 'catalog-meta', `${courses.length} 门课程 · ${totalDecks} 个题库 · ${totalCards} 张卡片`));
   wrap.append(hero);
 
   const list = element('div', 'course-list');
-  (CATALOG || []).forEach(item => {
+  courses.forEach(item => {
     const card = element('a', 'course-card');
     card.href = item.file;
+    card.dataset.slug = item.slug || '';
+    card.dataset.cards = String(item.cards || 0);
     const head = element('div', 'course-head');
-    const text = element('div');
-    text.append(
-      element('p', 'course-name', item.name),
-      element('p', 'course-desc', item.desc || '')
-    );
-    if (item.tags && item.tags.length) {
-      const tags = element('div', 'tag-row');
-      item.tags.forEach(label => {
-        const tag = element('span', 'tiny-tag');
-        const [word, num] = label.split(' ');
-        tag.append(document.createTextNode(word + ' '), element('b', '', num || ''));
-        tags.append(tag);
-      });
-      text.append(tags);
-    }
+    const text = element('div', 'course-copy');
+    text.append(element('p', 'course-name', item.name));
+    if (item.desc) text.append(element('p', 'course-desc', item.desc));
     const arrow = element('span', 'course-arrow');
     arrow.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
     head.append(text, arrow);
-    card.append(head);
+    const foot = element('div', 'course-foot');
+    foot.append(
+      element('span', 'course-stats', `${item.cards || 0} 张卡片 · ${item.decks || 0} 个题库`),
+      element('span', 'course-today', '')
+    );
+    card.append(head, foot);
     list.append(card);
   });
   wrap.append(list);
+  void hydrateCatalog(list);
   return wrap;
+}
+
+// 目录页本身不装题库，但同源可以只读打开各科目自己的进度库，用来显示已学与今日数量。
+function readCourseStates(slug) {
+  return new Promise(resolve => {
+    let request;
+    try { request = indexedDB.open(`beikao-${slug}-v1`, 1); }
+    catch { resolve(null); return; }
+    request.onupgradeneeded = () => request.result.createObjectStore('progress');
+    request.onerror = request.onblocked = () => resolve(null);
+    request.onsuccess = () => {
+      const db = request.result;
+      let done = false;
+      const finish = value => {
+        if (done) return;
+        done = true;
+        db.close();
+        resolve(value);
+      };
+      try {
+        if (!db.objectStoreNames.contains('progress')) { finish(null); return; }
+        const tx = db.transaction('progress', 'readonly');
+        const get = tx.objectStore('progress').get('snapshot');
+        tx.oncomplete = () => {
+          const copies = [];
+          if (typeof get.result === 'string') copies.push(get.result);
+          try {
+            const recovery = localStorage.getItem(`beikao-${slug}-recovery`);
+            if (recovery !== null) copies.push(recovery);
+          } catch { /* 本地副本不可读时只用数据库快照。 */ }
+          let best = null;
+          copies.forEach(text => {
+            try {
+              const parsed = validateStates(JSON.parse(text));
+              if (!best || Object.keys(parsed).length > Object.keys(best).length) best = parsed;
+            } catch { /* 跳过损坏的副本。 */ }
+          });
+          // 空库视为「尚未开始」；有快照但全部损坏时才放弃显示。
+          finish(best || (copies.length ? null : Object.create(null)));
+        };
+        tx.onerror = () => finish(null);
+      } catch { finish(null); }
+    };
+  });
+}
+
+async function hydrateCatalog(list) {
+  const cards = [...list.querySelectorAll('.course-card')];
+  await Promise.all(cards.map(async card => {
+    if (!card.dataset.slug) return;
+    const stored = await readCourseStates(card.dataset.slug);
+    if (!stored) return;
+    const total = Number(card.dataset.cards) || 0;
+    // 题库删改后进度里可能残留旧卡，显示时不超过当前总数。
+    const learned = Math.min(Object.keys(stored).length, total);
+    const fresh = Math.max(0, total - learned);
+    const due = Math.min(total, Object.values(stored).filter(state => state.due <= endOfToday()).length + fresh);
+    const review = due - fresh;
+    card.querySelector('.course-stats').textContent = `已学 ${learned} / ${total}`;
+    card.querySelector('.course-today').textContent = review > 0
+      ? `今日复习 ${due} 张`
+      : fresh > 0 ? `今日新卡 ${fresh} 张` : '今日无到期';
+    card.append(meter(learned, Math.max(1, total), `${card.querySelector('.course-name').textContent}已学进度`));
+  }));
 }
 
 function renderToday() {
@@ -622,10 +704,16 @@ function optionList(card) {
   return card.type === 'judge' ? [{k: 'T', t: '正确'}, {k: 'F', t: '错误'}] : (card.options || []);
 }
 
+// 快捷键提示里的数字范围，按当前题目的选项数量生成。
+function optionRange(card) {
+  const count = optionList(card).length;
+  return count > 1 ? `1–${count}` : '1';
+}
+
 function renderOptions(card) {
   const list = element('div', 'options');
   const answered = session.phase !== 'question';
-  optionList(card).forEach(option => {
+  optionList(card).forEach((option, index) => {
     const btn = element('button', 'option');
     btn.type = 'button';
     const selected = session.selected.has(option.k);
@@ -633,7 +721,9 @@ function renderOptions(card) {
     btn.classList.toggle('selected', selected && !answered);
     btn.setAttribute('aria-pressed', String(selected));
     btn.disabled = answered || busy;
-    const letter = element('span', 'letter', option.k === 'T' ? '对' : option.k === 'F' ? '错' : option.k);
+    // 徽标按行序显示 1–4，与数字快捷键一一对应；判断题仍显示对/错。
+    const label = option.k === 'T' ? '对' : option.k === 'F' ? '错' : String(index + 1);
+    const letter = element('span', 'letter', label);
     const body = element('span', 'body', option.t);
     if (answered) {
       btn.classList.toggle('correct', correct);
@@ -672,9 +762,11 @@ function renderFeedback(entry) {
 }
 
 function formatAnswer(card) {
+  if (card.type === 'judge') return card.answer === 'T' ? '对' : '错';
   return optionList(card)
-    .filter(option => (card.answer || '').includes(option.k))
-    .map(option => `${option.k === 'T' ? '对' : option.k === 'F' ? '错' : option.k}. ${option.t}`)
+    .map((option, index) => ({option, index}))
+    .filter(({option}) => (card.answer || '').includes(option.k))
+    .map(({option, index}) => `${index + 1}. ${option.t}`)
     .join('\n');
 }
 
@@ -686,24 +778,37 @@ function isCorrect(card, selected) {
   return answer === picked;
 }
 
-// 触屏设备上没有空格/回车，快捷键提示只在桌面显示。
-function kbdHint(text) {
+// 快捷键提示：触屏设备不显示；设置里可关闭提示或整体关闭快捷键。
+function kbdHint(items) {
+  if (!prefs.keys || !prefs.hints) return null;
   const fine = window.matchMedia && window.matchMedia('(pointer: fine)').matches;
-  return fine ? element('p', 'kbd-hint', text) : null;
+  if (!fine) return null;
+  const line = element('p', 'kbd-hint');
+  items.forEach(([keys, label], index) => {
+    if (index) line.append(element('span', 'kbd-sep', '·'));
+    const item = element('span', 'kbd-item');
+    item.append(element('kbd', '', keys), document.createTextNode(label));
+    line.append(item);
+  });
+  return line;
 }
 
 function renderActionBar(entry) {
   const bar = element('div', 'actionbar');
   const {card} = entry;
   const kind = kindOf(card);
-  const hint = text => {
-    const node = kbdHint(text);
+  const hint = items => {
+    const node = kbdHint(items);
     if (node) bar.append(node);
   };
 
   if (session.phase === 'question') {
-    if (card.type === 'single' || card.type === 'judge') {
-      hint(card.type === 'judge' ? '点「对」或「错」即判分' : '点选项即判分');
+    if (card.type === 'single') {
+      hint([[optionRange(card), '选择答案']]);
+      return bar;
+    }
+    if (card.type === 'judge') {
+      hint([['1', '对'], ['2', '错']]);
       return bar;
     }
     if (card.type === 'qa') {
@@ -711,7 +816,7 @@ function renderActionBar(entry) {
       show.type = 'button';
       show.addEventListener('click', () => { session.phase = 'answer'; renderSession(false); });
       bar.append(show);
-      hint('空格看答案');
+      hint([['空格', '看答案']]);
       return bar;
     }
     const submit = element('button', 'btn btn-primary btn-block', '提交答案');
@@ -719,7 +824,7 @@ function renderActionBar(entry) {
     submit.disabled = busy || session.selected.size === 0;
     submit.addEventListener('click', submitAnswer);
     bar.append(submit);
-    hint('A–D 选择 · 回车提交');
+    hint([[optionRange(card), '选择'], ['Enter', '提交']]);
     return bar;
   }
 
@@ -732,7 +837,7 @@ function renderActionBar(entry) {
       row.append(btn);
     });
     bar.append(row);
-    hint('1 忘了 · 2 模糊 · 3 记得');
+    hint([['1', '忘了'], ['2', '模糊'], ['3', '记得']]);
     return bar;
   }
 
@@ -741,7 +846,7 @@ function renderActionBar(entry) {
   next.type = 'button';
   next.addEventListener('click', nextCard);
   bar.append(next);
-  hint('回车继续');
+  hint([['Enter', session.index + 1 >= session.queue.length ? '完成' : '下一题']]);
   return bar;
 }
 
@@ -863,6 +968,21 @@ async function importData() {
   }
 }
 
+/* ---------- 设置 ---------- */
+
+function openSettings() {
+  $('pref-hints').checked = prefs.hints;
+  $('pref-keys').checked = prefs.keys;
+  $('settings-dialog').showModal();
+}
+
+// 设置即时生效：答题中直接重绘，提示和快捷键立刻切换。
+function updatePref(name, value) {
+  prefs[name] = value;
+  savePrefs();
+  if (session && !busy) renderSession(false);
+}
+
 /* ---------- 启动 ---------- */
 
 function bindControls() {
@@ -871,9 +991,14 @@ function bindControls() {
   $('export-button').addEventListener('click', exportData);
   $('import-button').addEventListener('click', importData);
   $('data-apply').addEventListener('click', importData);
+  $('settings-button').addEventListener('click', openSettings);
+  $('settings-close').addEventListener('click', () => $('settings-dialog').close());
+  $('pref-hints').addEventListener('change', event => updatePref('hints', event.target.checked));
+  $('pref-keys').addEventListener('change', event => updatePref('keys', event.target.checked));
   // 返回：答题中先退到本科目首页，科目首页再退回科目目录。
   $('back-button').addEventListener('click', goBack);
-  $('main').addEventListener('keydown', handleKeys);
+  // 绑定在 document 上：页面重绘、按钮被移除后快捷键仍然有效。
+  document.addEventListener('keydown', handleKeys);
 }
 
 function goBack() {
@@ -887,46 +1012,63 @@ function goBack() {
 }
 
 function handleKeys(event) {
-  if (event.target.matches('input, textarea')) return;
-  if (!session) return;
+  if (!prefs.keys || !session) return;
+  if (event.isComposing || event.keyCode === 229) return;
+  if (event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+  if (document.querySelector('dialog[open]')) return;
+  const target = event.target;
+  if (target && target.closest && target.closest('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+  // 聚焦按钮或链接时，Enter / 空格交给原生点击，避免同一动作触发两次。
+  if ((event.key === 'Enter' || event.key === ' ') && target && target.closest && target.closest('button, a')) return;
+  if (event.repeat) return;
+  const action = keyAction(event.key);
+  if (!action) return;
+  event.preventDefault();
+  runKeyAction(...action);
+}
+
+function keyAction(key) {
   const entry = currentEntry();
-  if (!entry) return;
+  if (!entry) return null;
   const {card} = entry;
-  if (event.key === ' ' && card.type === 'qa' && session.phase === 'question') {
-    event.preventDefault();
-    session.phase = 'answer';
-    renderSession(false);
-    return;
-  }
-  if (session.phase === 'answer') {
-    if (['1', '2', '3'].includes(event.key)) {
-      event.preventDefault();
-      rate(Number(event.key));
-    }
-    return;
-  }
-  if (event.key === 'Enter') {
-    event.preventDefault();
-    if (session.phase === 'feedback') nextCard();
-    else if (card.type === 'multi' && session.selected.size) submitAnswer();
-    return;
-  }
-  if (session.phase !== 'question' || card.type === 'qa') return;
-  const key = event.key.toUpperCase();
+  if (session.phase === 'feedback') return key === 'Enter' ? ['next'] : null;
+  if (session.phase === 'answer') return ['1', '2', '3'].includes(key) ? ['rate', Number(key)] : null;
+  if (card.type === 'qa') return key === ' ' || key === 'Enter' ? ['reveal'] : null;
+  if (card.type === 'multi' && key === 'Enter') return session.selected.size ? ['submit'] : null;
+  const letter = shortcutLetter(card, key);
+  return letter ? ['choose', letter] : null;
+}
+
+// 主用数字 1–4 对应选项行序；保留 A–D 与判断题的 T/F 作为兼容。
+function shortcutLetter(card, key) {
+  if (key.length !== 1) return null;
+  const letter = key.toUpperCase();
   if (card.type === 'judge') {
-    if (key === 'T' || key === 'A' || key === '1') { event.preventDefault(); chooseOption('T'); }
-    if (key === 'F' || key === 'B' || key === '2') { event.preventDefault(); chooseOption('F'); }
-    return;
+    if (letter === 'A' || letter === 'T' || key === '1') return 'T';
+    if (letter === 'B' || letter === 'F' || key === '2') return 'F';
+    return null;
   }
-  if (optionList(card).some(option => option.k === key)) {
-    event.preventDefault();
-    chooseOption(key);
+  if (/^[1-9]$/.test(key)) {
+    const option = optionList(card)[Number(key) - 1];
+    return option ? option.k : null;
   }
+  return optionList(card).some(option => option.k === letter) ? letter : null;
+}
+
+function runKeyAction(action, argument) {
+  if (busy) return;
+  if (action === 'choose') chooseOption(argument);
+  if (action === 'submit') void submitAnswer();
+  if (action === 'reveal') { session.phase = 'answer'; renderSession(false); }
+  if (action === 'rate') void rate(argument);
+  if (action === 'next') nextCard();
 }
 
 async function boot() {
   bindControls();
   await loadProgress();
+  $('data-button').hidden = !PAGE_COURSE;
+  $('settings-button').hidden = !PAGE_COURSE;
   const deckId = params.get('deck');
   if (deckId && DECKS.decks.some(deck => deck.id === deckId)) {
     startSession('practice', deckId);
