@@ -28,6 +28,8 @@
   .brand span { color: var(--blue); margin-right: 8px; }
   .top-actions, .row, .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
   .top-actions button { padding: 8px 12px; font-size: 14px; }
+.top-actions .ghost-link { padding: 8px 12px; font-size: 14px; color: var(--blue); text-decoration: none; border-radius: 8px; }
+.top-actions .ghost-link:hover { text-decoration: underline; }
   main { padding: 16px 0 40px; }
   main > * + * { margin-top: 24px; }
   .muted { color: var(--muted); font-size: 14px; }
@@ -103,6 +105,7 @@
     <nav class="top-actions" aria-label="主导航">
       <button id="home-button" type="button" disabled>题库</button>
       <button id="backup-button" type="button" disabled>进度备份</button>
+      <a class="ghost-link" href="https://github.com/yz1128/beikao/issues/new/choose" target="_blank" rel="noopener">报错 / 补题</a>
     </nav>
   </header>
   <div id="notice" class="notice" role="alert" hidden>
