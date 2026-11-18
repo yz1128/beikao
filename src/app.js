@@ -352,81 +352,42 @@ function renderHome() {
 }
 
 // 科目目录：每个科目一张卡，点进去才是该科目的独立页面。
-// 目录页只读地看一眼某科目的进度存量，读不到就返回 0。
-const knownCache = Object.create(null);
-
-function readKnownCount(slug) {
-  if (slug in knownCache) return knownCache[slug];
-  knownCache[slug] = 0;
-  fetchKnown(slug);
-  return 0;
-}
-
-async function fetchKnown(slug) {
-  try {
-    const db = await new Promise((resolve, reject) => {
-      const request = indexedDB.open(`beikao-${slug}-v1`, 1);
-      request.onupgradeneeded = () => request.result.createObjectStore('progress');
-      request.onerror = () => reject(new Error('不可读'));
-      request.onsuccess = () => resolve(request.result);
-    });
-    if (!db.objectStoreNames.contains('progress')) { db.close(); return; }
-    const raw = await new Promise((resolve, reject) => {
-      const tx = db.transaction('progress', 'readonly');
-      const get = tx.objectStore('progress').get('snapshot');
-      tx.oncomplete = () => { db.close(); resolve(get.result); };
-      tx.onerror = () => { db.close(); reject(new Error('读失败')); };
-    });
-    const n = raw ? Object.keys(JSON.parse(raw)).length : 0;
-    if (n === knownCache[slug]) return;
-    knownCache[slug] = n;
-    renderHome();
-  } catch { /* 没做过题的科目没有库，属正常情况。 */ }
-}
-
+// 科目目录：只放科目名与项目介绍，进度和入口都在各自科目页里。
 function renderCatalog() {
   const wrap = element('div', 'stack-32');
   const hero = element('section', 'hero');
-  hero.append(element('h1', '', '选择科目'));
+  hero.append(element('p', 'eyebrow', '科目'));
+  if (SITE && SITE.intro) hero.append(element('p', 'intro', SITE.intro));
   wrap.append(hero);
+
   const list = element('div', 'course-list');
   (CATALOG || []).forEach(item => {
     const card = element('a', 'course-card');
     card.href = item.file;
     const head = element('div', 'course-head');
     const text = element('div');
-    text.append(element('p', 'course-name', item.name));
+    text.append(
+      element('p', 'course-name', item.name),
+      element('p', 'course-desc', item.desc || '')
+    );
+    if (item.tags && item.tags.length) {
+      const tags = element('div', 'tag-row');
+      item.tags.forEach(label => {
+        const tag = element('span', 'tiny-tag');
+        const [word, num] = label.split(' ');
+        tag.append(document.createTextNode(word + ' '), element('b', '', num || ''));
+        tags.append(tag);
+      });
+      text.append(tags);
+    }
     const arrow = element('span', 'course-arrow');
     arrow.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
     head.append(text, arrow);
     card.append(head);
-    // 每个科目的进度存在自己的库里，目录页读不到，这里只报规模。
-    const known = readKnownCount(item.slug);
-    const row = element('div', 'meter-row');
-    row.append(meter(known, item.cards, `${item.name}进度`), element('span', '', `${known} / ${item.cards}`));
-    card.append(row);
     list.append(card);
   });
   wrap.append(list);
   return wrap;
-}
-
-function renderHero() {
-  const box = element('section', 'hero');
-  const pool = typedPool(entries);
-  const known = pool.filter(entry => states[entry.key]).length;
-  const head = element('div', 'hero-head');
-  const left = element('div');
-  left.append(element('p', 'eyebrow', '总进度'), element('p', 'hero-stat', `${known} / ${pool.length}`));
-  head.append(left);
-  if (typeFilter) {
-    const clear = element('button', 'text-btn', '取消筛选');
-    clear.type = 'button';
-    clear.addEventListener('click', () => { typeFilter = null; updateUrl(); renderHome(); });
-    head.append(clear);
-  }
-  box.append(head, meter(known, Math.max(1, pool.length), '总进度'));
-  return box;
 }
 
 function renderToday() {

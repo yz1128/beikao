@@ -32,12 +32,13 @@ PAGES = {
 LINKS = {name: filename for filename, (name, _) in PAGES.items() if name}
 
 
-def render_shell(shell, css, js, decks, course, slug, catalog):
+def render_shell(shell, css, js, decks, course, slug, catalog, site):
     meta = (
         f"const PAGE_COURSE = {json.dumps(course, ensure_ascii=False) if course else 'null'};\n"
         f"const PAGE_SLUG = {json.dumps(slug)};\n"
         f"const PAGE_LINKS = {json.dumps(LINKS, ensure_ascii=False)};\n"
-        f"const CATALOG = {json.dumps(catalog, ensure_ascii=False)};"
+        f"const CATALOG = {json.dumps(catalog, ensure_ascii=False)};\n"
+        f"const SITE = {json.dumps(site, ensure_ascii=False)};"
     )
     payload = json.dumps(decks, ensure_ascii=False, indent=1).replace("</", "<\\/")
     out = shell.replace(CSS_MARK, css).replace(JS_MARK, js)
@@ -69,13 +70,25 @@ def main():
     total = sum(len(d["cards"]) for d in data["decks"])
     print(f"题库 {len(data['decks'])} 个 / {total} 张卡")
 
-    # 目录页要显示每个科目的卡片数
+    # 目录页的数据：科目文案来自 src/courses.json，规模数字从题库统计
+    meta = json.load(open(os.path.join(SRC, "courses.json"), encoding="utf-8"))
+    copies = {item["name"]: item for item in meta.get("courses", [])}
     catalog = []
     for name, filename in LINKS.items():
         cards = sum(len(d["cards"]) for d in data["decks"] if d["course"] == name)
         decks_count = sum(1 for d in data["decks"] if d["course"] == name)
         slug = next(s for f, (n, s) in PAGES.items() if n == name)
-        catalog.append({"name": name, "file": filename, "cards": cards, "decks": decks_count, "slug": slug})
+        item = copies.get(name, {})
+        catalog.append({
+            "name": name,
+            "file": filename,
+            "cards": cards,
+            "decks": decks_count,
+            "slug": slug,
+            "desc": item.get("desc", ""),
+            "tags": item.get("tags", []),
+        })
+    site = {"title": meta.get("title", "备考"), "intro": meta.get("intro", "")}
 
     for filename, (course, slug) in PAGES.items():
         subset = dict(data)
@@ -84,7 +97,7 @@ def main():
         if course is None:
             subset["decks"] = []
         count = sum(len(d["cards"]) for d in subset["decks"])
-        html = render_shell(shell, css, js, subset, course, slug, catalog)
+        html = render_shell(shell, css, js, subset, course, slug, catalog, site)
         path = os.path.join(ROOT, filename)
         open(path, "w", encoding="utf-8").write(html)
         label = course or "科目目录"
