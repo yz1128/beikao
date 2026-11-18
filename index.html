@@ -160,7 +160,15 @@ main {
   padding: 20px 16px 40px;
   outline: none;
 }
-main.is-session { padding-top: 0; }
+main.is-session {
+  display: flex;
+  flex-direction: column;
+  padding-top: 0;
+  min-height: calc(100vh - 56px);
+  min-height: calc(100dvh - 56px);
+}
+/* 内容短时把操作条压到视口底部，长内容时照常跟随 */
+main.is-session > .actionbar { margin-top: auto; padding-top: 20px; }
 
 /* ---------- 通用块 ---------- */
 
@@ -970,7 +978,7 @@ const PAGE_COURSE = null;
 const PAGE_SLUG = "all";
 const PAGE_LINKS = {"新中特": "zhongte.html", "自然辩证法": "ziran.html"};
 const PAGE_HOME = 'index.html';
-const CATALOG = [{"name": "新中特", "file": "zhongte.html", "cards": 525, "decks": 2, "slug": "zhongte", "desc": "章节测试与三轮背诵指南，按记忆曲线安排复习。"}, {"name": "自然辩证法", "file": "ziran.html", "cards": 162, "decks": 2, "slug": "ziran", "desc": "一页纸背诵版、选择与判断、简答论述，按讲次组织。"}];
+const CATALOG = [{"name": "新中特", "file": "zhongte.html", "cards": 525, "decks": 2, "slug": "zhongte", "desc": "章节测试与三轮背诵指南，按记忆曲线安排复习。"}, {"name": "自然辩证法", "file": "ziran.html", "cards": 162, "decks": 3, "slug": "ziran", "desc": "选择判断与简答背诵，另附一页纸考前速览。"}];
 const SITE = {"title": "备考", "intro": "新中特与自然辩证法两门课的背诵与刷题。卡片按章节组织，答错的题进错题本，复习间隔按记忆曲线安排。进度只存在本机。"};
 /*@PAGE_META_END@*/
 </script>
@@ -1029,6 +1037,9 @@ const entries = DECKS.decks.flatMap(deck =>
   (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])}))
 );
 
+// 独立题库（考前速览之类）不进总进度、今日、按题型，只在题库区单列。
+const coreEntries = entries.filter(entry => !entry.deck.standalone);
+
 const courseName = PAGE_COURSE || '备考';
 
 // 卡片声明的题型优先；老数据没有 kind 时退回内部 type。
@@ -1039,7 +1050,7 @@ function kindOf(card) {
 // 各科目实际出现的题型，按固定顺序排，缺的自动略过。
 function typeOrder() {
   const wanted = COURSE_TYPES[courseName] || ALL_TYPES;
-  return wanted.filter(kind => entries.some(entry => kindOf(entry.card) === kind));
+  return wanted.filter(kind => coreEntries.some(entry => kindOf(entry.card) === kind));
 }
 const dbName = `beikao-${PAGE_SLUG || 'all'}-v1`;
 const LEGACY_DB = PAGE_COURSE ? 'beikao-progress-v1' : null;
@@ -1367,7 +1378,7 @@ function renderHome() {
 
 function renderHero() {
   const box = element('section', 'hero');
-  const pool = typedPool(entries);
+  const pool = typedPool(coreEntries);
   const known = pool.filter(entry => states[entry.key]).length;
   const head = element('div', 'hero-head');
   const left = element('div');
@@ -1487,7 +1498,7 @@ async function hydrateCatalog(list) {
 }
 
 function renderToday() {
-  const pool = typedPool(entries);
+  const pool = typedPool(coreEntries);
   const due = reviewQueue(pool).length;
   const wrong = pool.filter(entry => states[entry.key]?.wrong).length;
   const card = element('section', 'today');
@@ -1545,7 +1556,7 @@ function renderTypes() {
   label.append(element('h2', '', '按题型背'));
   const grid = element('div', 'chip-grid');
   typeOrder().forEach(type => {
-    const part = entries.filter(entry => kindOf(entry.card) === type);
+    const part = coreEntries.filter(entry => kindOf(entry.card) === type);
     if (!part.length) return;
     const chip = element('button', 'chip');
     chip.type = 'button';
@@ -1565,9 +1576,11 @@ function renderTypes() {
 }
 
 // 题库副标题：总数 + 题型分布（多于一种题型时才列）。
-function deckSub(pool, known) {
+function deckSub(deck, pool, known) {
   const kinds = typeOrder().filter(kind => pool.some(entry => kindOf(entry.card) === kind));
-  const mix = kinds.length > 1 ? ' · ' + kinds.map(kind => TYPE_LABEL[kind]).join('/') : '';
+  const custom = deck.standalone && deck.desc ? deck.desc : '';
+  const mix = custom ? ' · ' + custom
+    : kinds.length > 1 ? ' · ' + kinds.map(kind => TYPE_LABEL[kind]).join('/') : '';
   const learned = known ? ` · 已学 ${known}` : '';
   return `${pool.length} 张${mix}${learned}`;
 }
@@ -1588,7 +1601,7 @@ function renderDecks() {
     const text = element('div');
     text.append(
       element('p', 'deck-title', deck.title.replace(/\s*\d+\s*题$/, '')),
-      element('p', 'deck-sub', deckSub(pool, known))
+      element('p', 'deck-sub', deckSub(deck, pool, known))
     );
     const arrow = element('span', 'course-arrow');
     arrow.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
@@ -1604,7 +1617,7 @@ function renderDecks() {
 /* ---------- 会话 ---------- */
 
 function startSession(kind, deckId) {
-  const base = deckId ? entries.filter(entry => entry.deck.id === deckId) : entries;
+  const base = deckId ? entries.filter(entry => entry.deck.id === deckId) : coreEntries;
   const pool = typedPool(base);
   let queue = kind === 'review' ? reviewQueue(pool)
     : kind === 'mistakes' ? practiceQueue(pool.filter(entry => states[entry.key]?.wrong))
@@ -1666,7 +1679,7 @@ function renderQuestion(entry) {
   const section = element('section');
   const head = element('div', 'q-head');
   head.append(
-    element('span', 'tag', TYPE_LABEL[kindOf(card)]),
+    element('span', 'tag', deck.standalone ? '速览' : TYPE_LABEL[kindOf(card)]),
     element('span', 'tag tag-neutral', card.num ? `第 ${card.num} 题` : deck.title),
     element('span', 'q-count', `${session.index + 1} / ${session.queue.length}`)
   );
