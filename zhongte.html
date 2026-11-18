@@ -3,139 +3,778 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#101114">
-<title>备考 · 题库</title>
-<style>
-  :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #101114; color: #f4f5f7; --blue: #3595ff; --muted: #a1a6b0; --line: #30333b; --panel: #1b1d23; }
-  * { box-sizing: border-box; }
-  body { margin: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); font-size: 16px; line-height: 1.6; }
-  button, textarea, input { font: inherit; }
-  button { min-height: 48px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #272a32; color: inherit; cursor: pointer; touch-action: manipulation; }
-  button:hover:not(:disabled) { background: #333742; }
-  button:disabled { cursor: default; opacity: .6; }
-  button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 3px solid #8bc2ff; outline-offset: 4px; }
-  button.primary { background: #1478df; border-color: #1478df; color: #fff; font-weight: 650; }
-  button.primary:hover:not(:disabled) { background: #2389f1; }
-  button.quiet { background: transparent; color: var(--blue); }
-  h1, h2, h3, p { margin: 0; }
-  h1 { font-size: clamp(28px, 6vw, 36px); line-height: 1.25; letter-spacing: -.6px; }
-  h2 { font-size: 20px; line-height: 1.4; }
-  h3 { font-size: 18px; }
-  p, h1, h2, h3, button, small { overflow-wrap: anywhere; }
-  .shell { width: min(100% - 40px, 800px); margin: auto; }
-  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 88px; }
-  .brand { font-size: 20px; font-weight: 750; letter-spacing: 2px; }
-  .brand span { color: var(--blue); margin-right: 8px; }
-  .top-actions, .row, .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
-  .top-actions button { padding: 8px 12px; font-size: 14px; }
-.top-actions .ghost-link { padding: 8px 12px; font-size: 14px; color: var(--blue); text-decoration: none; border-radius: 8px; }
-.top-actions .ghost-link:hover { text-decoration: underline; }
-  main { padding: 16px 0 40px; }
-  main > * + * { margin-top: 24px; }
-  .muted { color: var(--muted); font-size: 14px; }
-  .today { padding: 24px; background: #18283e; border: 1px solid #294769; border-radius: 24px; }
-  .today strong { display: block; font-size: 40px; line-height: 1.3; margin: 8px 0 4px; }
-  .today .actions { margin-top: 20px; }
-  .today .actions button { flex: 1; }
-  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
-  .segment { display: flex; gap: 4px; background: #202229; padding: 4px; border-radius: 14px; }
-  .segment button { padding: 8px 16px; border: 0; background: transparent; }
-  .segment button[aria-pressed="true"] { background: #3a3e49; color: #fff; }
-  .course > h2 { margin-bottom: 12px; }
-  .deck-grid { display: grid; gap: 12px; }
-  .deck { background: var(--panel); padding: 20px; border: 1px solid var(--line); border-radius: 20px; min-width: 0; }
-  .deck h3 { margin-bottom: 8px; }
-  .deck .count { margin: 16px 0 8px; color: var(--muted); font-size: 14px; }
-  .deck .actions { margin-top: 16px; }
-  .deck .actions button { flex: 1 1 100px; }
-  progress { width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; background: #343741; accent-color: var(--blue); display: block; }
-  progress::-webkit-progress-bar { background: #343741; }
-  progress::-webkit-progress-value { background: var(--blue); border-radius: 8px; }
-  progress::-moz-progress-bar { background: var(--blue); }
-  .empty { padding: 40px 20px; background: var(--panel); border-radius: 24px; text-align: center; }
-  .empty p { color: var(--muted); margin: 12px 0 24px; }
-  .session-head .row { justify-content: space-between; margin-bottom: 12px; }
-  .badge { display: inline-block; font-size: 13px; color: #bcdcff; padding: 4px 12px; border-radius: 8px; background: #20354f; }
-  .question { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 24px 20px; }
-  .question h2 { font-size: 21px; line-height: 1.7; font-weight: 600; white-space: pre-wrap; margin-top: 16px; }
-  .source { margin-top: 16px; }
-  .options { display: grid; gap: 12px; margin-top: 24px; }
-  .option { display: flex; align-items: flex-start; gap: 12px; text-align: left; padding: 16px; width: 100%; white-space: pre-wrap; }
-  .option .letter { flex: 0 0 28px; font-weight: 700; color: var(--muted); }
-  .option.selected { background: #1b3455; border-color: var(--blue); }
-  .option.correct { border-color: var(--blue); background: #1b3455; }
-  .option.incorrect { border-style: dashed; border-color: #e0a36b; }
-  .option:disabled { opacity: 1; }
-  .option small { display: block; margin-top: 8px; color: #bddcff; font-size: 13px; }
-  .feedback { padding: 20px; border: 1px solid #36577f; background: #19283b; border-radius: 20px; }
-  .feedback p + p { margin-top: 12px; }
-  .explanation { white-space: pre-wrap; overflow-wrap: anywhere; }
-  .answer { white-space: pre-wrap; max-height: min(38vh, 320px); overflow-y: auto; overscroll-behavior: contain; padding: 20px; background: #22252c; border: 1px solid var(--line); border-radius: 16px; margin-top: 20px; overflow-wrap: anywhere; }
-  .rating { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
-  .rating button { padding: 12px 4px; }
-  .wide { width: 100%; }
-  .session-actions { display: grid; gap: 12px; }
-  .notice { background: #33291d; color: #f4d6b0; border: 1px solid #715338; border-radius: 16px; padding: 12px 16px; margin-bottom: 12px; }
-  .notice .row { justify-content: space-between; }
-  [hidden] { display: none !important; }
-  footer { padding: 0 0 24px; color: var(--muted); font-size: 12px; }
-  dialog { color: inherit; background: #1b1d23; border: 1px solid var(--line); border-radius: 24px; padding: 24px; width: min(100% - 32px, 600px); max-height: 85vh; overflow-y: auto; }
-  dialog::backdrop { background: #000a; }
-  dialog > * + * { margin-top: 16px; }
-  dialog .row { justify-content: space-between; }
-  textarea { display: block; width: 100%; min-height: 160px; resize: vertical; background: #101114; color: inherit; border: 1px solid #545a66; border-radius: 12px; padding: 12px; margin-top: 8px; }
-  .check { display: flex; align-items: center; gap: 12px; min-height: 48px; }
-  input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--blue); }
-  .skip { position: absolute; top: -100px; left: 12px; background: #1478df; color: #fff; padding: 12px; z-index: 5; }
-  .skip:focus { top: 12px; }
-  @media (min-width: 640px) {
-    .deck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
-    .question { padding: 32px; }
-  }
-  .course-links { display: flex; gap: 4px; }
-  .course-links a { padding: 8px 12px; font-size: 14px; color: var(--muted); text-decoration: none; border-radius: 8px; }
-  .course-links a[aria-current="page"] { color: #fff; background: #3a3e49; }
-  .course-links a:hover { color: #fff; }
-  @media (max-width: 520px) {
-    .course-links a { padding: 8px 6px; font-size: 13px; }
-    .top-actions { gap: 2px; }
-  }
-  .type-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
-  .type-row button { padding: 6px 12px; font-size: 13px; background: #202229; border: 1px solid var(--line); }
-  .type-row button:hover { background: #2a2d35; }
-  @media (prefers-reduced-motion: no-preference) {
-    button { transition: background-color .12s ease; }
-  }
+<meta name="theme-color" content="#0b0d10">
+<meta name="description" content="离线背诵与刷题">
+<title>备考</title>
+<style>/* 备考 · 极简深色主题
+   设计约束：
+   - 只用一套圆角阶梯（8/12/16/22），不混用
+   - 只用一套字号阶梯（11/12/13/15/17/20/32）
+   - 只有一个主色，其余靠明度分层
+   - 8pt 间距网格 */
+
+:root {
+  color-scheme: dark;
+  --bg: #0b0d10;
+  --surface: #14171c;
+  --surface-2: #1a1e25;
+  --surface-3: #222831;
+  --border: #262c36;
+  --border-soft: #232a34;
+
+  --text: #e9ecf1;
+  --text-2: #a6aebb;
+  --text-3: #7b8494;
+
+  --accent: #4c8dff;
+  --accent-hover: #5f9aff;
+  --accent-soft: rgba(76, 141, 255, .13);
+
+  --ok: #34c77b;
+  --ok-soft: rgba(52, 199, 123, .12);
+  --bad: #f2545b;
+  --bad-soft: rgba(242, 84, 91, .12);
+  --warn: #e8a33d;
+
+  --r1: 8px;
+  --r2: 12px;
+  --r3: 16px;
+  --r4: 22px;
+
+  --font: system-ui, -apple-system, "Segoe UI", "PingFang SC", "Noto Sans SC", "Microsoft YaHei", sans-serif;
+}
+
+* { box-sizing: border-box; }
+
+html { -webkit-text-size-adjust: 100%; }
+
+body {
+  margin: 0;
+  min-height: 100vh;
+  background: var(--bg);
+  color: var(--text);
+  font-family: var(--font);
+  font-size: 15px;
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  text-rendering: optimizeLegibility;
+}
+
+button {
+  font: inherit;
+  color: inherit;
+  background: none;
+  border: 0;
+  cursor: pointer;
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:disabled { cursor: not-allowed; opacity: .45; }
+
+a { color: inherit; }
+
+h1, h2, h3, p { margin: 0; }
+
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+  border-radius: 4px;
+}
+
+.skip {
+  position: absolute;
+  left: 12px;
+  top: -80px;
+  z-index: 20;
+  padding: 10px 14px;
+  background: var(--accent);
+  color: #fff;
+  border-radius: var(--r1);
+  text-decoration: none;
+}
+.skip:focus { top: 12px; }
+
+/* ---------- 骨架 ---------- */
+
+.app {
+  width: 100%;
+  max-width: 620px;
+  margin: 0 auto;
+  min-height: 100vh;
+  display: flex;
+  flex-direction: column;
+}
+
+.topbar {
+  position: sticky;
+  top: 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 56px;
+  padding: 0 16px;
+  background: rgba(11, 13, 16, .82);
+  backdrop-filter: blur(14px);
+  -webkit-backdrop-filter: blur(14px);
+  border-bottom: 1px solid var(--border-soft);
+}
+
+.topbar-title {
+  flex: 1;
+  min-width: 0;
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.icon-btn {
+  display: grid;
+  place-items: center;
+  width: 38px;
+  height: 38px;
+  flex: 0 0 auto;
+  color: var(--text-2);
+  border-radius: var(--r2);
+}
+.icon-btn[hidden] { display: none; }
+button[hidden] { display: none; }
+.icon-btn:hover { color: var(--text); background: var(--surface-2); }
+.icon-btn svg { width: 19px; height: 19px; display: block; }
+
+.text-btn {
+  flex: 0 0 auto;
+  padding: 7px 11px;
+  font-size: 13px;
+  color: var(--text-2);
+  border-radius: var(--r1);
+  text-decoration: none;
+}
+.text-btn:hover { color: var(--text); background: var(--surface-2); }
+
+main {
+  flex: 1;
+  padding: 20px 16px 40px;
+  outline: none;
+}
+main.is-session { padding-top: 0; }
+
+/* ---------- 通用块 ---------- */
+
+.eyebrow {
+  font-size: 12px;
+  font-weight: 600;
+  letter-spacing: .8px;
+  text-transform: uppercase;
+  color: var(--text-3);
+}
+
+.muted { color: var(--text-2); font-size: 13px; line-height: 1.55; }
+
+.caption { color: var(--text-3); font-size: 12px; }
+
+.card {
+  padding: 18px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r3);
+}
+
+.stack-16 > * + * { margin-top: 16px; }
+.stack-12 > * + * { margin-top: 12px; }
+.stack-24 > * + * { margin-top: 24px; }
+.stack-32 > * + * { margin-top: 32px; }
+
+.section-label {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+.section-label h2 {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: .2px;
+}
+.section-label span { font-size: 12px; color: var(--text-3); }
+
+/* ---------- 按钮 ---------- */
+
+.btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  gap: 7px;
+  min-height: 46px;
+  padding: 0 18px;
+  font-size: 15px;
+  font-weight: 600;
+  border-radius: var(--r2);
+  transition: background-color .14s ease, border-color .14s ease, transform .06s ease;
+}
+.btn:active:not(:disabled) { transform: scale(.985); }
+
+.btn-primary {
+  background: var(--accent);
+  color: #fff;
+}
+.btn-primary:hover:not(:disabled) { background: var(--accent-hover); }
+
+.btn-secondary {
+  background: var(--surface-2);
+  color: var(--text);
+  border: 1px solid var(--border);
+}
+.btn-secondary:hover:not(:disabled) { background: var(--surface-3); }
+
+.btn-quiet {
+  background: transparent;
+  color: var(--text-2);
+  border: 1px solid var(--border);
+}
+.btn-quiet:hover:not(:disabled) { color: var(--text); background: var(--surface-2); }
+
+.btn-block { display: flex; width: 100%; }
+.btn-sm { min-height: 38px; padding: 0 14px; font-size: 13px; }
+
+.btn-row { display: flex; gap: 10px; }
+.btn-row > .btn { flex: 1; }
+
+/* ---------- 科目目录（首页） ---------- */
+
+.hero {
+  padding: 8px 0 4px;
+}
+.hero h1 {
+  font-size: 32px;
+  font-weight: 700;
+  letter-spacing: -.6px;
+  line-height: 1.2;
+}
+.hero p { margin-top: 8px; color: var(--text-2); font-size: 14px; }
+.hero-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.hero .meter { height: 6px; margin-top: 10px; }
+.hero-stat {
+  font-size: 22px;
+  font-weight: 650;
+  letter-spacing: -.3px;
+  color: var(--text);
+  font-variant-numeric: tabular-nums;
+}
+
+.course-list { display: grid; gap: 12px; }
+
+.course-card {
+  display: block;
+  width: 100%;
+  padding: 20px;
+  text-align: left;
+  text-decoration: none;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r3);
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.course-card:hover {
+  background: var(--surface-2);
+  border-color: var(--border);
+}
+
+.course-head {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+.course-name {
+  font-size: 20px;
+  font-weight: 650;
+  letter-spacing: -.2px;
+}
+.course-meta {
+  margin-top: 6px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+.course-arrow {
+  flex: 0 0 auto;
+  color: var(--text-3);
+  margin-top: 2px;
+}
+.course-card:hover .course-arrow { color: var(--accent); }
+
+/* ---------- 进度条 ---------- */
+
+.meter {
+  display: block;
+  width: 100%;
+  height: 4px;
+  margin-top: 14px;
+  background: var(--surface-3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+.meter > i {
+  display: block;
+  height: 100%;
+  background: var(--accent);
+  border-radius: 999px;
+}
+
+.meter-row {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  margin-top: 12px;
+}
+.meter-row .meter { margin-top: 0; flex: 1; }
+.meter-row span {
+  flex: 0 0 auto;
+  font-size: 12px;
+  color: var(--text-2);
+  font-variant-numeric: tabular-nums;
+}
+
+/* ---------- 今日复习 ---------- */
+
+.today {
+  padding: 22px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r4);
+}
+
+.today-top {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+}
+
+.today-num {
+  font-size: 40px;
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -1.6px;
+  font-variant-numeric: tabular-nums;
+}
+.today-num small {
+  font-size: 15px;
+  font-weight: 600;
+  letter-spacing: 0;
+  color: var(--text);
+  margin-left: 6px;
+  opacity: .7;
+}
+
+.today-label {
+  margin-top: 8px;
+  font-size: 13px;
+  color: var(--text-2);
+}
+
+.today .btn-block { margin-top: 18px; }
+
+/* ---------- 题型 / 题库 ---------- */
+
+.chip-grid {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 8px;
+  align-items: stretch;
+}
+
+.chip {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  min-height: 50px;
+  height: 100%;
+  padding: 0 14px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r2);
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.chip:hover { background: var(--surface-2); border-color: var(--border); }
+.chip[aria-pressed="true"] {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.chip[aria-pressed="true"] .chip-count { color: var(--accent); }
+.chip-label { font-size: 14px; font-weight: 500; }
+.chip-count {
+  font-size: 13px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.deck-card {
+  display: block;
+  width: 100%;
+  padding: 16px 18px;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r3);
+  transition: border-color .14s ease, background-color .14s ease;
+}
+.deck-card:hover { background: var(--surface-2); border-color: var(--border); }
+.deck-card + .deck-card { margin-top: 10px; }
+
+.deck-row {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+}
+.deck-row > div:first-child { flex: 1; min-width: 0; }
+.deck-title { font-size: 15px; font-weight: 600; }
+.deck-sub { margin-top: 3px; font-size: 12px; color: var(--text-2); }
+
+/* ---------- 答题 ---------- */
+
+.session-progress {
+  position: sticky;
+  top: 56px;
+  z-index: 9;
+  height: 2px;
+  background: var(--border-soft);
+}
+.session-progress > i {
+  display: block;
+  height: 100%;
+  width: 0;
+  background: var(--accent);
+  transition: width .2s ease;
+}
+
+.q-head {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 18px 0 12px;
+}
+
+.tag {
+  padding: 3px 9px;
+  font-size: 12px;
+  font-weight: 600;
+  color: var(--accent);
+  background: var(--accent-soft);
+  border-radius: 999px;
+}
+.tag-neutral {
+  color: var(--text-2);
+  background: var(--surface-2);
+}
+
+.q-count {
+  margin-left: auto;
+  font-size: 12px;
+  color: var(--text-3);
+  font-variant-numeric: tabular-nums;
+}
+
+.q-text {
+  font-size: 20px;
+  font-weight: 600;
+  line-height: 1.5;
+  letter-spacing: -.2px;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.q-hint { margin-top: 10px; }
+
+.options { display: grid; gap: 8px; margin-top: 20px; }
+
+.option {
+  display: flex;
+  align-items: flex-start;
+  gap: 12px;
+  width: 100%;
+  padding: 14px;
+  text-align: left;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r2);
+  line-height: 1.5;
+  transition: border-color .12s ease, background-color .12s ease;
+}
+.option:hover:not(:disabled) { background: var(--surface-2); border-color: var(--border); }
+
+.option .letter {
+  flex: 0 0 auto;
+  display: grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-top: -1px;
+  font-size: 13px;
+  font-weight: 700;
+  color: var(--text-2);
+  background: var(--surface-3);
+  border-radius: var(--r1);
+}
+.option .body { flex: 1; min-width: 0; word-break: break-word; }
+.option .flag {
+  display: block;
+  margin-top: 4px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.option.selected {
+  background: var(--accent-soft);
+  border-color: var(--accent);
+}
+.option.selected .letter { color: #fff; background: var(--accent); }
+
+.option.correct {
+  background: var(--ok-soft);
+  border-color: var(--ok);
+}
+.option.correct .letter { color: #fff; background: var(--ok); }
+.option.correct .flag { color: var(--ok); }
+
+.option.incorrect {
+  background: var(--bad-soft);
+  border-color: var(--bad);
+}
+.option.incorrect .letter { color: #fff; background: var(--bad); }
+.option.incorrect .flag { color: var(--bad); }
+
+.feedback {
+  margin-top: 22px;
+  padding: 14px 16px;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-left: 3px solid var(--ok);
+  border-radius: var(--r2);
+}
+.feedback.bad { border-left-color: var(--bad); }
+.feedback-title {
+  font-size: 14px;
+  font-weight: 650;
+  color: var(--ok);
+}
+.feedback.bad .feedback-title { color: var(--bad); }
+.feedback-text {
+  margin-top: 6px;
+  font-size: 14px;
+  line-height: 1.6;
+  color: var(--text-2);
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.answer {
+  margin-top: 20px;
+  padding: 18px;
+  max-height: 46vh;
+  overflow: auto;
+  background: var(--surface);
+  border: 1px solid var(--border-soft);
+  border-radius: var(--r3);
+  font-size: 15px;
+  line-height: 1.75;
+  white-space: pre-wrap;
+  word-break: break-word;
+}
+
+.source {
+  margin-top: 18px;
+  font-size: 12px;
+  color: var(--text-3);
+}
+
+.pad { padding-bottom: 12px; }
+
+/* ---------- 底部操作条 ---------- */
+
+.actionbar {
+  position: sticky;
+  bottom: 0;
+  z-index: 8;
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  margin: 20px -16px 0;
+  padding: 16px 16px calc(16px + env(safe-area-inset-bottom, 0px));
+  background: var(--bg);
+  border-top: 1px solid var(--border-soft);
+}
+
+.kbd-hint {
+  margin-top: 10px;
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+}
+
+/* ---------- 完成页 ---------- */
+
+.done {
+  padding: 40px 20px;
+  text-align: center;
+}
+.done-icon {
+  display: grid;
+  place-items: center;
+  width: 56px;
+  height: 56px;
+  margin: 0 auto 18px;
+  color: var(--ok);
+  background: var(--ok-soft);
+  border-radius: 50%;
+}
+.done h2 { font-size: 20px; font-weight: 650; }
+.done p { margin-top: 8px; color: var(--text-2); font-size: 14px; }
+.done .btn-row { margin-top: 24px; }
+
+/* ---------- 空状态 ---------- */
+
+.empty {
+  padding: 36px 20px;
+  text-align: center;
+  color: var(--text-2);
+  font-size: 14px;
+}
+
+/* ---------- 弹窗 ---------- */
+
+dialog {
+  width: min(92vw, 460px);
+  padding: 0;
+  color: var(--text);
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--r4);
+}
+dialog::backdrop { background: rgba(0, 0, 0, .62); }
+
+.dialog-body { padding: 22px; }
+.dialog-body h2 { font-size: 17px; font-weight: 650; }
+.dialog-body .muted { margin-top: 8px; }
+
+.dialog-actions {
+  display: flex;
+  gap: 10px;
+  margin-top: 18px;
+}
+.dialog-actions > .btn { flex: 1; }
+
+.field {
+  display: block;
+  width: 100%;
+  min-height: 96px;
+  margin-top: 14px;
+  padding: 12px;
+  color: var(--text);
+  font: 12px/1.5 ui-monospace, SFMono-Regular, Consolas, monospace;
+  background: var(--bg);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  resize: vertical;
+  word-break: break-all;
+}
+
+/* ---------- 提示条 ---------- */
+
+.toast {
+  position: fixed;
+  left: 50%;
+  bottom: 24px;
+  z-index: 30;
+  max-width: min(90vw, 420px);
+  padding: 12px 16px;
+  font-size: 13px;
+  color: var(--text);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: var(--r2);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, .45);
+  transform: translate(-50%, 12px);
+  opacity: 0;
+  pointer-events: none;
+  transition: opacity .16s ease, transform .16s ease;
+}
+.toast.show { opacity: 1; transform: translate(-50%, 0); }
+
+.foot {
+  padding: 4px 0 0;
+  font-size: 12px;
+  color: var(--text-3);
+  text-align: center;
+}
+
+@media (min-width: 640px) {
+  main { padding: 28px 24px 56px; }
+  .chip-grid { grid-template-columns: repeat(4, minmax(0, 1fr)); }
+  .today-num { font-size: 46px; }
+  .today { padding: 26px; }
+  .q-text { font-size: 22px; }
+  .q-text { max-width: 42em; }
+  .actionbar { margin-left: -24px; margin-right: -24px; padding-left: 24px; padding-right: 24px; }
+}
+
+@media (min-width: 900px) {
+  .app { max-width: 860px; }
+  .hero h1 { font-size: 38px; }
+  .course-list { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+  .today-num { font-size: 52px; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { transition: none !important; animation: none !important; }
+}
 </style>
 </head>
 <body>
 <a class="skip" href="#main">跳到正文</a>
-<div class="shell">
+<div class="app">
   <header class="topbar">
-    <div class="brand"><span aria-hidden="true">▣</span><span id="brand-name">备考</span></div>
-    <nav class="top-actions" aria-label="主导航">
-      <span id="course-links" class="course-links" role="group" aria-label="课程切换"></span>
-      <button id="home-button" type="button" disabled>题库</button>
-      <button id="backup-button" type="button" disabled>进度备份</button>
-      <a class="ghost-link" href="https://github.com/yz1128/beikao/issues/new/choose" target="_blank" rel="noopener">报错 / 补题</a>
-    </nav>
+    <button id="back-button" class="icon-btn" type="button" aria-label="返回科目目录" hidden>
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 18l-6-6 6-6"/></svg>
+    </button>
+    <h1 class="topbar-title" id="topbar-title">备考</h1>
+    <button id="data-button" class="icon-btn" type="button" aria-label="数据管理" title="数据管理">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><ellipse cx="12" cy="5" rx="8" ry="3"/><path d="M4 5v14c0 1.7 3.6 3 8 3s8-1.3 8-3V5"/><path d="M4 12c0 1.7 3.6 3 8 3s8-1.3 8-3"/></svg>
+    </button>
   </header>
-  <div id="notice" class="notice" role="alert" hidden>
-    <div class="row"><p id="notice-text"></p><button id="dismiss" type="button" class="quiet">关闭提示</button></div>
-  </div>
-  <main id="main" tabindex="-1"><p class="muted">正在载入进度…</p></main>
-  <footer><p id="storage-status" role="status" aria-live="polite">正在连接本机存储…</p></footer>
+  <main id="main" tabindex="-1"></main>
 </div>
-<dialog id="backup-dialog" aria-labelledby="backup-title">
-  <div class="row"><h2 id="backup-title">进度备份</h2><button id="close-dialog" type="button" class="quiet">关闭</button></div>
-  <p class="muted">导出后复制到另一台设备。导入会替换全部本机进度，包括已学状态、到期时间和错题本。</p>
-  <label for="backup-text">进度字符串</label>
-  <textarea id="backup-text" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="粘贴备份，或点击下方导出进度"></textarea>
-  <div class="actions"><button id="export-button" type="button">导出进度</button><button id="copy-button" type="button">复制</button></div>
-  <label class="check"><input id="replace-check" type="checkbox">用此备份替换全部本机进度</label>
-  <button id="import-button" type="button" class="primary wide">导入进度</button>
-  <p id="backup-message" role="status" aria-live="polite"></p>
+
+<dialog id="data-dialog" aria-labelledby="data-title">
+  <div class="dialog-body">
+    <h2 id="data-title">数据管理</h2>
+    <p class="muted" id="data-note"></p>
+    <div class="btn-row" style="margin-top:18px">
+      <button class="btn btn-secondary" type="button" id="export-button">导出进度</button>
+      <button class="btn btn-secondary" type="button" id="import-button">导入进度</button>
+    </div>
+    <label class="caption" for="data-field" style="display:block;margin-top:16px">备份文本（导入时粘贴到这里）</label>
+    <textarea class="field" id="data-field" spellcheck="false" placeholder="导出后这段文本可复制保存"></textarea>
+    <div class="dialog-actions">
+      <button class="btn btn-quiet" type="button" id="data-close">关闭</button>
+      <button class="btn btn-primary" type="button" id="data-apply">应用</button>
+    </div>
+    <p class="caption" id="data-status" aria-live="polite" style="margin-top:10px"></p>
+  </div>
 </dialog>
+
+<div class="toast" id="toast" role="status" aria-live="polite"></div>
+
 <script>
 'use strict';
 const DECKS = /*@DECK_DATA@*/{
@@ -10036,212 +10675,293 @@ const DECKS = /*@DECK_DATA@*/{
   }
  ]
 }/*@DECK_DATA_END@*/;
+/*@PAGE_META@*/
+const PAGE_COURSE = "新中特";
+const PAGE_SLUG = "zhongte";
+const PAGE_LINKS = {"新中特": "zhongte.html", "自然辩证法": "ziran.html"};
+const CATALOG = [{"name": "新中特", "file": "zhongte.html", "cards": 525, "decks": 2, "slug": "zhongte"}, {"name": "自然辩证法", "file": "ziran.html", "cards": 162, "decks": 2, "slug": "ziran"}];
+/*@PAGE_META_END@*/
+</script>
+<script>
+'use strict';
 
-// 题库只读，进度以「题库标识、卡片标识」共同定位。
+/* ============================================================
+   备考 · 单科目应用
+   每个科目一个页面、一份数据、一个独立存储库，互不干扰。
+   ============================================================ */
+
 const $ = id => document.getElementById(id);
+
+const TYPE_LABEL = {single: '单选', multi: '多选', judge: '判断', qa: '背诵'};
+const TYPE_ORDER = ['single', 'multi', 'judge', 'qa'];
 const DAY = 86400000;
 const MAX_DAYS = 36500;
-const entries = DECKS.decks.flatMap(deck => (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])})));
-// 题型筛选：用于题库页上的「按题型单独背」入口。
-//@PAGE_META@
-const PAGES = {"新中特": "zhongte.html", "自然辩证法": "ziran.html"};
-const PAGE_COURSE = "新中特";
-//@PAGE_META_END@
-const TYPE_ORDER = ['single', 'multi', 'judge', 'qa'];
-const TYPE_LABEL = {single: '单选', multi: '多选', judge: '判断', qa: '背诵'};
+
 const params = new URLSearchParams(location.search);
-// 当前课程页：null = 全部课程；否则只显示该课程。独立页面由 PAGE_COURSE 决定。
-let course = PAGE_COURSE;
-if (course && !DECKS.decks.some(deck => deck.course === course)) course = null;
 let shuffled = params.get('shuffle') === '1';
+let typeFilter = TYPE_ORDER.includes(params.get('type')) ? params.get('type') : null;
+
 let states = Object.create(null);
 let session = null;
-let ready = false;
 let busy = false;
+let database = null;
+let saveChain = Promise.resolve();
+let latestPayload = null;
 
-function element(tag, className = '', text) {
+const entries = DECKS.decks.flatMap(deck =>
+  (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])}))
+);
+
+const courseName = PAGE_COURSE || '备考';
+const dbName = `beikao-${PAGE_SLUG || 'all'}-v1`;
+const LEGACY_DB = PAGE_COURSE ? 'beikao-progress-v1' : null;
+const recoveryKey = `beikao-${PAGE_SLUG || 'all'}-recovery`;
+
+/* ---------- 小工具 ---------- */
+
+function element(tag, className, text) {
   const node = document.createElement(tag);
   if (className) node.className = className;
-  if (text !== undefined) node.textContent = text;
+  if (text !== undefined && text !== null) node.textContent = text;
   return node;
 }
 
-function button(text, action, argument, className = '') {
-  const node = element('button', className, text);
-  node.type = 'button';
-  node.dataset.action = action;
-  if (argument !== undefined) node.dataset.value = String(argument);
-  node.addEventListener('click', () => dispatch(action, argument));
-  return node;
+function iconButton(label, path, handler) {
+  const btn = element('button', 'icon-btn');
+  btn.type = 'button';
+  btn.setAttribute('aria-label', label);
+  btn.innerHTML = `<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">${path}</svg>`;
+  btn.addEventListener('click', handler);
+  return btn;
 }
 
-function notify(text) {
-  $('notice-text').textContent = text;
-  $('notice').hidden = false;
+let toastTimer = 0;
+function toast(message) {
+  const box = $('toast');
+  box.textContent = message;
+  box.classList.add('show');
+  clearTimeout(toastTimer);
+  toastTimer = setTimeout(() => box.classList.remove('show'), 2400);
 }
 
-function setBusy(value) {
-  busy = value;
-  $('home-button').disabled = !ready || value;
-  $('backup-button').disabled = !ready || value;
-  ['import-button', 'export-button', 'copy-button', 'close-dialog'].forEach(id => { $(id).disabled = value; });
+// 自绘进度条：极小比例（如 1/525）也保留可见的起点，不退化成一个点。
+function meter(value, max, label) {
+  const bar = element('div', 'meter');
+  bar.setAttribute('role', 'progressbar');
+  bar.setAttribute('aria-label', label);
+  bar.setAttribute('aria-valuemin', '0');
+  bar.setAttribute('aria-valuemax', String(Math.max(1, max)));
+  bar.setAttribute('aria-valuenow', String(value));
+  const fill = element('i');
+  const ratio = Math.max(1, max) ? value / Math.max(1, max) : 0;
+  fill.style.width = value > 0 ? `max(10px, ${(ratio * 100).toFixed(2)}%)` : '0';
+  bar.append(fill);
+  return bar;
 }
+
+/* ---------- FSRS-4.5 ---------- */
 
 // FSRS-4.5：原作者 The-Algorithm 历史版本 bc401d9ed5093c66358738f4b8834f8d24ab211b。
 const w = [0.4, 0.6, 2.4, 5.8, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.18, 0.05, 0.34, 1.26, 0.29, 2.61];
 const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
 
-function scheduling(state, rating, now = Date.now()) {
-  if (![1, 2, 3, 4].includes(rating)) throw new Error('评分无效');
-  const learned = state && state.reps > 0;
-  let stability = w[rating - 1];
-  let difficulty = clamp(w[4] - w[5] * (rating - 3), 1, 10);
-  if (learned) ({stability, difficulty} = updateMemory(state, rating, now));
-  stability = clamp(stability, 0.01, MAX_DAYS);
-  // 90% 保持率反解间隔约为 S；短期重学简化为至少一天，最长一百年。
-  const interval = clamp(Math.round(81 * stability / 19 * (Math.pow(0.9, -2) - 1)), 1, MAX_DAYS);
-  return {stability, difficulty, due: now + interval * DAY, reps: (state?.reps || 0) + 1, lapses: (state?.lapses || 0) + (rating === 1 ? 1 : 0), last: new Date(now).toISOString()};
+function initDifficulty(rating) {
+  return clamp(w[4] - Math.exp(w[5] * (rating - 1)) + 1, 1, 10);
 }
 
-function updateMemory(state, rating, now) {
-  const t = Math.max(0, (now - Date.parse(state.last)) / DAY);
-  const r = Math.pow(1 + 19 * t / (81 * state.s), -0.5);
-  const difficulty = clamp(w[7] * w[4] + (1 - w[7]) * (state.d - w[6] * (rating - 3)), 1, 10);
-  if (rating === 1) return {difficulty, stability: Math.min(state.s, w[11] * Math.pow(state.d, -w[12]) * (Math.pow(state.s + 1, w[13]) - 1) * Math.exp((1 - r) * w[14]))};
+function initStability(rating) {
+  return Math.max(0.1, w[rating - 1]);
+}
+
+function elapsedDays(last, now) {
+  return Math.max(0, (now - last) / DAY);
+}
+
+function retrievability(elapsed, stability) {
+  return Math.pow(1 + elapsed / (9 * stability), -1);
+}
+
+function nextDifficulty(difficulty, rating) {
+  const next = w[7] * initDifficulty(3) + (1 - w[7]) * (difficulty - w[6] * (rating - 3));
+  return clamp(next, 1, 10);
+}
+
+function nextStability(state, difficulty, rating, elapsed, r) {
+  if (rating === 1) {
+    const forget = w[11] * Math.pow(difficulty, -w[12]) * (Math.pow(state.s + 1, w[13]) - 1) * Math.exp((1 - r) * w[14]);
+    return Math.min(forget, state.s);
+  }
   const hard = rating === 2 ? w[15] : 1;
   const easy = rating === 4 ? w[16] : 1;
-  const growth = Math.exp(w[8]) * (11 - state.d) * Math.pow(state.s, -w[9]) * (Math.exp((1 - r) * w[10]) - 1);
-  return {difficulty, stability: state.s * (1 + growth * hard * easy)};
+  const growth = Math.exp(w[8]) * (11 - difficulty) * Math.pow(state.s, -w[9]) * (Math.exp((1 - r) * w[10]) - 1);
+  return state.s * (1 + growth * hard * easy);
 }
 
-// 严格校验备份及本机存储；不接受隐式数值转换或多余字段。
+// 返回新状态；首次学习与后续复习走不同分支。
+function schedule(previous, rating, now) {
+  const difficulty = previous ? nextDifficulty(previous.d, rating) : initDifficulty(rating);
+  let stability;
+  if (!previous) {
+    stability = initStability(rating);
+  } else {
+    const elapsed = elapsedDays(Date.parse(previous.last), now);
+    stability = nextStability(previous, difficulty, rating, elapsed, retrievability(elapsed, previous.s));
+  }
+  stability = clamp(stability, 0.1, MAX_DAYS);
+  const interval = Math.min(MAX_DAYS, Math.max(1, Math.round(stability)));
+  return {
+    s: Number(stability.toFixed(4)),
+    d: Number(difficulty.toFixed(4)),
+    due: now + interval * DAY,
+    reps: (previous ? previous.reps : 0) + 1,
+    lapses: (previous ? previous.lapses : 0) + (rating === 1 ? 1 : 0),
+    last: new Date(now).toISOString(),
+    wrong: rating === 1
+  };
+}
+
+/* ---------- 进度校验 ---------- */
+
 function hasFields(value, fields) {
-  return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === fields.length && fields.every(key => Object.hasOwn(value, key));
+  return Boolean(value) && typeof value === 'object' && !Array.isArray(value) &&
+    Object.keys(value).length === fields.length && fields.every(key => Object.hasOwn(value, key));
 }
 
 function validState(value) {
   if (!hasFields(value, ['s', 'd', 'due', 'reps', 'lapses', 'last', 'wrong'])) return false;
   if (!Number.isFinite(value.s) || value.s < 0.01 || value.s > MAX_DAYS) return false;
   if (!Number.isFinite(value.d) || value.d < 1 || value.d > 10) return false;
-  if (!Number.isSafeInteger(value.due) || value.due < 0 || value.due > 8640000000000000) return false;
-  if (!Number.isSafeInteger(value.reps) || value.reps < 1 || value.reps >= Number.MAX_SAFE_INTEGER) return false;
+  if (!Number.isSafeInteger(value.due) || value.due < 0) return false;
+  if (!Number.isSafeInteger(value.reps) || value.reps < 1) return false;
   if (!Number.isSafeInteger(value.lapses) || value.lapses < 0 || value.lapses > value.reps) return false;
   if (typeof value.wrong !== 'boolean' || typeof value.last !== 'string') return false;
   const last = Date.parse(value.last);
-  return Number.isFinite(last) && last >= 0 && new Date(last).toISOString() === value.last && value.due >= last;
+  return Number.isFinite(last) && new Date(last).toISOString() === value.last && value.due >= last;
 }
 
-function validateSnapshot(value) {
-  if (!hasFields(value, ['version', 'states']) || value.version !== 1) throw new Error('备份版本或结构无效');
-  if (!value.states || typeof value.states !== 'object' || Array.isArray(value.states)) throw new Error('进度集合无效');
+function validateStates(raw) {
+  if (!raw || typeof raw !== 'object' || Array.isArray(raw)) throw new Error('进度集合无效');
   const clean = Object.create(null);
-  Object.entries(value.states).forEach(([key, state]) => {
+  Object.entries(raw).forEach(([key, state]) => {
     const ids = JSON.parse(key);
-    if (!Array.isArray(ids) || ids.length !== 2 || ids.some(id => typeof id !== 'string' || !id.trim()) || JSON.stringify(ids) !== key) throw new Error('卡片标识无效');
-    if (!validState(state)) throw new Error('卡片状态无效');
-    clean[key] = {...state};
+    if (!Array.isArray(ids) || ids.length !== 2 || ids.some(id => typeof id !== 'string' || !id.trim())) {
+      throw new Error('进度索引无效');
+    }
+    if (!validState(state)) throw new Error('进度条目无效');
+    clean[key] = state;
   });
   return clean;
 }
 
-function snapshot(value = states) {
-  return JSON.stringify({version: 1, states: value});
-}
-
-function encodeBackup() {
-  const bytes = new TextEncoder().encode(snapshot());
-  let binary = '';
-  for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.subarray(i, i + 32768));
-  return btoa(binary);
-}
-
-function decodeBackup(text) {
-  const encoded = text.trim();
-  if (!encoded || encoded.length % 4 !== 0 || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(encoded)) throw new Error('编码无效');
-  const binary = atob(encoded);
-  if (btoa(binary) !== encoded) throw new Error('编码无效');
-  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
-  return validateSnapshot(JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(bytes)));
-}
-
-// IndexedDB 是主存储。同步恢复快照覆盖尚未完成的写入，事务完成才显示已保存。
-const RECOVERY_KEY = 'bk-progress-pending-v1';
-let database = null;
-let saveChain = Promise.resolve();
-let pendingSaves = 0;
-let latestPayload = null;
+/* ---------- 存储（每个科目独立） ---------- */
 
 function openDatabase() {
   return new Promise((resolve, reject) => {
-    const request = indexedDB.open('beikao-progress-v1', 1);
+    const request = indexedDB.open(dbName, 1);
     request.onupgradeneeded = () => request.result.createObjectStore('progress');
     request.onerror = () => reject(new Error('存储连接失败'));
     request.onblocked = () => reject(new Error('存储被占用'));
-    request.onsuccess = () => { request.result.onversionchange = () => request.result.close(); resolve(request.result); };
+    request.onsuccess = () => {
+      request.result.onversionchange = () => request.result.close();
+      resolve(request.result);
+    };
   });
 }
 
-function databaseTransaction(mode, payload) {
+function transaction(mode, payload) {
   return new Promise((resolve, reject) => {
-    const transaction = database.transaction('progress', mode);
-    const store = transaction.objectStore('progress');
+    const tx = database.transaction('progress', mode);
+    const store = tx.objectStore('progress');
     const request = mode === 'readonly' ? store.get('snapshot') : store.put(payload, 'snapshot');
-    transaction.oncomplete = () => resolve(request.result);
-    transaction.onabort = transaction.onerror = () => reject(new Error('存储事务失败'));
+    tx.oncomplete = () => resolve(request.result);
+    tx.onabort = tx.onerror = () => reject(new Error('存储事务失败'));
   });
-}
-
-function disableDatabase() {
-  if (database) database.close();
-  database = null;
-  notify('浏览器数据库不可用，已切换到本地存储。');
 }
 
 async function loadProgress() {
   let stored;
-  try { database = await openDatabase(); stored = await databaseTransaction('readonly'); }
-  catch { disableDatabase(); }
+  try {
+    database = await openDatabase();
+    stored = await transaction('readonly');
+  } catch {
+    if (database) database.close();
+    database = null;
+  }
   if (stored !== undefined) {
-    try { states = validateSnapshot(JSON.parse(stored)); }
-    catch { notify('本机数据库进度格式无效，可导入有效备份恢复。'); }
+    try { states = validateStates(JSON.parse(stored)); }
+    catch { toast('本机进度格式异常，可导入备份恢复'); }
   }
   try {
-    const recovery = localStorage.getItem(RECOVERY_KEY);
-    if (recovery !== null) { states = validateSnapshot(JSON.parse(recovery)); await persist(states); }
-  } catch { notify('本地恢复快照无法读取或写回，请检查存储权限并保留备份。'); }
-  $('storage-status').textContent = database ? '进度保存在此浏览器 · 数据库' : '进度保存在此浏览器 · 本地存储';
+    const recovery = localStorage.getItem(recoveryKey);
+    if (recovery !== null) {
+      states = validateStates(JSON.parse(recovery));
+      await persist();
+    }
+  } catch {
+    toast('本地恢复快照无法读取，请检查存储权限');
+  }
+  await migrateLegacy();
 }
 
-function persist(value) {
-  const payload = snapshot(value);
+// 早先所有科目共用一个进度库；拆页后按卡的归属把旧进度分到各科目，避免升级丢进度。
+async function migrateLegacy() {
+  if (Object.keys(states).length || !LEGACY_DB) return;
+  let snapshot;
+  try {
+    const legacy = await new Promise((resolve, reject) => {
+      const request = indexedDB.open(LEGACY_DB, 1);
+      request.onerror = () => reject(new Error('旧库不可读'));
+      request.onsuccess = () => {
+        const db = request.result;
+        if (!db.objectStoreNames.contains('progress')) { db.close(); resolve(undefined); return; }
+        const tx = db.transaction('progress', 'readonly');
+        const get = tx.objectStore('progress').get('snapshot');
+        tx.oncomplete = () => { db.close(); resolve(get.result); };
+        tx.onerror = () => { db.close(); reject(new Error('旧库读取失败')); };
+      };
+    });
+    if (typeof legacy !== 'string') return;
+    snapshot = validateStates(JSON.parse(legacy));
+  } catch { return; }
+  const owned = Object.create(null);
+  entries.forEach(entry => { if (snapshot[entry.key]) owned[entry.key] = snapshot[entry.key]; });
+  if (!Object.keys(owned).length) return;
+  states = owned;
+  try { await persist(); } catch { /* 迁移失败不影响新库使用。 */ }
+  toast(`已从旧版本迁移 ${Object.keys(owned).length} 条进度`);
+}
+
+function persist() {
+  const payload = JSON.stringify(states);
   latestPayload = payload;
   let recoverySaved = false;
-  try { localStorage.setItem(RECOVERY_KEY, payload); recoverySaved = true; }
-  catch { notify('刷新恢复快照不可用，请等待保存完成后再刷新。'); }
-  pendingSaves++;
-  $('storage-status').textContent = '正在保存进度…';
+  try { localStorage.setItem(recoveryKey, payload); recoverySaved = true; }
+  catch { /* 数据库仍可写，忽略恢复副本失败。 */ }
   const operation = saveChain.then(() => writeProgress(payload, recoverySaved));
   saveChain = operation.catch(() => {});
-  return operation.finally(() => { pendingSaves--; });
+  return operation;
 }
 
 async function writeProgress(payload, recoverySaved) {
   if (database) {
-    try { await databaseTransaction('readwrite', payload); }
-    catch { disableDatabase(); }
+    try { await transaction('readwrite', payload); }
+    catch {
+      database.close();
+      database = null;
+    }
   }
   if (!database && !recoverySaved) {
-    try { localStorage.setItem(RECOVERY_KEY, latestPayload); }
-    catch { $('storage-status').textContent = '保存失败 · 请重试或导出备份'; throw new Error('无法保存'); }
+    try { localStorage.setItem(recoveryKey, latestPayload); }
+    catch { toast('保存失败，请导出备份'); throw new Error('无法保存'); }
   }
   if (database && recoverySaved) {
-    try { if (localStorage.getItem(RECOVERY_KEY) === payload) localStorage.removeItem(RECOVERY_KEY); }
-    catch { /* 已有数据库副本，保留恢复快照供下次启动读取。 */ }
+    try { if (localStorage.getItem(recoveryKey) === payload) localStorage.removeItem(recoveryKey); }
+    catch { /* 保留恢复副本无害。 */ }
   }
-  $('storage-status').textContent = database ? '已保存 · 浏览器数据库' : '已保存 · 本地存储';
 }
 
-// 首页与今日复习共用本地当日末截止时间；未学卡以本次取队列时间作为到期时间。
+/* ---------- 队列 ---------- */
+
 function endOfToday(now = Date.now()) {
   const date = new Date(now);
   date.setHours(23, 59, 59, 999);
@@ -10254,7 +10974,9 @@ function isDue(entry, cutoff, now) {
 
 function reviewQueue(pool, now = Date.now()) {
   const cutoff = endOfToday(now);
-  return pool.filter(entry => isDue(entry, cutoff, now)).sort((a, b) => (states[a.key]?.due ?? now) - (states[b.key]?.due ?? now) || a.card.num - b.card.num);
+  return pool
+    .filter(entry => isDue(entry, cutoff, now))
+    .sort((a, b) => (states[a.key]?.due ?? now) - (states[b.key]?.due ?? now) || a.card.num - b.card.num);
 }
 
 function practiceQueue(pool) {
@@ -10267,399 +10989,569 @@ function practiceQueue(pool) {
   return queue;
 }
 
-function progressBar(value, max, label) {
-  const bar = element('progress');
-  bar.max = Math.max(1, max);
-  bar.value = value;
-  bar.setAttribute('aria-label', label);
-  return bar;
+function typedPool(pool) {
+  return typeFilter ? pool.filter(entry => entry.card.type === typeFilter) : pool;
 }
 
-// 当前课程下的卡片；未选课程时返回全部。
-function courseEntries() {
-  return course ? entries.filter(entry => entry.deck.course === course) : entries;
+function currentEntry() {
+  return session ? session.queue[session.index] : null;
 }
+
+/* ---------- 路由 ---------- */
+
+function updateUrl() {
+  const url = new URL(location.href);
+  url.searchParams.delete('type');
+  url.searchParams.delete('shuffle');
+  if (typeFilter) url.searchParams.set('type', typeFilter);
+  if (shuffled) url.searchParams.set('shuffle', '1');
+  try { history.replaceState(null, '', url); } catch { /* 本地文件环境可能受限。 */ }
+}
+
+function setTitle(text) {
+  $('topbar-title').textContent = text;
+  document.title = text === '备考' ? '备考' : `${text} · 备考`;
+}
+
+function showBack(show) {
+  $('back-button').hidden = !show;
+}
+
+/* ---------- 首页 ---------- */
 
 function renderHome() {
   const main = $('main');
+  main.classList.remove('is-session');
   main.replaceChildren();
-  if (!entries.length) { renderEmpty(main, '题库还没有准备好', '注入题库后即可开始，已有进度会保留。'); return; }
-  const pool = courseEntries();
-  const intro = element('section', 'intro');
-  intro.append(element('h1', '', course ? course : '全部课程'));
-  main.append(intro);
-  const daily = element('section', 'today');
-  const count = reviewQueue(pool).length;
-  daily.append(element('h2', '', '今日复习'), element('strong', '', `${count} 张`), element('p', 'muted', '包含未学卡片，以及本地今日结束前到期的卡片。'));
-  const dailyActions = element('div', 'actions');
-  dailyActions.append(button('开始今日复习', 'review', undefined, 'primary'), button(`错题本 · ${pool.filter(entry => states[entry.key]?.wrong).length}`, 'mistakes'));
-  daily.append(dailyActions);
-  main.append(daily, renderMode(), renderTypeBar(pool));
-  // 单一课程页面只列出该课程的题库；未定课程时按课程分组。
-  const courses = course ? [course] : [...new Set(DECKS.decks.map(deck => deck.course))];
-  courses.forEach(name => renderCourse(main, name));
+  setTitle(courseName);
+  showBack(Boolean(PAGE_COURSE));
+  $('data-button').hidden = !PAGE_COURSE;
+  if (!PAGE_COURSE) { main.append(renderCatalog()); return; }
+  if (!entries.length) {
+    main.append(element('p', 'empty', '题库还没有准备好。'));
+    return;
+  }
+  const wrap = element('div', 'stack-32');
+  wrap.append(renderHero(), renderToday(), renderTypes(), renderDecks());
+  main.append(wrap);
 }
 
-// 全站按题型单独背：跨课程汇总某一种题型。
-function renderTypeBar(pool) {
-  const section = element('section', 'today');
-  section.append(element('h2', '', '按题型背'), element('p', 'muted', `只刷一种题型${course ? '' : '，跨课程汇总'}。`));
-  const row = element('div', 'type-row');
-  TYPE_ORDER.forEach(type => {
-    const part = pool.filter(entry => entry.card.type === type);
-    if (!part.length) return;
-    row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typeall', type));
-  });
-  section.append(row);
-  return section;
+// 科目目录：每个科目一张卡，点进去才是该科目的独立页面。
+// 目录页只读地看一眼某科目的进度存量，读不到就返回 0。
+const knownCache = Object.create(null);
+
+function readKnownCount(slug) {
+  if (slug in knownCache) return knownCache[slug];
+  knownCache[slug] = 0;
+  fetchKnown(slug);
+  return 0;
 }
 
-function renderMode() {
-  const section = element('div', 'section-head');
-  section.append(element('h2', '', '我的题库'));
-  const segment = element('div', 'segment');
-  segment.setAttribute('role', 'group');
-  segment.setAttribute('aria-label', '练习顺序');
-  ['顺序', '乱序'].forEach((label, index) => {
-    const control = button(label, 'mode', Boolean(index));
-    control.setAttribute('aria-pressed', String(shuffled === Boolean(index)));
-    segment.append(control);
-  });
-  section.append(segment);
-  return section;
-}
-
-function renderCourse(main, course) {
-  const section = element('section', 'course');
-  section.append(element('h2', '', course));
-  const grid = element('div', 'deck-grid');
-  DECKS.decks.filter(deck => deck.course === course).forEach(deck => grid.append(renderDeck(deck)));
-  section.append(grid);
-  main.append(section);
-}
-
-function renderDeck(deck) {
-  const pool = entries.filter(entry => entry.deck.id === deck.id);
-  const learned = pool.filter(entry => states[entry.key]).length;
-  const card = element('article', 'deck');
-  card.dataset.deck = deck.id;
-  card.append(element('h3', '', deck.title), element('p', 'muted', deck.desc), element('p', 'count', `共 ${pool.length} 题 · 已学 ${learned} / ${pool.length}`), progressBar(learned, pool.length, `${deck.title}已学进度`));
-  const actions = element('div', 'actions');
-  actions.append(button('练习', 'practice', deck.id, 'primary'), button(`今日复习 ${reviewQueue(pool).length}`, 'review', deck.id, 'quiet'));
-  card.append(actions);
-  // 按题型单独练习
-  const kinds = TYPE_ORDER.filter(type => pool.some(entry => entry.card.type === type));
-  if (kinds.length > 1) {
-    const row = element('div', 'type-row');
-    kinds.forEach(type => {
-      const part = pool.filter(entry => entry.card.type === type);
-      row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typec', JSON.stringify([deck.id, type])));
+async function fetchKnown(slug) {
+  try {
+    const db = await new Promise((resolve, reject) => {
+      const request = indexedDB.open(`beikao-${slug}-v1`, 1);
+      request.onupgradeneeded = () => request.result.createObjectStore('progress');
+      request.onerror = () => reject(new Error('不可读'));
+      request.onsuccess = () => resolve(request.result);
     });
+    if (!db.objectStoreNames.contains('progress')) { db.close(); return; }
+    const raw = await new Promise((resolve, reject) => {
+      const tx = db.transaction('progress', 'readonly');
+      const get = tx.objectStore('progress').get('snapshot');
+      tx.oncomplete = () => { db.close(); resolve(get.result); };
+      tx.onerror = () => { db.close(); reject(new Error('读失败')); };
+    });
+    const n = raw ? Object.keys(JSON.parse(raw)).length : 0;
+    if (n === knownCache[slug]) return;
+    knownCache[slug] = n;
+    renderHome();
+  } catch { /* 没做过题的科目没有库，属正常情况。 */ }
+}
+
+function renderCatalog() {
+  const wrap = element('div', 'stack-32');
+  const hero = element('section', 'hero');
+  hero.append(element('h1', '', '选择科目'));
+  wrap.append(hero);
+  const list = element('div', 'course-list');
+  (CATALOG || []).forEach(item => {
+    const card = element('a', 'course-card');
+    card.href = item.file;
+    const head = element('div', 'course-head');
+    const text = element('div');
+    text.append(element('p', 'course-name', item.name));
+    const arrow = element('span', 'course-arrow');
+    arrow.innerHTML = '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
+    head.append(text, arrow);
+    card.append(head);
+    // 每个科目的进度存在自己的库里，目录页读不到，这里只报规模。
+    const known = readKnownCount(item.slug);
+    const row = element('div', 'meter-row');
+    row.append(meter(known, item.cards, `${item.name}进度`), element('span', '', `${known} / ${item.cards}`));
     card.append(row);
+    list.append(card);
+  });
+  wrap.append(list);
+  return wrap;
+}
+
+function renderHero() {
+  const box = element('section', 'hero');
+  const pool = typedPool(entries);
+  const known = pool.filter(entry => states[entry.key]).length;
+  const head = element('div', 'hero-head');
+  const left = element('div');
+  left.append(element('p', 'eyebrow', '总进度'), element('p', 'hero-stat', `${known} / ${pool.length}`));
+  head.append(left);
+  if (typeFilter) {
+    const clear = element('button', 'text-btn', '取消筛选');
+    clear.type = 'button';
+    clear.addEventListener('click', () => { typeFilter = null; updateUrl(); renderHome(); });
+    head.append(clear);
+  }
+  box.append(head, meter(known, Math.max(1, pool.length), '总进度'));
+  return box;
+}
+
+function renderToday() {
+  const pool = typedPool(entries);
+  const due = reviewQueue(pool).length;
+  const wrong = pool.filter(entry => states[entry.key]?.wrong).length;
+  const card = element('section', 'today');
+  const top = element('div', 'today-top');
+  const left = element('div');
+  const num = element('p', 'today-num');
+  num.append(document.createTextNode(String(due)), element('small', '', '张'));
+  const fresh = pool.filter(entry => !states[entry.key]).length;
+  const review = due - fresh;
+  left.append(element('p', 'eyebrow', review > 0 ? '今日复习' : '今日新卡'), num);
+  top.append(left);
+  card.append(top, element('p', 'today-label', review > 0 ? `新卡 ${fresh} · 到期 ${review}` : '还没学过，从头开始'));
+  const start = element('button', 'btn btn-primary btn-block', review > 0 ? '开始今日复习' : '开始学新卡');
+  start.type = 'button';
+  start.addEventListener('click', () => startSession(due ? 'review' : 'practice'));
+  card.append(start);
+  if (wrong) {
+    const mistakes = element('button', 'btn btn-quiet btn-block', `错题本 · ${wrong}`);
+    mistakes.type = 'button';
+    mistakes.style.marginTop = '8px';
+    mistakes.addEventListener('click', () => startSession('mistakes'));
+    card.append(mistakes);
   }
   return card;
 }
 
-function renderEmpty(parent, title, description, home = false) {
-  const section = element('section', 'empty');
-  section.append(element('h2', '', title), element('p', '', description));
-  if (home) section.append(button('返回题库', 'home', undefined, 'primary'));
-  parent.append(section);
+function renderTypes() {
+  const section = element('section');
+  const label = element('div', 'section-label');
+  label.append(element('h2', '', '按题型背'));
+  const grid = element('div', 'chip-grid');
+  TYPE_ORDER.forEach(type => {
+    const part = entries.filter(entry => entry.card.type === type);
+    if (!part.length) return;
+    const chip = element('button', 'chip');
+    chip.type = 'button';
+    chip.setAttribute('aria-pressed', String(typeFilter === type));
+    const name = element('span', 'chip-label', TYPE_LABEL[type]);
+    const count = element('span', 'chip-count', String(part.length));
+    chip.append(name, count);
+    chip.addEventListener('click', () => {
+      typeFilter = typeFilter === type ? null : type;
+      updateUrl();
+      renderHome();
+    });
+    grid.append(chip);
+  });
+  section.append(label, grid);
+  return section;
 }
 
-function updateUrl(deckId, type) {
-  const url = new URL(location.href);
-  if (deckId) url.searchParams.set('deck', deckId);
-  else url.searchParams.delete('deck');
-  if (type) url.searchParams.set('type', type);
-  else url.searchParams.delete('type');
-  if (course) url.searchParams.set('course', course);
-  else url.searchParams.delete('course');
-  if (shuffled) url.searchParams.set('shuffle', '1');
-  else url.searchParams.delete('shuffle');
-  try { history.replaceState(null, '', url); }
-  catch { /* 某些本地文件环境限制修改地址，练习仍可正常进行。 */ }
+function renderDecks() {
+  const section = element('section');
+  const label = element('div', 'section-label');
+  label.append(element('h2', '', '题库'));
+  section.append(label);
+  DECKS.decks.forEach(deck => {
+    const pool = typedPool(entries.filter(entry => entry.deck.id === deck.id));
+    if (!pool.length) return;
+    const known = pool.filter(entry => states[entry.key]).length;
+    const card = element('button', 'deck-card');
+    card.type = 'button';
+    card.disabled = !pool.length;
+    const row = element('div', 'deck-row');
+    const text = element('div');
+    text.append(
+      element('p', 'deck-title', deck.title.replace(/\s*\d+\s*题$/, '')),
+      element('p', 'deck-sub', `${pool.length} 张${known ? ` · 已学 ${known}` : ''}`)
+    );
+    const arrow = element('span', 'course-arrow');
+    arrow.innerHTML = '<svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 18l6-6-6-6"/></svg>';
+    row.append(text, arrow);
+    card.append(row);
+    card.append(meter(known, Math.max(1, pool.length), `${deck.title}已学进度`));
+    card.addEventListener('click', () => startSession('practice', deck.id));
+    section.append(card);
+  });
+  return section;
 }
 
-function startSession(kind, deckId, type) {
-  const pool = deckId ? entries.filter(entry => entry.deck.id === deckId) : courseEntries();
-  const typed = type ? pool.filter(entry => entry.card.type === type) : pool;
-  let queue = practiceQueue(typed);
-  if (kind === 'review') queue = reviewQueue(typed);
-  if (kind === 'mistakes') queue = practiceQueue(typed.filter(entry => states[entry.key]?.wrong));
-  const typeTag = type ? ` · ${TYPE_LABEL[type]}` : '';
-  const label = (kind === 'review' ? '今日复习' : kind === 'mistakes' ? '错题本' : (shuffled ? '乱序练习' : '顺序练习')) + typeTag;
-  session = {queue, index: 0, phase: 'question', selected: new Set(), ratings: [], label, saveFailed: false};
-  updateUrl(kind === 'practice' ? deckId : null, type);
-  renderSession(true);
+/* ---------- 会话 ---------- */
+
+function startSession(kind, deckId) {
+  const base = deckId ? entries.filter(entry => entry.deck.id === deckId) : entries;
+  const pool = typedPool(base);
+  let queue = practiceQueue(pool);
+  if (kind === 'review') queue = reviewQueue(pool);
+  if (kind === 'mistakes') queue = practiceQueue(pool.filter(entry => states[entry.key]?.wrong));
+  if (!queue.length) {
+    toast(kind === 'mistakes' ? '还没有错题' : '这一类暂时没有需要复习的卡');
+    return;
+  }
+  session = {queue, index: 0, phase: 'question', selected: new Set(), done: 0, label: labelFor(kind)};
+  renderSession();
 }
 
-function currentEntry() {
-  return session?.queue[session.index];
+function labelFor(kind) {
+  const base = kind === 'review' ? '今日复习' : kind === 'mistakes' ? '错题本' : (shuffled ? '乱序练习' : '顺序练习');
+  return typeFilter ? `${base} · ${TYPE_LABEL[typeFilter]}` : base;
 }
 
-function renderSession(focus = false) {
+function renderSession(focus = true) {
   const main = $('main');
+  main.classList.add('is-session');
   main.replaceChildren();
   const entry = currentEntry();
-  if (!entry) { renderFinished(main); if (focus) main.focus(); return; }
-  const head = element('section', 'session-head');
-  const row = element('div', 'row');
-  row.append(element('p', 'muted', `${session.label} · ${session.index + 1} / ${session.queue.length}`), element('p', 'muted', `剩余 ${session.queue.length - session.index - (session.phase === 'feedback' ? 1 : 0)} 题`));
-  head.append(row, progressBar(session.ratings.length, session.queue.length, '本轮已完成进度'));
-  main.append(head, renderQuestion(entry));
+  if (!entry) { renderDone(); return; }
+  main.append(renderSessionBar(), renderQuestion(entry));
   if (entry.card.type === 'qa' && session.phase !== 'question') main.append(renderAnswer(entry.card));
-  if (session.phase === 'feedback') main.append(renderFeedback(entry));
-  main.append(renderControls(entry.card));
-  const hint = entry.card.type === 'qa' ? '空格看答案 · 1 忘了 / 2 模糊 / 3 记得 · 回车下一题' : '字母选择选项 · 回车提交或下一题';
-  main.append(element('p', 'muted', hint));
-  if (focus) { main.focus({preventScroll: true}); window.scrollTo(0, 0); }
+  if (session.phase === 'feedback' && entry.card.type !== 'qa') main.append(renderFeedback(entry));
+  main.append(renderActionBar(entry));
+  if (focus) {
+    main.scrollIntoView({block: 'start'});
+    window.scrollTo(0, 0);
+  }
+}
+
+function renderSessionBar() {
+  const box = element('div', 'session-progress');
+  const fill = element('i');
+  fill.style.width = `${(session.done / session.queue.length) * 100}%`;
+  box.append(fill);
+  return box;
 }
 
 function renderQuestion(entry) {
   const {card, deck} = entry;
-  const section = element('section', 'question');
-  const types = {single: '单选', multi: '多选', judge: '判断', qa: '问答'};
-  section.append(element('span', 'badge', `${types[card.type]} · 第 ${card.num} 题`), element('h2', '', card.q));
-  if (card.type === 'multi') section.append(element('p', 'muted', '选择所有正确选项后提交。'));
+  const section = element('section');
+  const head = element('div', 'q-head');
+  head.append(
+    element('span', 'tag', TYPE_LABEL[card.type]),
+    element('span', 'tag tag-neutral', card.num ? `第 ${card.num} 题` : deck.title),
+    element('span', 'q-count', `${session.index + 1} / ${session.queue.length}`)
+  );
+  section.append(head, element('p', 'q-text', card.q));
+  if (card.type === 'multi') section.append(element('p', 'muted q-hint', '选出所有正确选项'));
   if (card.type !== 'qa') section.append(renderOptions(card));
-  section.append(element('p', 'muted source', `${deck.course} · ${card.source || deck.title}`));
+  if (card.source && card.source !== deck.title) section.append(element('p', 'source', card.source));
   return section;
 }
 
-function cardOptions(card) {
+function optionList(card) {
   return card.type === 'judge' ? [{k: 'T', t: '正确'}, {k: 'F', t: '错误'}] : (card.options || []);
 }
 
 function renderOptions(card) {
   const list = element('div', 'options');
-  cardOptions(card).forEach(option => list.append(renderOption(card, option)));
+  const answered = session.phase !== 'question';
+  optionList(card).forEach(option => {
+    const btn = element('button', 'option');
+    btn.type = 'button';
+    const selected = session.selected.has(option.k);
+    const correct = (card.answer || '').includes(option.k);
+    btn.classList.toggle('selected', selected && !answered);
+    btn.setAttribute('aria-pressed', String(selected));
+    btn.disabled = answered || busy;
+    const letter = element('span', 'letter', option.k === 'T' ? '对' : option.k === 'F' ? '错' : option.k);
+    const body = element('span', 'body', option.t);
+    if (answered) {
+      btn.classList.toggle('correct', correct);
+      btn.classList.toggle('incorrect', selected && !correct);
+      if (correct) body.append(element('span', 'flag', '正确答案'));
+      else if (selected) body.append(element('span', 'flag', '你的选择'));
+    }
+    btn.append(letter, body);
+    btn.addEventListener('click', () => chooseOption(option.k));
+    list.append(btn);
+  });
   return list;
 }
 
-function renderOption(card, option) {
-  const control = button('', 'select', option.k, 'option');
-  const selected = session.selected.has(option.k);
-  const answered = session.phase === 'feedback';
-  control.classList.toggle('selected', selected);
-  control.setAttribute('aria-pressed', String(selected));
-  control.disabled = answered || busy;
-  const content = element('span', '', option.t);
-  control.append(element('span', 'letter', option.k), content);
-  if (!answered) return control;
-  const correct = card.answer.includes(option.k);
-  control.classList.toggle('correct', correct);
-  control.classList.toggle('incorrect', selected && !correct);
-  if (correct || selected) content.append(element('small', '', correct ? '正确选项' : '你的选择 · 错误'));
-  return control;
-}
-
 function renderAnswer(card) {
-  const section = element('section');
-  const label = element('h2', '', '参考答案');
-  label.id = 'answer-title';
-  const answer = element('div', 'answer', card.answer);
-  answer.id = 'qa-answer';
-  answer.tabIndex = 0;
-  answer.setAttribute('role', 'region');
-  answer.setAttribute('aria-labelledby', 'answer-title');
-  section.append(label, answer);
-  return section;
+  const box = element('div', 'answer');
+  box.tabIndex = 0;
+  box.setAttribute('role', 'region');
+  box.setAttribute('aria-label', '参考答案');
+  box.textContent = card.answer || '（无参考答案）';
+  return box;
 }
 
 function renderFeedback(entry) {
-  const section = element('section', 'feedback');
-  section.setAttribute('aria-live', 'polite');
-  const rating = session.ratings.at(-1);
-  const labels = {1: '这道题，再巩固一次', 2: '有些模糊，已安排复习', 3: '记得，继续保持'};
-  const title = entry.card.type === 'qa' ? labels[rating] : rating === 3 ? '回答正确' : '回答错误';
-  section.append(element('h2', '', title));
-  if (entry.card.type !== 'qa') section.append(element('p', '', `正确答案：${entry.card.type === 'judge' ? (entry.card.answer === 'T' ? '正确' : '错误') : [...entry.card.answer].join('、')}`));
-  if (entry.card.explain) section.append(element('p', 'explanation', `解析：${entry.card.explain}`));
-  const state = states[entry.key];
-  section.append(element('p', 'muted', `下次复习：${new Date(state.due).toLocaleDateString('zh-CN')} · ${state.wrong ? '已在错题本' : '未在错题本'}`));
-  return section;
+  const {card} = entry;
+  const ok = session.selected && isCorrect(card, session.selected);
+  const box = element('div', `feedback${ok ? '' : ' bad'}`);
+  box.append(element('p', 'feedback-title', ok ? '答对了' : '答错了'));
+  const detail = element('p', 'feedback-text');
+  const parts = [];
+  if (card.type !== 'qa') parts.push(`正确答案：${formatAnswer(card)}`);
+  if (card.explain) parts.push(card.explain);
+  detail.textContent = parts.join('\n');
+  if (detail.textContent) box.append(detail);
+  return box;
 }
 
-function renderControls(card) {
-  const section = element('div', 'session-actions');
-  if (session.phase === 'feedback') {
-    section.append(button(session.saveFailed ? '重试保存' : busy ? '正在保存…' : session.index + 1 === session.queue.length ? '完成本轮' : '下一题', session.saveFailed ? 'retry' : 'next', undefined, 'primary wide'));
-  } else if (card.type === 'qa' && session.phase === 'revealed') {
-    const row = element('div', 'rating');
-    row.append(button('忘了', 'rate', 1), button('模糊', 'rate', 2), button('记得', 'rate', 3, 'primary'));
-    section.append(row);
-  } else if (card.type === 'qa') section.append(button('看答案', 'reveal', undefined, 'primary wide'));
-  else if (card.type === 'multi') section.append(button('提交答案', 'submit', undefined, 'primary wide'));
-  section.querySelectorAll('button').forEach(control => { control.disabled = busy; });
-  return section;
+function formatAnswer(card) {
+  return optionList(card)
+    .filter(option => (card.answer || '').includes(option.k))
+    .map(option => `${option.k === 'T' ? '对' : option.k === 'F' ? '错' : option.k}. ${option.t}`)
+    .join('\n');
 }
 
-function renderFinished(main) {
-  if (!session.queue.length) { renderEmpty(main, '这一组没有待练习的题', '可以回到题库选择练习，或等下一次复习到期。', true); return; }
-  const remembered = session.ratings.filter(rating => rating === 3).length;
-  renderEmpty(main, '本轮完成，辛苦了', `已完成 ${session.ratings.length} 题 · 记得 ${remembered} 题 · 需巩固 ${session.ratings.length - remembered} 题`, true);
+function isCorrect(card, selected) {
+  const answer = card.type === 'judge'
+    ? card.answer
+    : [...(card.answer || '')].filter(ch => /[A-Z]/.test(ch)).sort().join('');
+  const picked = [...selected].filter(ch => card.type === 'judge' ? true : /[A-Z]/.test(ch)).sort().join('');
+  return answer === picked;
 }
 
-// 按钮与键盘共用状态转换；评分后等待落盘，下一次操作才可跳题。
-function dispatch(action, argument) {
-  if (!ready || busy) return;
-  if (action === 'home') { session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
-  if (action === 'mode') { shuffled = argument; updateUrl(null); renderHome(); return; }
-  if (action === 'course') { course = argument || null; session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
-  if (['practice', 'review', 'mistakes'].includes(action)) { startSession(action, argument); return; }
-  if (action === 'typec') { const [deckId, type] = JSON.parse(argument); startSession('practice', deckId, type); return; }
-  if (action === 'typeall') { startSession('practice', undefined, argument); return; }
+function renderActionBar(entry) {
+  const bar = element('div', 'actionbar');
+  const {card} = entry;
+  if (session.phase === 'question') {
+    if (card.type === 'single' || card.type === 'judge') {
+      bar.append(element('p', 'kbd-hint', card.type === 'judge' ? '点「对」或「错」即判分' : '点选项即判分'));
+      return bar;
+    }
+    if (card.type === 'qa') {
+      const show = element('button', 'btn btn-primary btn-block', '看答案');
+      show.type = 'button';
+      show.addEventListener('click', () => { session.phase = 'answer'; renderSession(false); });
+      bar.append(show);
+      bar.append(element('p', 'kbd-hint', '空格看答案'));
+    } else if (card.type === 'multi') {
+      const submit = element('button', 'btn btn-primary btn-block', '提交答案');
+      submit.type = 'button';
+      submit.disabled = busy || session.selected.size === 0;
+      submit.addEventListener('click', submitAnswer);
+      bar.append(submit);
+      bar.append(element('p', 'kbd-hint', 'A–D 选择 · 回车提交'));
+    }
+    return bar;
+  }
+  if (session.phase === 'answer') {
+    const row = element('div', 'btn-row');
+    [['忘了', 1], ['模糊', 2], ['记得', 3]].forEach(([label, rating]) => {
+      const btn = element('button', `btn ${rating === 3 ? 'btn-primary' : 'btn-secondary'}`, label);
+      btn.type = 'button';
+      btn.addEventListener('click', () => rate(rating));
+      row.append(btn);
+    });
+    bar.append(row, element('p', 'kbd-hint', '1 忘了 · 2 模糊 · 3 记得'));
+    return bar;
+  }
+  const next = element('button', 'btn btn-primary btn-block',
+    session.index + 1 >= session.queue.length ? '完成' : '下一题');
+  next.type = 'button';
+  next.addEventListener('click', nextCard);
+  bar.append(next, element('p', 'kbd-hint', '回车继续'));
+  return bar;
+}
+
+function renderDone() {
+  const main = $('main');
+  main.replaceChildren();
+  const box = element('section', 'done');
+  const icon = element('div', 'done-icon');
+  icon.innerHTML = '<svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M20 6L9 17l-5-5"/></svg>';
+  box.append(icon, element('h2', '', '这一轮完成了'), element('p', '', `共复习 ${session ? session.done : 0} 张`));
+  const row = element('div', 'btn-row');
+  const again = element('button', 'btn btn-primary', '再来一轮');
+  again.type = 'button';
+  again.addEventListener('click', renderHome);
+  const home = element('button', 'btn btn-quiet', '回到题库');
+  home.type = 'button';
+  home.addEventListener('click', renderHome);
+  row.append(again, home);
+  box.append(row);
+  main.append(box);
+  session = null;
+  showBack(Boolean(PAGE_COURSE));
+}
+
+/* ---------- 作答 ---------- */
+
+function chooseOption(key) {
   const entry = currentEntry();
-  if (!entry) return;
-  if (action === 'select' && session.phase === 'question') selectOption(entry.card, argument);
-  if (action === 'submit' && entry.card.type === 'multi' && session.phase === 'question') submitMulti(entry.card);
-  if (action === 'reveal' && entry.card.type === 'qa' && session.phase === 'question') { session.phase = 'revealed'; renderSession(); $('qa-answer').focus(); }
-  if (action === 'rate' && entry.card.type === 'qa' && session.phase === 'revealed') void grade(argument);
-  if (action === 'retry' && session.phase === 'feedback' && session.saveFailed) void saveAnswer();
-  if (action === 'next' && session.phase === 'feedback' && !session.saveFailed) nextQuestion();
+  if (!entry || session.phase !== 'question' || busy) return;
+  const {card} = entry;
+  if (card.type === 'multi') {
+    if (session.selected.has(key)) session.selected.delete(key);
+    else session.selected.add(key);
+    renderSession(false);
+    return;
+  }
+  session.selected = new Set([key]);
+  submitAnswer();
 }
 
-function selectOption(card, key) {
-  if (!cardOptions(card).some(option => option.k === key)) return;
-  if (card.type !== 'multi') { session.selected = new Set([key]); void grade(card.answer === key ? 3 : 1); return; }
-  if (session.selected.has(key)) session.selected.delete(key);
-  else session.selected.add(key);
-  renderSession();
-  $('main').querySelectorAll('[data-action="select"]').forEach(control => { if (control.dataset.value === key) control.focus({preventScroll: true}); });
-}
-
-function submitMulti(card) {
-  if (!session.selected.size) { notify('请至少选择一个选项，再提交答案。'); return; }
-  const correct = [...session.selected].sort().join('') === [...card.answer].sort().join('');
-  void grade(correct ? 3 : 1);
-}
-
-async function grade(rating) {
-  if (![1, 2, 3].includes(rating) || session.phase === 'feedback') return;
+async function submitAnswer() {
   const entry = currentEntry();
-  const previous = states[entry.key];
-  const result = scheduling(previous, rating);
-  states[entry.key] = {s: result.stability, d: result.difficulty, due: result.due, reps: result.reps, lapses: result.lapses, last: result.last, wrong: rating === 1 ? true : rating === 3 ? false : (previous?.wrong || false)};
+  if (!entry || busy) return;
+  const {card, key} = entry;
+  const correct = isCorrect(card, session.selected);
   session.phase = 'feedback';
-  session.ratings.push(rating);
-  await saveAnswer();
+  session.done += 1;
+  await record(key, correct ? 3 : 1, correct);
+  renderSession(false);
 }
 
-async function saveAnswer() {
-  setBusy(true);
-  session.saveFailed = false;
-  renderSession();
-  try { await persist(states); }
-  catch { session.saveFailed = true; notify('进度尚未保存。请重试保存，或使用进度备份导出当前记录。'); }
-  setBusy(false);
-  renderSession();
-  $('main').querySelector('.session-actions button')?.focus({preventScroll: true});
+async function rate(rating) {
+  const entry = currentEntry();
+  if (!entry || busy) return;
+  session.phase = 'feedback';
+  session.done += 1;
+  await record(entry.key, rating, rating >= 2);
+  renderSession(false);
 }
 
-function nextQuestion() {
-  session.index++;
+async function record(key, rating, correct) {
+  busy = true;
+  const next = schedule(states[key], rating, Date.now());
+  states[key] = {...next, wrong: !correct};
+  try { await persist(); }
+  catch { toast('保存失败，请导出备份'); }
+  busy = false;
+}
+
+function nextCard() {
+  if (!session) return;
+  if (session.index + 1 >= session.queue.length) {
+    renderDone();
+    return;
+  }
+  session.index += 1;
   session.phase = 'question';
   session.selected = new Set();
-  renderSession(true);
+  renderSession();
 }
 
-const heldKeys = new Set();
-function handleKey(event) {
-  if (!session || $('backup-dialog').open || event.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
-  if (event.target.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
-  if (event.target.closest?.('nav, a, #dismiss')) return;
-  const key = event.key.toLowerCase();
-  if (!['a', 'b', 'c', 'd', 'enter', ' ', '1', '2', '3'].includes(key)) return;
-  if (event.repeat || heldKeys.has(event.code || key)) { event.preventDefault(); return; }
-  heldKeys.add(event.code || key);
-  if (busy) { event.preventDefault(); return; }
-  const action = keyAction(key);
-  if (!action) return;
-  event.preventDefault();
-  dispatch(...action);
+/* ---------- 数据管理 ---------- */
+
+function openData() {
+  const dialog = $('data-dialog');
+  $('data-note').textContent = `当前科目：${courseName}。进度只在本页面内使用，导出后可带到其他设备。`;
+  $('data-field').value = '';
+  $('data-status').textContent = '';
+  dialog.showModal();
 }
 
-function keyAction(key) {
-  const card = currentEntry()?.card;
-  if (!card) return null;
-  if (session.phase === 'feedback') return key === 'enter' ? [session.saveFailed ? 'retry' : 'next'] : null;
-  if (card.type === 'qa' && session.phase === 'question') return key === ' ' ? ['reveal'] : null;
-  if (card.type === 'qa' && session.phase === 'revealed') return ['1', '2', '3'].includes(key) ? ['rate', Number(key)] : null;
-  if (card.type === 'multi' && key === 'enter') return ['submit'];
-  if (card.type === 'judge') return key === 'a' ? ['select', 'T'] : key === 'b' ? ['select', 'F'] : null;
-  return /^[a-d]$/.test(key) ? ['select', key.toUpperCase()] : null;
+function exportData() {
+  const payload = {app: 'beikao', course: PAGE_COURSE || courseName, version: 1, states};
+  const text = btoa(unescape(encodeURIComponent(JSON.stringify(payload))));
+  $('data-field').value = text;
+  $('data-field').select();
+  navigator.clipboard?.writeText(text).then(
+    () => { $('data-status').textContent = `已导出并复制 ${Object.keys(states).length} 条进度`; },
+    () => { $('data-status').textContent = '已导出，请手动复制'; }
+  );
 }
 
-// 备份采用 UTF-8 JSON 的标准 Base64，导入通过全部校验后再整体替换。
-async function importProgress() {
-  let imported;
-  try { imported = decodeBackup($('backup-text').value); }
-  catch { $('backup-message').textContent = '导入失败：请提供有效的 Base64 UTF-8 进度备份，版本、字段或数值不合法。原有进度已保留。'; return; }
-  if (!$('replace-check').checked) { $('backup-message').textContent = '请先勾选替换全部本机进度。'; return; }
-  setBusy(true);
+async function importData() {
+  const text = $('data-field').value.trim();
+  if (!text) { $('data-status').textContent = '请先粘贴备份文本'; return; }
   try {
-    await persist(imported);
-    states = imported;
-    session = null;
-    updateUrl(null);
+    const json = decodeURIComponent(escape(atob(text)));
+    const parsed = JSON.parse(json);
+    if (parsed.app !== 'beikao' || parsed.version !== 1) throw new Error('不是本应用的备份');
+    if ((parsed.course || '') !== (PAGE_COURSE || courseName)) {
+      throw new Error(`这是「${parsed.course}」的备份，不能导入到「${courseName}」`);
+    }
+    states = validateStates(parsed.states);
+    await persist();
+    $('data-status').textContent = `已导入 ${Object.keys(states).length} 条进度`;
     renderHome();
-    $('backup-message').textContent = `导入成功：已恢复 ${Object.keys(states).length} 张卡片的进度。`;
-  } catch { $('backup-message').textContent = '保存失败：本次导入未在当前页面生效，请恢复存储权限后重试。'; }
-  setBusy(false);
+  } catch (error) {
+    $('data-status').textContent = `导入失败：${error.message}`;
+  }
 }
 
-async function copyBackup() {
-  if (!$('backup-text').value) { $('backup-message').textContent = '请先导出进度。'; return; }
-  try { await navigator.clipboard.writeText($('backup-text').value); $('backup-message').textContent = '已复制进度备份。'; }
-  catch { $('backup-text').focus(); $('backup-text').select(); $('backup-message').textContent = '已选中备份，请使用系统复制功能。'; }
-}
-
-// 顶部课程切换：每个课程一个独立页面，链接直接跳转（进度同源共享）。
-function renderCourseLinks() {
-  const box = $('course-links');
-  if (!box) return;
-  box.replaceChildren();
-  Object.entries(PAGES).forEach(([name, file]) => {
-    const a = element('a', '', name);
-    a.href = file;
-    a.setAttribute('aria-current', PAGE_COURSE === name ? 'page' : 'false');
-    box.append(a);
-  });
-  $('brand-name').textContent = PAGE_COURSE || '备考';
-}
+/* ---------- 启动 ---------- */
 
 function bindControls() {
-  $('home-button').addEventListener('click', () => dispatch('home'));
-  $('dismiss').addEventListener('click', () => { $('notice').hidden = true; });
-  $('backup-button').addEventListener('click', () => { $('backup-message').textContent = ''; $('replace-check').checked = false; $('backup-dialog').showModal(); });
-  $('close-dialog').addEventListener('click', () => $('backup-dialog').close());
-  $('backup-dialog').addEventListener('cancel', event => { if (busy) event.preventDefault(); });
-  $('export-button').addEventListener('click', () => { $('backup-text').value = encodeBackup(); $('backup-message').textContent = '导出完成，请复制并妥善保存。'; });
-  $('copy-button').addEventListener('click', () => { void copyBackup(); });
-  $('import-button').addEventListener('click', () => { void importProgress(); });
-  document.addEventListener('keydown', handleKey);
-  document.addEventListener('keyup', event => heldKeys.delete(event.code || event.key.toLowerCase()));
-  window.addEventListener('blur', () => heldKeys.clear());
-  window.addEventListener('beforeunload', event => { if (pendingSaves) { event.preventDefault(); event.returnValue = ''; } });
-  window.addEventListener('pagehide', () => { if (pendingSaves && latestPayload) { try { localStorage.setItem(RECOVERY_KEY, latestPayload); } catch { /* 保存中的刷新由离开提示保护。 */ } } });
+  $('data-button').addEventListener('click', openData);
+  $('data-close').addEventListener('click', () => $('data-dialog').close());
+  $('export-button').addEventListener('click', exportData);
+  $('import-button').addEventListener('click', importData);
+  $('data-apply').addEventListener('click', importData);
+  $('back-button').addEventListener('click', () => {
+    if (PAGE_LINKS && PAGE_LINKS.index) location.href = PAGE_LINKS.index;
+    else renderHome();
+  });
+  $('main').addEventListener('keydown', handleKeys);
+}
+
+function handleKeys(event) {
+  if (event.target.matches('input, textarea')) return;
+  if (!session) return;
+  const entry = currentEntry();
+  if (!entry) return;
+  const {card} = entry;
+  if (event.key === ' ' && card.type === 'qa' && session.phase === 'question') {
+    event.preventDefault();
+    session.phase = 'answer';
+    renderSession(false);
+    return;
+  }
+  if (session.phase === 'answer') {
+    if (['1', '2', '3'].includes(event.key)) {
+      event.preventDefault();
+      rate(Number(event.key));
+    }
+    return;
+  }
+  if (event.key === 'Enter') {
+    event.preventDefault();
+    if (session.phase === 'feedback') nextCard();
+    else if (card.type === 'multi' && session.selected.size) submitAnswer();
+    return;
+  }
+  if (session.phase !== 'question' || card.type === 'qa') return;
+  const key = event.key.toUpperCase();
+  if (card.type === 'judge') {
+    if (key === 'T' || key === 'A' || key === '1') { event.preventDefault(); chooseOption('T'); }
+    if (key === 'F' || key === 'B' || key === '2') { event.preventDefault(); chooseOption('F'); }
+    return;
+  }
+  if (optionList(card).some(option => option.k === key)) {
+    event.preventDefault();
+    chooseOption(key);
+  }
 }
 
 async function boot() {
   bindControls();
   await loadProgress();
-  ready = true;
-  setBusy(false);
-  renderCourseLinks();
   const deckId = params.get('deck');
-  const typeParam = params.get('type');
-  const type = TYPE_ORDER.includes(typeParam) ? typeParam : null;
-  if (deckId && DECKS.decks.some(deck => deck.id === deckId)) { startSession('practice', deckId, type); return; }
-  if (type) { startSession('practice', undefined, type); return; }
-  if (params.has('deck')) { notify('链接中的题库不存在，已返回题库首页。'); updateUrl(null); }
+  if (deckId && DECKS.decks.some(deck => deck.id === deckId)) {
+    startSession('practice', deckId);
+    return;
+  }
   renderHome();
 }
-void boot().catch(() => { notify('页面初始化失败，请重新打开；已有备份可在存储恢复后导入。'); $('storage-status').textContent = '载入失败'; });
+
+boot();
+
 </script>
 </body>
 </html>
