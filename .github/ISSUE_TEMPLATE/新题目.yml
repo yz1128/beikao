@@ -1,0 +1,98 @@
+name: 提交新题目 / 纠错
+description: 补充题目、修正答案或补充解析
+title: "[题目] "
+labels: ["题目投稿"]
+body:
+  - type: markdown
+    attributes:
+      value: |
+        感谢补充！提交前请看完下面的格式要求，不符合格式的会被退回重填。
+
+        **三条硬规则**
+        1. **一题一提交**，不要一次塞多题（一次多题请发邮件，见文末）。
+        2. **答案必须来自可靠来源**（老师课件、真题、教材原文），并在「依据」里写清楚出处。拿不准的不要瞎猜。
+        3. 判断题只填 `对` 或 `错`；多选题答案写成字母连写，如 `ACD`。
+
+  - type: dropdown
+    id: deck
+    attributes:
+      label: 加到哪个题库
+      options:
+        - 新中特 · 章节测验 442 题 (zt-quiz)
+        - 新中特 · 背诵指南 (zt-backs)
+        - 自然辩证法 · 选择与判断 (zrb-quiz)
+        - 自然辩证法 · 背诵与简答 (zrb-backs)
+        - 新增题库（请在下方说明）
+    validations:
+      required: true
+
+  - type: dropdown
+    id: kind
+    attributes:
+      label: 动作
+      options:
+        - 新增一道题
+        - 修正已有题的错误答案
+        - 给已有题补充解析
+        - 报告重复题目
+    validations:
+      required: true
+
+  - type: dropdown
+    id: type
+    attributes:
+      label: 题型
+      options:
+        - 单选（single）
+        - 多选（multi）
+        - 判断（judge）
+        - 问答 / 简答（qa）
+    validations:
+      required: true
+
+  - type: textarea
+    id: question
+    attributes:
+      label: 题干
+      description: 原样粘贴，不要改写措辞。选择题请在挖空处写 `（　）`。
+      placeholder: 党的十一届三中全会以后，我国经济建设的战略部署大体分"三步走"。第一步，实现国民生产总值比1980年翻一番，解决人民的（　）。
+    validations:
+      required: true
+
+  - type: input
+    id: options
+    attributes:
+      label: 选项（仅选择题）
+      description: 四个选项用 `|` 分隔，顺序即 A/B/C/D。判断题和问答题留空。
+      placeholder: 温饱问题 | 富裕问题 | 现代化问题 | 小康问题
+
+  - type: input
+    id: answer
+    attributes:
+      label: 答案
+      description: 单选填单个字母（如 `A`）；多选填字母连写（如 `ACD`）；判断题填 `对` 或 `错`；问答题直接填答案全文。
+      placeholder: A
+    validations:
+      required: true
+
+  - type: textarea
+    id: explain
+    attributes:
+      label: 解析（选填但强烈建议）
+      description: 为什么是这个答案、易混点在哪。有口诀写口诀。
+      placeholder: 1987年十三大"三步走"：第一步温饱，第二步小康，第三步基本实现现代化。本题考第一步，不要把"小康"提前。
+
+  - type: input
+    id: source
+    attributes:
+      label: 依据
+      description: 这题和答案的出处。写不清来源的不会合并。
+      placeholder: 2024版课后题第3章 / 老师第5讲课课件第12页
+    validations:
+      required: true
+
+  - type: textarea
+    id: extra
+    attributes:
+      label: 其他说明（选填）
+      description: 一次提交多题、或想新增整个题库，请发邮件到 **871022082@qq.com**，说明课程和资料文件。
