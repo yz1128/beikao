@@ -83,10 +83,11 @@ def main():
     if subprocess.call([sys.executable, build], cwd=ROOT) != 0:
         return 1
 
-    # 2. 上传
+    # 2. 上传（三页共用一份源码，一起发）
     print("上传 ...")
-    if not upload("index.html", os.path.join(ROOT, "index.html"), "更新题库"):
-        return 1
+    for name in ("index.html", "zhongte.html", "ziran.html"):
+        if not upload(name, os.path.join(ROOT, name), "更新题库"):
+            return 1
 
     # 3. 等构建
     print("等待 Pages 构建 ...")

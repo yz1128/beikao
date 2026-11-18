@@ -92,6 +92,14 @@
     .deck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
     .question { padding: 32px; }
   }
+  .course-links { display: flex; gap: 4px; }
+  .course-links a { padding: 8px 12px; font-size: 14px; color: var(--muted); text-decoration: none; border-radius: 8px; }
+  .course-links a[aria-current="page"] { color: #fff; background: #3a3e49; }
+  .course-links a:hover { color: #fff; }
+  @media (max-width: 520px) {
+    .course-links a { padding: 8px 6px; font-size: 13px; }
+    .top-actions { gap: 2px; }
+  }
   .type-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
   .type-row button { padding: 6px 12px; font-size: 13px; background: #202229; border: 1px solid var(--line); }
   .type-row button:hover { background: #2a2d35; }
@@ -104,8 +112,9 @@
 <a class="skip" href="#main">跳到正文</a>
 <div class="shell">
   <header class="topbar">
-    <div class="brand"><span aria-hidden="true">▣</span>备考</div>
+    <div class="brand"><span aria-hidden="true">▣</span><span id="brand-name">备考</span></div>
     <nav class="top-actions" aria-label="主导航">
+      <span id="course-links" class="course-links" role="group" aria-label="课程切换"></span>
       <button id="home-button" type="button" disabled>题库</button>
       <button id="backup-button" type="button" disabled>进度备份</button>
       <a class="ghost-link" href="https://github.com/yz1128/beikao/issues/new/choose" target="_blank" rel="noopener">报错 / 补题</a>
@@ -11672,9 +11681,16 @@ const DAY = 86400000;
 const MAX_DAYS = 36500;
 const entries = DECKS.decks.flatMap(deck => (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])})));
 // 题型筛选：用于题库页上的「按题型单独背」入口。
+//@PAGE_META@
+const PAGES = {"新中特": "zhongte.html", "自然辩证法": "ziran.html"};
+const PAGE_COURSE = null;
+//@PAGE_META_END@
 const TYPE_ORDER = ['single', 'multi', 'judge', 'qa'];
 const TYPE_LABEL = {single: '单选', multi: '多选', judge: '判断', qa: '背诵'};
 const params = new URLSearchParams(location.search);
+// 当前课程页：null = 全部课程；否则只显示该课程。独立页面由 PAGE_COURSE 决定。
+let course = PAGE_COURSE;
+if (course && !DECKS.decks.some(deck => deck.course === course)) course = null;
 let shuffled = params.get('shuffle') === '1';
 let states = Object.create(null);
 let session = null;
@@ -11897,31 +11913,38 @@ function progressBar(value, max, label) {
   return bar;
 }
 
+// 当前课程下的卡片；未选课程时返回全部。
+function courseEntries() {
+  return course ? entries.filter(entry => entry.deck.course === course) : entries;
+}
+
 function renderHome() {
   const main = $('main');
   main.replaceChildren();
-  const intro = element('section', 'intro');
-  intro.append(element('h1', '', '题库'));
-  main.append(intro);
   if (!entries.length) { renderEmpty(main, '题库还没有准备好', '注入题库后即可开始，已有进度会保留。'); return; }
+  const pool = courseEntries();
+  const intro = element('section', 'intro');
+  intro.append(element('h1', '', course ? course : '全部课程'));
+  main.append(intro);
   const daily = element('section', 'today');
-  const count = reviewQueue(entries).length;
+  const count = reviewQueue(pool).length;
   daily.append(element('h2', '', '今日复习'), element('strong', '', `${count} 张`), element('p', 'muted', '包含未学卡片，以及本地今日结束前到期的卡片。'));
   const dailyActions = element('div', 'actions');
-  dailyActions.append(button('开始今日复习', 'review', undefined, 'primary'), button(`错题本 · ${entries.filter(entry => states[entry.key]?.wrong).length}`, 'mistakes'));
+  dailyActions.append(button('开始今日复习', 'review', undefined, 'primary'), button(`错题本 · ${pool.filter(entry => states[entry.key]?.wrong).length}`, 'mistakes'));
   daily.append(dailyActions);
-  main.append(daily, renderMode(), renderTypeBar());
-  const courses = [...new Set(DECKS.decks.map(deck => deck.course))];
-  courses.forEach(course => renderCourse(main, course));
+  main.append(daily, renderMode(), renderTypeBar(pool));
+  // 单一课程页面只列出该课程的题库；未定课程时按课程分组。
+  const courses = course ? [course] : [...new Set(DECKS.decks.map(deck => deck.course))];
+  courses.forEach(name => renderCourse(main, name));
 }
 
 // 全站按题型单独背：跨课程汇总某一种题型。
-function renderTypeBar() {
+function renderTypeBar(pool) {
   const section = element('section', 'today');
-  section.append(element('h2', '', '按题型背'), element('p', 'muted', '只刷一种题型，跨课程汇总。'));
+  section.append(element('h2', '', '按题型背'), element('p', 'muted', `只刷一种题型${course ? '' : '，跨课程汇总'}。`));
   const row = element('div', 'type-row');
   TYPE_ORDER.forEach(type => {
-    const part = entries.filter(entry => entry.card.type === type);
+    const part = pool.filter(entry => entry.card.type === type);
     if (!part.length) return;
     row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typeall', type));
   });
@@ -11988,6 +12011,8 @@ function updateUrl(deckId, type) {
   else url.searchParams.delete('deck');
   if (type) url.searchParams.set('type', type);
   else url.searchParams.delete('type');
+  if (course) url.searchParams.set('course', course);
+  else url.searchParams.delete('course');
   if (shuffled) url.searchParams.set('shuffle', '1');
   else url.searchParams.delete('shuffle');
   try { history.replaceState(null, '', url); }
@@ -11995,7 +12020,7 @@ function updateUrl(deckId, type) {
 }
 
 function startSession(kind, deckId, type) {
-  const pool = deckId ? entries.filter(entry => entry.deck.id === deckId) : entries;
+  const pool = deckId ? entries.filter(entry => entry.deck.id === deckId) : courseEntries();
   const typed = type ? pool.filter(entry => entry.card.type === type) : pool;
   let queue = practiceQueue(typed);
   if (kind === 'review') queue = reviewQueue(typed);
@@ -12117,8 +12142,9 @@ function renderFinished(main) {
 // 按钮与键盘共用状态转换；评分后等待落盘，下一次操作才可跳题。
 function dispatch(action, argument) {
   if (!ready || busy) return;
-  if (action === 'home') { session = null; updateUrl(null); renderHome(); $('main').focus(); return; }
+  if (action === 'home') { session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
   if (action === 'mode') { shuffled = argument; updateUrl(null); renderHome(); return; }
+  if (action === 'course') { course = argument || null; session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
   if (['practice', 'review', 'mistakes'].includes(action)) { startSession(action, argument); return; }
   if (action === 'typec') { const [deckId, type] = JSON.parse(argument); startSession('practice', deckId, type); return; }
   if (action === 'typeall') { startSession('practice', undefined, argument); return; }
@@ -12227,6 +12253,20 @@ async function copyBackup() {
   catch { $('backup-text').focus(); $('backup-text').select(); $('backup-message').textContent = '已选中备份，请使用系统复制功能。'; }
 }
 
+// 顶部课程切换：每个课程一个独立页面，链接直接跳转（进度同源共享）。
+function renderCourseLinks() {
+  const box = $('course-links');
+  if (!box) return;
+  box.replaceChildren();
+  Object.entries(PAGES).forEach(([name, file]) => {
+    const a = element('a', '', name);
+    a.href = file;
+    a.setAttribute('aria-current', PAGE_COURSE === name ? 'page' : 'false');
+    box.append(a);
+  });
+  $('brand-name').textContent = PAGE_COURSE || '备考';
+}
+
 function bindControls() {
   $('home-button').addEventListener('click', () => dispatch('home'));
   $('dismiss').addEventListener('click', () => { $('notice').hidden = true; });
@@ -12248,6 +12288,7 @@ async function boot() {
   await loadProgress();
   ready = true;
   setBusy(false);
+  renderCourseLinks();
   const deckId = params.get('deck');
   const typeParam = params.get('type');
   const type = TYPE_ORDER.includes(typeParam) ? typeParam : null;

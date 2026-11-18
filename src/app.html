@@ -1,0 +1,768 @@
+<!doctype html>
+<html lang="zh-CN">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<meta name="theme-color" content="#101114">
+<title>备考 · 题库</title>
+<style>
+  :root { color-scheme: dark; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", system-ui, sans-serif; background: #101114; color: #f4f5f7; --blue: #3595ff; --muted: #a1a6b0; --line: #30333b; --panel: #1b1d23; }
+  * { box-sizing: border-box; }
+  body { margin: 0; padding: env(safe-area-inset-top) 0 env(safe-area-inset-bottom); font-size: 16px; line-height: 1.6; }
+  button, textarea, input { font: inherit; }
+  button { min-height: 48px; padding: 12px 16px; border: 1px solid var(--line); border-radius: 14px; background: #272a32; color: inherit; cursor: pointer; touch-action: manipulation; }
+  button:hover:not(:disabled) { background: #333742; }
+  button:disabled { cursor: default; opacity: .6; }
+  button:focus-visible, a:focus-visible, textarea:focus-visible, input:focus-visible, [tabindex]:focus-visible { outline: 3px solid #8bc2ff; outline-offset: 4px; }
+  button.primary { background: #1478df; border-color: #1478df; color: #fff; font-weight: 650; }
+  button.primary:hover:not(:disabled) { background: #2389f1; }
+  button.quiet { background: transparent; color: var(--blue); }
+  h1, h2, h3, p { margin: 0; }
+  h1 { font-size: clamp(28px, 6vw, 36px); line-height: 1.25; letter-spacing: -.6px; }
+  h2 { font-size: 20px; line-height: 1.4; }
+  h3 { font-size: 18px; }
+  p, h1, h2, h3, button, small { overflow-wrap: anywhere; }
+  .shell { width: min(100% - 40px, 800px); margin: auto; }
+  .topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px; min-height: 88px; }
+  .brand { font-size: 20px; font-weight: 750; letter-spacing: 2px; }
+  .brand span { color: var(--blue); margin-right: 8px; }
+  .top-actions, .row, .actions { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+  .top-actions button { padding: 8px 12px; font-size: 14px; }
+.top-actions .ghost-link { padding: 8px 12px; font-size: 14px; color: var(--blue); text-decoration: none; border-radius: 8px; }
+.top-actions .ghost-link:hover { text-decoration: underline; }
+  main { padding: 16px 0 40px; }
+  main > * + * { margin-top: 24px; }
+  .muted { color: var(--muted); font-size: 14px; }
+  .today { padding: 24px; background: #18283e; border: 1px solid #294769; border-radius: 24px; }
+  .today strong { display: block; font-size: 40px; line-height: 1.3; margin: 8px 0 4px; }
+  .today .actions { margin-top: 20px; }
+  .today .actions button { flex: 1; }
+  .section-head { display: flex; align-items: center; justify-content: space-between; gap: 12px; flex-wrap: wrap; }
+  .segment { display: flex; gap: 4px; background: #202229; padding: 4px; border-radius: 14px; }
+  .segment button { padding: 8px 16px; border: 0; background: transparent; }
+  .segment button[aria-pressed="true"] { background: #3a3e49; color: #fff; }
+  .course > h2 { margin-bottom: 12px; }
+  .deck-grid { display: grid; gap: 12px; }
+  .deck { background: var(--panel); padding: 20px; border: 1px solid var(--line); border-radius: 20px; min-width: 0; }
+  .deck h3 { margin-bottom: 8px; }
+  .deck .count { margin: 16px 0 8px; color: var(--muted); font-size: 14px; }
+  .deck .actions { margin-top: 16px; }
+  .deck .actions button { flex: 1 1 100px; }
+  progress { width: 100%; height: 6px; border: 0; border-radius: 8px; overflow: hidden; background: #343741; accent-color: var(--blue); display: block; }
+  progress::-webkit-progress-bar { background: #343741; }
+  progress::-webkit-progress-value { background: var(--blue); border-radius: 8px; }
+  progress::-moz-progress-bar { background: var(--blue); }
+  .empty { padding: 40px 20px; background: var(--panel); border-radius: 24px; text-align: center; }
+  .empty p { color: var(--muted); margin: 12px 0 24px; }
+  .session-head .row { justify-content: space-between; margin-bottom: 12px; }
+  .badge { display: inline-block; font-size: 13px; color: #bcdcff; padding: 4px 12px; border-radius: 8px; background: #20354f; }
+  .question { background: var(--panel); border: 1px solid var(--line); border-radius: 24px; padding: 24px 20px; }
+  .question h2 { font-size: 21px; line-height: 1.7; font-weight: 600; white-space: pre-wrap; margin-top: 16px; }
+  .source { margin-top: 16px; }
+  .options { display: grid; gap: 12px; margin-top: 24px; }
+  .option { display: flex; align-items: flex-start; gap: 12px; text-align: left; padding: 16px; width: 100%; white-space: pre-wrap; }
+  .option .letter { flex: 0 0 28px; font-weight: 700; color: var(--muted); }
+  .option.selected { background: #1b3455; border-color: var(--blue); }
+  .option.correct { border-color: var(--blue); background: #1b3455; }
+  .option.incorrect { border-style: dashed; border-color: #e0a36b; }
+  .option:disabled { opacity: 1; }
+  .option small { display: block; margin-top: 8px; color: #bddcff; font-size: 13px; }
+  .feedback { padding: 20px; border: 1px solid #36577f; background: #19283b; border-radius: 20px; }
+  .feedback p + p { margin-top: 12px; }
+  .explanation { white-space: pre-wrap; overflow-wrap: anywhere; }
+  .answer { white-space: pre-wrap; max-height: min(38vh, 320px); overflow-y: auto; overscroll-behavior: contain; padding: 20px; background: #22252c; border: 1px solid var(--line); border-radius: 16px; margin-top: 20px; overflow-wrap: anywhere; }
+  .rating { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+  .rating button { padding: 12px 4px; }
+  .wide { width: 100%; }
+  .session-actions { display: grid; gap: 12px; }
+  .notice { background: #33291d; color: #f4d6b0; border: 1px solid #715338; border-radius: 16px; padding: 12px 16px; margin-bottom: 12px; }
+  .notice .row { justify-content: space-between; }
+  [hidden] { display: none !important; }
+  footer { padding: 0 0 24px; color: var(--muted); font-size: 12px; }
+  dialog { color: inherit; background: #1b1d23; border: 1px solid var(--line); border-radius: 24px; padding: 24px; width: min(100% - 32px, 600px); max-height: 85vh; overflow-y: auto; }
+  dialog::backdrop { background: #000a; }
+  dialog > * + * { margin-top: 16px; }
+  dialog .row { justify-content: space-between; }
+  textarea { display: block; width: 100%; min-height: 160px; resize: vertical; background: #101114; color: inherit; border: 1px solid #545a66; border-radius: 12px; padding: 12px; margin-top: 8px; }
+  .check { display: flex; align-items: center; gap: 12px; min-height: 48px; }
+  input[type="checkbox"] { width: 20px; height: 20px; flex-shrink: 0; accent-color: var(--blue); }
+  .skip { position: absolute; top: -100px; left: 12px; background: #1478df; color: #fff; padding: 12px; z-index: 5; }
+  .skip:focus { top: 12px; }
+  @media (min-width: 640px) {
+    .deck-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+    .question { padding: 32px; }
+  }
+  .course-links { display: flex; gap: 4px; }
+  .course-links a { padding: 8px 12px; font-size: 14px; color: var(--muted); text-decoration: none; border-radius: 8px; }
+  .course-links a[aria-current="page"] { color: #fff; background: #3a3e49; }
+  .course-links a:hover { color: #fff; }
+  @media (max-width: 520px) {
+    .course-links a { padding: 8px 6px; font-size: 13px; }
+    .top-actions { gap: 2px; }
+  }
+  .type-row { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 12px; }
+  .type-row button { padding: 6px 12px; font-size: 13px; background: #202229; border: 1px solid var(--line); }
+  .type-row button:hover { background: #2a2d35; }
+  @media (prefers-reduced-motion: no-preference) {
+    button { transition: background-color .12s ease; }
+  }
+</style>
+</head>
+<body>
+<a class="skip" href="#main">跳到正文</a>
+<div class="shell">
+  <header class="topbar">
+    <div class="brand"><span aria-hidden="true">▣</span><span id="brand-name">备考</span></div>
+    <nav class="top-actions" aria-label="主导航">
+      <span id="course-links" class="course-links" role="group" aria-label="课程切换"></span>
+      <button id="home-button" type="button" disabled>题库</button>
+      <button id="backup-button" type="button" disabled>进度备份</button>
+      <a class="ghost-link" href="https://github.com/yz1128/beikao/issues/new/choose" target="_blank" rel="noopener">报错 / 补题</a>
+    </nav>
+  </header>
+  <div id="notice" class="notice" role="alert" hidden>
+    <div class="row"><p id="notice-text"></p><button id="dismiss" type="button" class="quiet">关闭提示</button></div>
+  </div>
+  <main id="main" tabindex="-1"><p class="muted">正在载入进度…</p></main>
+  <footer><p id="storage-status" role="status" aria-live="polite">正在连接本机存储…</p></footer>
+</div>
+<dialog id="backup-dialog" aria-labelledby="backup-title">
+  <div class="row"><h2 id="backup-title">进度备份</h2><button id="close-dialog" type="button" class="quiet">关闭</button></div>
+  <p class="muted">导出后复制到另一台设备。导入会替换全部本机进度，包括已学状态、到期时间和错题本。</p>
+  <label for="backup-text">进度字符串</label>
+  <textarea id="backup-text" spellcheck="false" autocapitalize="off" autocomplete="off" placeholder="粘贴备份，或点击下方导出进度"></textarea>
+  <div class="actions"><button id="export-button" type="button">导出进度</button><button id="copy-button" type="button">复制</button></div>
+  <label class="check"><input id="replace-check" type="checkbox">用此备份替换全部本机进度</label>
+  <button id="import-button" type="button" class="primary wide">导入进度</button>
+  <p id="backup-message" role="status" aria-live="polite"></p>
+</dialog>
+<script>
+'use strict';
+const DECKS = /*@DECK_DATA@*/{"version":1,"decks":[]}/*@DECK_DATA_END@*/;
+
+// 题库只读，进度以「题库标识、卡片标识」共同定位。
+const $ = id => document.getElementById(id);
+const DAY = 86400000;
+const MAX_DAYS = 36500;
+const entries = DECKS.decks.flatMap(deck => (deck.cards || []).map(card => ({deck, card, key: JSON.stringify([deck.id, card.id])})));
+// 题型筛选：用于题库页上的「按题型单独背」入口。
+//@PAGE_META@
+const PAGES = {"新中特": "zhongte.html", "自然辩证法": "ziran.html"};
+const PAGE_COURSE = null;
+//@PAGE_META_END@
+const TYPE_ORDER = ['single', 'multi', 'judge', 'qa'];
+const TYPE_LABEL = {single: '单选', multi: '多选', judge: '判断', qa: '背诵'};
+const params = new URLSearchParams(location.search);
+// 当前课程页：null = 全部课程；否则只显示该课程。独立页面由 PAGE_COURSE 决定。
+let course = PAGE_COURSE;
+if (course && !DECKS.decks.some(deck => deck.course === course)) course = null;
+let shuffled = params.get('shuffle') === '1';
+let states = Object.create(null);
+let session = null;
+let ready = false;
+let busy = false;
+
+function element(tag, className = '', text) {
+  const node = document.createElement(tag);
+  if (className) node.className = className;
+  if (text !== undefined) node.textContent = text;
+  return node;
+}
+
+function button(text, action, argument, className = '') {
+  const node = element('button', className, text);
+  node.type = 'button';
+  node.dataset.action = action;
+  if (argument !== undefined) node.dataset.value = String(argument);
+  node.addEventListener('click', () => dispatch(action, argument));
+  return node;
+}
+
+function notify(text) {
+  $('notice-text').textContent = text;
+  $('notice').hidden = false;
+}
+
+function setBusy(value) {
+  busy = value;
+  $('home-button').disabled = !ready || value;
+  $('backup-button').disabled = !ready || value;
+  ['import-button', 'export-button', 'copy-button', 'close-dialog'].forEach(id => { $(id).disabled = value; });
+}
+
+// FSRS-4.5：原作者 The-Algorithm 历史版本 bc401d9ed5093c66358738f4b8834f8d24ab211b。
+const w = [0.4, 0.6, 2.4, 5.8, 4.93, 0.94, 0.86, 0.01, 1.49, 0.14, 0.94, 2.18, 0.05, 0.34, 1.26, 0.29, 2.61];
+const clamp = (value, low, high) => Math.min(high, Math.max(low, value));
+
+function scheduling(state, rating, now = Date.now()) {
+  if (![1, 2, 3, 4].includes(rating)) throw new Error('评分无效');
+  const learned = state && state.reps > 0;
+  let stability = w[rating - 1];
+  let difficulty = clamp(w[4] - w[5] * (rating - 3), 1, 10);
+  if (learned) ({stability, difficulty} = updateMemory(state, rating, now));
+  stability = clamp(stability, 0.01, MAX_DAYS);
+  // 90% 保持率反解间隔约为 S；短期重学简化为至少一天，最长一百年。
+  const interval = clamp(Math.round(81 * stability / 19 * (Math.pow(0.9, -2) - 1)), 1, MAX_DAYS);
+  return {stability, difficulty, due: now + interval * DAY, reps: (state?.reps || 0) + 1, lapses: (state?.lapses || 0) + (rating === 1 ? 1 : 0), last: new Date(now).toISOString()};
+}
+
+function updateMemory(state, rating, now) {
+  const t = Math.max(0, (now - Date.parse(state.last)) / DAY);
+  const r = Math.pow(1 + 19 * t / (81 * state.s), -0.5);
+  const difficulty = clamp(w[7] * w[4] + (1 - w[7]) * (state.d - w[6] * (rating - 3)), 1, 10);
+  if (rating === 1) return {difficulty, stability: Math.min(state.s, w[11] * Math.pow(state.d, -w[12]) * (Math.pow(state.s + 1, w[13]) - 1) * Math.exp((1 - r) * w[14]))};
+  const hard = rating === 2 ? w[15] : 1;
+  const easy = rating === 4 ? w[16] : 1;
+  const growth = Math.exp(w[8]) * (11 - state.d) * Math.pow(state.s, -w[9]) * (Math.exp((1 - r) * w[10]) - 1);
+  return {difficulty, stability: state.s * (1 + growth * hard * easy)};
+}
+
+// 严格校验备份及本机存储；不接受隐式数值转换或多余字段。
+function hasFields(value, fields) {
+  return value && typeof value === 'object' && !Array.isArray(value) && Object.keys(value).length === fields.length && fields.every(key => Object.hasOwn(value, key));
+}
+
+function validState(value) {
+  if (!hasFields(value, ['s', 'd', 'due', 'reps', 'lapses', 'last', 'wrong'])) return false;
+  if (!Number.isFinite(value.s) || value.s < 0.01 || value.s > MAX_DAYS) return false;
+  if (!Number.isFinite(value.d) || value.d < 1 || value.d > 10) return false;
+  if (!Number.isSafeInteger(value.due) || value.due < 0 || value.due > 8640000000000000) return false;
+  if (!Number.isSafeInteger(value.reps) || value.reps < 1 || value.reps >= Number.MAX_SAFE_INTEGER) return false;
+  if (!Number.isSafeInteger(value.lapses) || value.lapses < 0 || value.lapses > value.reps) return false;
+  if (typeof value.wrong !== 'boolean' || typeof value.last !== 'string') return false;
+  const last = Date.parse(value.last);
+  return Number.isFinite(last) && last >= 0 && new Date(last).toISOString() === value.last && value.due >= last;
+}
+
+function validateSnapshot(value) {
+  if (!hasFields(value, ['version', 'states']) || value.version !== 1) throw new Error('备份版本或结构无效');
+  if (!value.states || typeof value.states !== 'object' || Array.isArray(value.states)) throw new Error('进度集合无效');
+  const clean = Object.create(null);
+  Object.entries(value.states).forEach(([key, state]) => {
+    const ids = JSON.parse(key);
+    if (!Array.isArray(ids) || ids.length !== 2 || ids.some(id => typeof id !== 'string' || !id.trim()) || JSON.stringify(ids) !== key) throw new Error('卡片标识无效');
+    if (!validState(state)) throw new Error('卡片状态无效');
+    clean[key] = {...state};
+  });
+  return clean;
+}
+
+function snapshot(value = states) {
+  return JSON.stringify({version: 1, states: value});
+}
+
+function encodeBackup() {
+  const bytes = new TextEncoder().encode(snapshot());
+  let binary = '';
+  for (let i = 0; i < bytes.length; i += 32768) binary += String.fromCharCode(...bytes.subarray(i, i + 32768));
+  return btoa(binary);
+}
+
+function decodeBackup(text) {
+  const encoded = text.trim();
+  if (!encoded || encoded.length % 4 !== 0 || !/^(?:[A-Za-z0-9+/]{4})*(?:[A-Za-z0-9+/]{2}==|[A-Za-z0-9+/]{3}=)?$/.test(encoded)) throw new Error('编码无效');
+  const binary = atob(encoded);
+  if (btoa(binary) !== encoded) throw new Error('编码无效');
+  const bytes = Uint8Array.from(binary, char => char.charCodeAt(0));
+  return validateSnapshot(JSON.parse(new TextDecoder('utf-8', {fatal: true}).decode(bytes)));
+}
+
+// IndexedDB 是主存储。同步恢复快照覆盖尚未完成的写入，事务完成才显示已保存。
+const RECOVERY_KEY = 'bk-progress-pending-v1';
+let database = null;
+let saveChain = Promise.resolve();
+let pendingSaves = 0;
+let latestPayload = null;
+
+function openDatabase() {
+  return new Promise((resolve, reject) => {
+    const request = indexedDB.open('beikao-progress-v1', 1);
+    request.onupgradeneeded = () => request.result.createObjectStore('progress');
+    request.onerror = () => reject(new Error('存储连接失败'));
+    request.onblocked = () => reject(new Error('存储被占用'));
+    request.onsuccess = () => { request.result.onversionchange = () => request.result.close(); resolve(request.result); };
+  });
+}
+
+function databaseTransaction(mode, payload) {
+  return new Promise((resolve, reject) => {
+    const transaction = database.transaction('progress', mode);
+    const store = transaction.objectStore('progress');
+    const request = mode === 'readonly' ? store.get('snapshot') : store.put(payload, 'snapshot');
+    transaction.oncomplete = () => resolve(request.result);
+    transaction.onabort = transaction.onerror = () => reject(new Error('存储事务失败'));
+  });
+}
+
+function disableDatabase() {
+  if (database) database.close();
+  database = null;
+  notify('浏览器数据库不可用，已切换到本地存储。');
+}
+
+async function loadProgress() {
+  let stored;
+  try { database = await openDatabase(); stored = await databaseTransaction('readonly'); }
+  catch { disableDatabase(); }
+  if (stored !== undefined) {
+    try { states = validateSnapshot(JSON.parse(stored)); }
+    catch { notify('本机数据库进度格式无效，可导入有效备份恢复。'); }
+  }
+  try {
+    const recovery = localStorage.getItem(RECOVERY_KEY);
+    if (recovery !== null) { states = validateSnapshot(JSON.parse(recovery)); await persist(states); }
+  } catch { notify('本地恢复快照无法读取或写回，请检查存储权限并保留备份。'); }
+  $('storage-status').textContent = database ? '进度保存在此浏览器 · 数据库' : '进度保存在此浏览器 · 本地存储';
+}
+
+function persist(value) {
+  const payload = snapshot(value);
+  latestPayload = payload;
+  let recoverySaved = false;
+  try { localStorage.setItem(RECOVERY_KEY, payload); recoverySaved = true; }
+  catch { notify('刷新恢复快照不可用，请等待保存完成后再刷新。'); }
+  pendingSaves++;
+  $('storage-status').textContent = '正在保存进度…';
+  const operation = saveChain.then(() => writeProgress(payload, recoverySaved));
+  saveChain = operation.catch(() => {});
+  return operation.finally(() => { pendingSaves--; });
+}
+
+async function writeProgress(payload, recoverySaved) {
+  if (database) {
+    try { await databaseTransaction('readwrite', payload); }
+    catch { disableDatabase(); }
+  }
+  if (!database && !recoverySaved) {
+    try { localStorage.setItem(RECOVERY_KEY, latestPayload); }
+    catch { $('storage-status').textContent = '保存失败 · 请重试或导出备份'; throw new Error('无法保存'); }
+  }
+  if (database && recoverySaved) {
+    try { if (localStorage.getItem(RECOVERY_KEY) === payload) localStorage.removeItem(RECOVERY_KEY); }
+    catch { /* 已有数据库副本，保留恢复快照供下次启动读取。 */ }
+  }
+  $('storage-status').textContent = database ? '已保存 · 浏览器数据库' : '已保存 · 本地存储';
+}
+
+// 首页与今日复习共用本地当日末截止时间；未学卡以本次取队列时间作为到期时间。
+function endOfToday(now = Date.now()) {
+  const date = new Date(now);
+  date.setHours(23, 59, 59, 999);
+  return date.getTime();
+}
+
+function isDue(entry, cutoff, now) {
+  return (states[entry.key]?.due ?? now) <= cutoff;
+}
+
+function reviewQueue(pool, now = Date.now()) {
+  const cutoff = endOfToday(now);
+  return pool.filter(entry => isDue(entry, cutoff, now)).sort((a, b) => (states[a.key]?.due ?? now) - (states[b.key]?.due ?? now) || a.card.num - b.card.num);
+}
+
+function practiceQueue(pool) {
+  const queue = [...pool].sort((a, b) => a.card.num - b.card.num);
+  if (!shuffled) return queue;
+  for (let i = queue.length - 1; i > 0; i--) {
+    const j = Math.floor(Math.random() * (i + 1));
+    [queue[i], queue[j]] = [queue[j], queue[i]];
+  }
+  return queue;
+}
+
+function progressBar(value, max, label) {
+  const bar = element('progress');
+  bar.max = Math.max(1, max);
+  bar.value = value;
+  bar.setAttribute('aria-label', label);
+  return bar;
+}
+
+// 当前课程下的卡片；未选课程时返回全部。
+function courseEntries() {
+  return course ? entries.filter(entry => entry.deck.course === course) : entries;
+}
+
+function renderHome() {
+  const main = $('main');
+  main.replaceChildren();
+  if (!entries.length) { renderEmpty(main, '题库还没有准备好', '注入题库后即可开始，已有进度会保留。'); return; }
+  const pool = courseEntries();
+  const intro = element('section', 'intro');
+  intro.append(element('h1', '', course ? course : '全部课程'));
+  main.append(intro);
+  const daily = element('section', 'today');
+  const count = reviewQueue(pool).length;
+  daily.append(element('h2', '', '今日复习'), element('strong', '', `${count} 张`), element('p', 'muted', '包含未学卡片，以及本地今日结束前到期的卡片。'));
+  const dailyActions = element('div', 'actions');
+  dailyActions.append(button('开始今日复习', 'review', undefined, 'primary'), button(`错题本 · ${pool.filter(entry => states[entry.key]?.wrong).length}`, 'mistakes'));
+  daily.append(dailyActions);
+  main.append(daily, renderMode(), renderTypeBar(pool));
+  // 单一课程页面只列出该课程的题库；未定课程时按课程分组。
+  const courses = course ? [course] : [...new Set(DECKS.decks.map(deck => deck.course))];
+  courses.forEach(name => renderCourse(main, name));
+}
+
+// 全站按题型单独背：跨课程汇总某一种题型。
+function renderTypeBar(pool) {
+  const section = element('section', 'today');
+  section.append(element('h2', '', '按题型背'), element('p', 'muted', `只刷一种题型${course ? '' : '，跨课程汇总'}。`));
+  const row = element('div', 'type-row');
+  TYPE_ORDER.forEach(type => {
+    const part = pool.filter(entry => entry.card.type === type);
+    if (!part.length) return;
+    row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typeall', type));
+  });
+  section.append(row);
+  return section;
+}
+
+function renderMode() {
+  const section = element('div', 'section-head');
+  section.append(element('h2', '', '我的题库'));
+  const segment = element('div', 'segment');
+  segment.setAttribute('role', 'group');
+  segment.setAttribute('aria-label', '练习顺序');
+  ['顺序', '乱序'].forEach((label, index) => {
+    const control = button(label, 'mode', Boolean(index));
+    control.setAttribute('aria-pressed', String(shuffled === Boolean(index)));
+    segment.append(control);
+  });
+  section.append(segment);
+  return section;
+}
+
+function renderCourse(main, course) {
+  const section = element('section', 'course');
+  section.append(element('h2', '', course));
+  const grid = element('div', 'deck-grid');
+  DECKS.decks.filter(deck => deck.course === course).forEach(deck => grid.append(renderDeck(deck)));
+  section.append(grid);
+  main.append(section);
+}
+
+function renderDeck(deck) {
+  const pool = entries.filter(entry => entry.deck.id === deck.id);
+  const learned = pool.filter(entry => states[entry.key]).length;
+  const card = element('article', 'deck');
+  card.dataset.deck = deck.id;
+  card.append(element('h3', '', deck.title), element('p', 'muted', deck.desc), element('p', 'count', `共 ${pool.length} 题 · 已学 ${learned} / ${pool.length}`), progressBar(learned, pool.length, `${deck.title}已学进度`));
+  const actions = element('div', 'actions');
+  actions.append(button('练习', 'practice', deck.id, 'primary'), button(`今日复习 ${reviewQueue(pool).length}`, 'review', deck.id, 'quiet'));
+  card.append(actions);
+  // 按题型单独练习
+  const kinds = TYPE_ORDER.filter(type => pool.some(entry => entry.card.type === type));
+  if (kinds.length > 1) {
+    const row = element('div', 'type-row');
+    kinds.forEach(type => {
+      const part = pool.filter(entry => entry.card.type === type);
+      row.append(button(`${TYPE_LABEL[type]} ${part.length}`, 'typec', JSON.stringify([deck.id, type])));
+    });
+    card.append(row);
+  }
+  return card;
+}
+
+function renderEmpty(parent, title, description, home = false) {
+  const section = element('section', 'empty');
+  section.append(element('h2', '', title), element('p', '', description));
+  if (home) section.append(button('返回题库', 'home', undefined, 'primary'));
+  parent.append(section);
+}
+
+function updateUrl(deckId, type) {
+  const url = new URL(location.href);
+  if (deckId) url.searchParams.set('deck', deckId);
+  else url.searchParams.delete('deck');
+  if (type) url.searchParams.set('type', type);
+  else url.searchParams.delete('type');
+  if (course) url.searchParams.set('course', course);
+  else url.searchParams.delete('course');
+  if (shuffled) url.searchParams.set('shuffle', '1');
+  else url.searchParams.delete('shuffle');
+  try { history.replaceState(null, '', url); }
+  catch { /* 某些本地文件环境限制修改地址，练习仍可正常进行。 */ }
+}
+
+function startSession(kind, deckId, type) {
+  const pool = deckId ? entries.filter(entry => entry.deck.id === deckId) : courseEntries();
+  const typed = type ? pool.filter(entry => entry.card.type === type) : pool;
+  let queue = practiceQueue(typed);
+  if (kind === 'review') queue = reviewQueue(typed);
+  if (kind === 'mistakes') queue = practiceQueue(typed.filter(entry => states[entry.key]?.wrong));
+  const typeTag = type ? ` · ${TYPE_LABEL[type]}` : '';
+  const label = (kind === 'review' ? '今日复习' : kind === 'mistakes' ? '错题本' : (shuffled ? '乱序练习' : '顺序练习')) + typeTag;
+  session = {queue, index: 0, phase: 'question', selected: new Set(), ratings: [], label, saveFailed: false};
+  updateUrl(kind === 'practice' ? deckId : null, type);
+  renderSession(true);
+}
+
+function currentEntry() {
+  return session?.queue[session.index];
+}
+
+function renderSession(focus = false) {
+  const main = $('main');
+  main.replaceChildren();
+  const entry = currentEntry();
+  if (!entry) { renderFinished(main); if (focus) main.focus(); return; }
+  const head = element('section', 'session-head');
+  const row = element('div', 'row');
+  row.append(element('p', 'muted', `${session.label} · ${session.index + 1} / ${session.queue.length}`), element('p', 'muted', `剩余 ${session.queue.length - session.index - (session.phase === 'feedback' ? 1 : 0)} 题`));
+  head.append(row, progressBar(session.ratings.length, session.queue.length, '本轮已完成进度'));
+  main.append(head, renderQuestion(entry));
+  if (entry.card.type === 'qa' && session.phase !== 'question') main.append(renderAnswer(entry.card));
+  if (session.phase === 'feedback') main.append(renderFeedback(entry));
+  main.append(renderControls(entry.card));
+  const hint = entry.card.type === 'qa' ? '空格看答案 · 1 忘了 / 2 模糊 / 3 记得 · 回车下一题' : '字母选择选项 · 回车提交或下一题';
+  main.append(element('p', 'muted', hint));
+  if (focus) { main.focus({preventScroll: true}); window.scrollTo(0, 0); }
+}
+
+function renderQuestion(entry) {
+  const {card, deck} = entry;
+  const section = element('section', 'question');
+  const types = {single: '单选', multi: '多选', judge: '判断', qa: '问答'};
+  section.append(element('span', 'badge', `${types[card.type]} · 第 ${card.num} 题`), element('h2', '', card.q));
+  if (card.type === 'multi') section.append(element('p', 'muted', '选择所有正确选项后提交。'));
+  if (card.type !== 'qa') section.append(renderOptions(card));
+  section.append(element('p', 'muted source', `${deck.course} · ${card.source || deck.title}`));
+  return section;
+}
+
+function cardOptions(card) {
+  return card.type === 'judge' ? [{k: 'T', t: '正确'}, {k: 'F', t: '错误'}] : (card.options || []);
+}
+
+function renderOptions(card) {
+  const list = element('div', 'options');
+  cardOptions(card).forEach(option => list.append(renderOption(card, option)));
+  return list;
+}
+
+function renderOption(card, option) {
+  const control = button('', 'select', option.k, 'option');
+  const selected = session.selected.has(option.k);
+  const answered = session.phase === 'feedback';
+  control.classList.toggle('selected', selected);
+  control.setAttribute('aria-pressed', String(selected));
+  control.disabled = answered || busy;
+  const content = element('span', '', option.t);
+  control.append(element('span', 'letter', option.k), content);
+  if (!answered) return control;
+  const correct = card.answer.includes(option.k);
+  control.classList.toggle('correct', correct);
+  control.classList.toggle('incorrect', selected && !correct);
+  if (correct || selected) content.append(element('small', '', correct ? '正确选项' : '你的选择 · 错误'));
+  return control;
+}
+
+function renderAnswer(card) {
+  const section = element('section');
+  const label = element('h2', '', '参考答案');
+  label.id = 'answer-title';
+  const answer = element('div', 'answer', card.answer);
+  answer.id = 'qa-answer';
+  answer.tabIndex = 0;
+  answer.setAttribute('role', 'region');
+  answer.setAttribute('aria-labelledby', 'answer-title');
+  section.append(label, answer);
+  return section;
+}
+
+function renderFeedback(entry) {
+  const section = element('section', 'feedback');
+  section.setAttribute('aria-live', 'polite');
+  const rating = session.ratings.at(-1);
+  const labels = {1: '这道题，再巩固一次', 2: '有些模糊，已安排复习', 3: '记得，继续保持'};
+  const title = entry.card.type === 'qa' ? labels[rating] : rating === 3 ? '回答正确' : '回答错误';
+  section.append(element('h2', '', title));
+  if (entry.card.type !== 'qa') section.append(element('p', '', `正确答案：${entry.card.type === 'judge' ? (entry.card.answer === 'T' ? '正确' : '错误') : [...entry.card.answer].join('、')}`));
+  if (entry.card.explain) section.append(element('p', 'explanation', `解析：${entry.card.explain}`));
+  const state = states[entry.key];
+  section.append(element('p', 'muted', `下次复习：${new Date(state.due).toLocaleDateString('zh-CN')} · ${state.wrong ? '已在错题本' : '未在错题本'}`));
+  return section;
+}
+
+function renderControls(card) {
+  const section = element('div', 'session-actions');
+  if (session.phase === 'feedback') {
+    section.append(button(session.saveFailed ? '重试保存' : busy ? '正在保存…' : session.index + 1 === session.queue.length ? '完成本轮' : '下一题', session.saveFailed ? 'retry' : 'next', undefined, 'primary wide'));
+  } else if (card.type === 'qa' && session.phase === 'revealed') {
+    const row = element('div', 'rating');
+    row.append(button('忘了', 'rate', 1), button('模糊', 'rate', 2), button('记得', 'rate', 3, 'primary'));
+    section.append(row);
+  } else if (card.type === 'qa') section.append(button('看答案', 'reveal', undefined, 'primary wide'));
+  else if (card.type === 'multi') section.append(button('提交答案', 'submit', undefined, 'primary wide'));
+  section.querySelectorAll('button').forEach(control => { control.disabled = busy; });
+  return section;
+}
+
+function renderFinished(main) {
+  if (!session.queue.length) { renderEmpty(main, '这一组没有待练习的题', '可以回到题库选择练习，或等下一次复习到期。', true); return; }
+  const remembered = session.ratings.filter(rating => rating === 3).length;
+  renderEmpty(main, '本轮完成，辛苦了', `已完成 ${session.ratings.length} 题 · 记得 ${remembered} 题 · 需巩固 ${session.ratings.length - remembered} 题`, true);
+}
+
+// 按钮与键盘共用状态转换；评分后等待落盘，下一次操作才可跳题。
+function dispatch(action, argument) {
+  if (!ready || busy) return;
+  if (action === 'home') { session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
+  if (action === 'mode') { shuffled = argument; updateUrl(null); renderHome(); return; }
+  if (action === 'course') { course = argument || null; session = null; updateUrl(null); renderCourseLinks(); renderHome(); $('main').focus(); return; }
+  if (['practice', 'review', 'mistakes'].includes(action)) { startSession(action, argument); return; }
+  if (action === 'typec') { const [deckId, type] = JSON.parse(argument); startSession('practice', deckId, type); return; }
+  if (action === 'typeall') { startSession('practice', undefined, argument); return; }
+  const entry = currentEntry();
+  if (!entry) return;
+  if (action === 'select' && session.phase === 'question') selectOption(entry.card, argument);
+  if (action === 'submit' && entry.card.type === 'multi' && session.phase === 'question') submitMulti(entry.card);
+  if (action === 'reveal' && entry.card.type === 'qa' && session.phase === 'question') { session.phase = 'revealed'; renderSession(); $('qa-answer').focus(); }
+  if (action === 'rate' && entry.card.type === 'qa' && session.phase === 'revealed') void grade(argument);
+  if (action === 'retry' && session.phase === 'feedback' && session.saveFailed) void saveAnswer();
+  if (action === 'next' && session.phase === 'feedback' && !session.saveFailed) nextQuestion();
+}
+
+function selectOption(card, key) {
+  if (!cardOptions(card).some(option => option.k === key)) return;
+  if (card.type !== 'multi') { session.selected = new Set([key]); void grade(card.answer === key ? 3 : 1); return; }
+  if (session.selected.has(key)) session.selected.delete(key);
+  else session.selected.add(key);
+  renderSession();
+  $('main').querySelectorAll('[data-action="select"]').forEach(control => { if (control.dataset.value === key) control.focus({preventScroll: true}); });
+}
+
+function submitMulti(card) {
+  if (!session.selected.size) { notify('请至少选择一个选项，再提交答案。'); return; }
+  const correct = [...session.selected].sort().join('') === [...card.answer].sort().join('');
+  void grade(correct ? 3 : 1);
+}
+
+async function grade(rating) {
+  if (![1, 2, 3].includes(rating) || session.phase === 'feedback') return;
+  const entry = currentEntry();
+  const previous = states[entry.key];
+  const result = scheduling(previous, rating);
+  states[entry.key] = {s: result.stability, d: result.difficulty, due: result.due, reps: result.reps, lapses: result.lapses, last: result.last, wrong: rating === 1 ? true : rating === 3 ? false : (previous?.wrong || false)};
+  session.phase = 'feedback';
+  session.ratings.push(rating);
+  await saveAnswer();
+}
+
+async function saveAnswer() {
+  setBusy(true);
+  session.saveFailed = false;
+  renderSession();
+  try { await persist(states); }
+  catch { session.saveFailed = true; notify('进度尚未保存。请重试保存，或使用进度备份导出当前记录。'); }
+  setBusy(false);
+  renderSession();
+  $('main').querySelector('.session-actions button')?.focus({preventScroll: true});
+}
+
+function nextQuestion() {
+  session.index++;
+  session.phase = 'question';
+  session.selected = new Set();
+  renderSession(true);
+}
+
+const heldKeys = new Set();
+function handleKey(event) {
+  if (!session || $('backup-dialog').open || event.isComposing || event.keyCode === 229 || event.ctrlKey || event.metaKey || event.altKey || event.shiftKey) return;
+  if (event.target.closest?.('input, textarea, select, [contenteditable]:not([contenteditable="false"])')) return;
+  if (event.target.closest?.('nav, a, #dismiss')) return;
+  const key = event.key.toLowerCase();
+  if (!['a', 'b', 'c', 'd', 'enter', ' ', '1', '2', '3'].includes(key)) return;
+  if (event.repeat || heldKeys.has(event.code || key)) { event.preventDefault(); return; }
+  heldKeys.add(event.code || key);
+  if (busy) { event.preventDefault(); return; }
+  const action = keyAction(key);
+  if (!action) return;
+  event.preventDefault();
+  dispatch(...action);
+}
+
+function keyAction(key) {
+  const card = currentEntry()?.card;
+  if (!card) return null;
+  if (session.phase === 'feedback') return key === 'enter' ? [session.saveFailed ? 'retry' : 'next'] : null;
+  if (card.type === 'qa' && session.phase === 'question') return key === ' ' ? ['reveal'] : null;
+  if (card.type === 'qa' && session.phase === 'revealed') return ['1', '2', '3'].includes(key) ? ['rate', Number(key)] : null;
+  if (card.type === 'multi' && key === 'enter') return ['submit'];
+  if (card.type === 'judge') return key === 'a' ? ['select', 'T'] : key === 'b' ? ['select', 'F'] : null;
+  return /^[a-d]$/.test(key) ? ['select', key.toUpperCase()] : null;
+}
+
+// 备份采用 UTF-8 JSON 的标准 Base64，导入通过全部校验后再整体替换。
+async function importProgress() {
+  let imported;
+  try { imported = decodeBackup($('backup-text').value); }
+  catch { $('backup-message').textContent = '导入失败：请提供有效的 Base64 UTF-8 进度备份，版本、字段或数值不合法。原有进度已保留。'; return; }
+  if (!$('replace-check').checked) { $('backup-message').textContent = '请先勾选替换全部本机进度。'; return; }
+  setBusy(true);
+  try {
+    await persist(imported);
+    states = imported;
+    session = null;
+    updateUrl(null);
+    renderHome();
+    $('backup-message').textContent = `导入成功：已恢复 ${Object.keys(states).length} 张卡片的进度。`;
+  } catch { $('backup-message').textContent = '保存失败：本次导入未在当前页面生效，请恢复存储权限后重试。'; }
+  setBusy(false);
+}
+
+async function copyBackup() {
+  if (!$('backup-text').value) { $('backup-message').textContent = '请先导出进度。'; return; }
+  try { await navigator.clipboard.writeText($('backup-text').value); $('backup-message').textContent = '已复制进度备份。'; }
+  catch { $('backup-text').focus(); $('backup-text').select(); $('backup-message').textContent = '已选中备份，请使用系统复制功能。'; }
+}
+
+// 顶部课程切换：每个课程一个独立页面，链接直接跳转（进度同源共享）。
+function renderCourseLinks() {
+  const box = $('course-links');
+  if (!box) return;
+  box.replaceChildren();
+  Object.entries(PAGES).forEach(([name, file]) => {
+    const a = element('a', '', name);
+    a.href = file;
+    a.setAttribute('aria-current', PAGE_COURSE === name ? 'page' : 'false');
+    box.append(a);
+  });
+  $('brand-name').textContent = PAGE_COURSE || '备考';
+}
+
+function bindControls() {
+  $('home-button').addEventListener('click', () => dispatch('home'));
+  $('dismiss').addEventListener('click', () => { $('notice').hidden = true; });
+  $('backup-button').addEventListener('click', () => { $('backup-message').textContent = ''; $('replace-check').checked = false; $('backup-dialog').showModal(); });
+  $('close-dialog').addEventListener('click', () => $('backup-dialog').close());
+  $('backup-dialog').addEventListener('cancel', event => { if (busy) event.preventDefault(); });
+  $('export-button').addEventListener('click', () => { $('backup-text').value = encodeBackup(); $('backup-message').textContent = '导出完成，请复制并妥善保存。'; });
+  $('copy-button').addEventListener('click', () => { void copyBackup(); });
+  $('import-button').addEventListener('click', () => { void importProgress(); });
+  document.addEventListener('keydown', handleKey);
+  document.addEventListener('keyup', event => heldKeys.delete(event.code || event.key.toLowerCase()));
+  window.addEventListener('blur', () => heldKeys.clear());
+  window.addEventListener('beforeunload', event => { if (pendingSaves) { event.preventDefault(); event.returnValue = ''; } });
+  window.addEventListener('pagehide', () => { if (pendingSaves && latestPayload) { try { localStorage.setItem(RECOVERY_KEY, latestPayload); } catch { /* 保存中的刷新由离开提示保护。 */ } } });
+}
+
+async function boot() {
+  bindControls();
+  await loadProgress();
+  ready = true;
+  setBusy(false);
+  renderCourseLinks();
+  const deckId = params.get('deck');
+  const typeParam = params.get('type');
+  const type = TYPE_ORDER.includes(typeParam) ? typeParam : null;
+  if (deckId && DECKS.decks.some(deck => deck.id === deckId)) { startSession('practice', deckId, type); return; }
+  if (type) { startSession('practice', undefined, type); return; }
+  if (params.has('deck')) { notify('链接中的题库不存在，已返回题库首页。'); updateUrl(null); }
+  renderHome();
+}
+void boot().catch(() => { notify('页面初始化失败，请重新打开；已有备份可在存储恢复后导入。'); $('storage-status').textContent = '载入失败'; });
+</script>
+</body>
+</html>
