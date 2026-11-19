@@ -1,0 +1,92 @@
+{
+ "zt-037": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "解析仅列24字，未解释本题"
+ },
+ "zt-063": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "核心内涵为持久和平、普遍安全、共同繁荣、开放包容、清洁美丽；解析与答案A矛盾"
+ },
+ "zt-109": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "解析仅列五位一体，未解释兴国之要"
+ },
+ "zt-172": {
+  "answer": "ok",
+  "explain": "wrong",
+  "n": "官方表述为形成科学发展观，非创立；解析误判"
+ },
+ "zt-332": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-02": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "解析谈民族精神与抗美援朝，未解释非加和性"
+ },
+ "zt-422": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应选CD；中央表述无“大刀阔斧的改革期”"
+ },
+ "zt-411": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应选BCD；权利公平、机会公平、规则公平均为核心"
+ },
+ "zrb-pd-30": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应判正确(T)：干粮喻知识，猎枪喻方法；解析与答案矛盾"
+ },
+ "zrb-x900": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "答案符合教材表述；解析仅背诵提示未解释"
+ },
+ "zt-202": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "通行表述为“更基本、更深沉、更持久”，不是“最基本”"
+ },
+ "zt-295": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为“城乡统筹”，非“城乡同等”；正确答案为F"
+ },
+ "zt-283": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "标准表述应为发展中国特色社会主义文化，题干漏“主义”，解析仍判对。"
+ },
+ "zt-216": {
+  "answer": "ok",
+  "explain": "none",
+  "n": ""
+ },
+ "zt-414": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "通行表述为“覆盖全民”，非“覆盖全面”；应选BCD，解析误含A"
+ },
+ "zt-409": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-x901": {
+  "answer": "wrong",
+  "explain": "none",
+  "n": "第三项通行表述为“求同求异并用法”（契合差异并用法）"
+ },
+ "zrb-x902": {
+  "answer": "wrong",
+  "explain": "none",
+  "n": "漏答学科性质；应为马克思主义哲学重要组成部分、具有哲学性质"
+ }
+}

@@ -1,0 +1,2527 @@
+{
+ "zt-001": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-002": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-003": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-004": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-005": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-006": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-007": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-008": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-009": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-010": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-011": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-012": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-013": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-014": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-015": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-041": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-042": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-043": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-044": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-045": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-031": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-032": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-033": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-034": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-035": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-026": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-027": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-028": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-029": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-030": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-016": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-017": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-018": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-019": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-020": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-051": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-052": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-053": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-054": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-055": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-036": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-037": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "只列24字，未说明选项正误理由",
+  "recheck": {
+   "answer": "ok",
+   "explain": "off",
+   "n": "只列24字，未解释选项关系"
+  }
+ },
+ "zt-038": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-039": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-040": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-021": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-022": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-023": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-024": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-025": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-071": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-072": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-073": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-074": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-075": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-046": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-047": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-048": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-049": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-050": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-066": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-067": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-068": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-069": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-070": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-076": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-077": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-078": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-079": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-080": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-086": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-087": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-088": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-089": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-090": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-056": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-057": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-058": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-059": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-060": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-091": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-092": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-093": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-094": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-095": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-061": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-062": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-063": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "B/C/D均属核心内涵；解析与原答案矛盾",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "ok",
+   "n": "正确应为B/C/D，单选设置有误"
+  }
+ },
+ "zt-064": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-065": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-101": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-102": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-103": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-104": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-105": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-096": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-097": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-098": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-099": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-100": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-116": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-117": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-118": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-119": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-120": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-121": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-122": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-123": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-124": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-125": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-106": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-107": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-108": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-109": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "只列五位一体，未说明经济建设为何是兴国之要",
+  "recheck": {
+   "answer": "ok",
+   "explain": "off",
+   "n": "未说明经济建设是兴国之要"
+  }
+ },
+ "zt-110": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-111": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-112": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-113": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-114": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-115": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-131": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-132": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-133": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-134": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-135": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-146": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-147": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-148": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-149": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-150": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-081": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-082": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-083": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-084": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-085": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-161": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-162": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-163": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-164": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-165": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-126": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-127": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-128": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-129": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-130": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-156": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-157": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-158": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-159": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-160": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-141": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-142": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-143": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-144": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-145": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-136": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-137": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-138": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-139": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-140": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-151": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-152": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-153": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-154": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-155": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-191": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-192": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-193": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-194": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-195": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-166": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-167": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-168": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-169": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-170": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-171": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-172": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为正确；胡锦涛为主要代表形成科学发展观",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "ok",
+   "n": "正确选项：T（题干为真）"
+  }
+ },
+ "zt-173": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-174": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-175": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-181": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-182": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-183": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-184": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-185": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-186": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-187": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-188": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-189": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-190": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-206": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-207": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-208": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-209": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-210": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-201": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-202": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "原文为“更基本”非“最基本”",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "原文为更基本、更深沉、更持久"
+  }
+ },
+ "zt-203": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-204": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-205": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-211": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-212": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-213": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-214": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-215": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-176": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-177": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-178": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为本质要求/原则，非主线；答案应错",
+  "recheck": {
+   "answer": "ok",
+   "explain": "ok",
+   "n": ""
+  }
+ },
+ "zt-179": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-180": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-221": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-222": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-223": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-224": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-225": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-226": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-227": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-228": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-229": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-230": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-241": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-242": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-243": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-244": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-245": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-246": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-247": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-248": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-249": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-250": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-251": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-252": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-253": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-254": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-255": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-231": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-232": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-233": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-234": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-235": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-256": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-257": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-258": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-259": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-260": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-196": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-197": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-198": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-199": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-200": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-236": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-237": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-238": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-239": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-240": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-261": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-262": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-263": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-264": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-265": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-266": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-267": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-268": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-269": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-270": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-271": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-272": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-273": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-274": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-275": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-286": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-287": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-288": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-289": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-290": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-276": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-277": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-278": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-279": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-280": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-296": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-297": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-298": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-299": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-300": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-291": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-292": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-293": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-294": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-295": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为F：目标是城乡统筹非同等",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "应为城乡统筹，非城乡同等"
+  }
+ },
+ "zt-306": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-307": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-308": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-309": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-310": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-311": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-312": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-313": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-314": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-315": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-301": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-302": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-303": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-304": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-305": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-281": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-282": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-283": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为错误(F)；少“主义”",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "缺“主义”，应为中国特色社会主义文化"
+  }
+ },
+ "zt-284": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-285": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-321": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-322": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-323": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-324": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-325": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-316": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-317": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-318": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-319": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-320": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-216": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应选错误(F)：规范为中国人民谋幸福、为中华民族谋复兴",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "顺序颠倒，规范为中国人民幸福、中华民族复兴"
+  }
+ },
+ "zt-217": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-218": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-219": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-220": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-326": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-327": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-328": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-329": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-330": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-351": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-352": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-353": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-354": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-355": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-331": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-332": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "正确ABCD，平安家庭也是平安创建形式",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "平安家庭也在原文中，应为ABCD"
+  }
+ },
+ "zt-333": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-334": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-335": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-361": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-362": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-363": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-364": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-365": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-336": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-337": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-338": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-339": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-340": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-356": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-357": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-358": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-359": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-360": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-341": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-342": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-343": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-344": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-345": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-366": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-367": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-368": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-369": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-370": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-346": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-347": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-348": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-349": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-350": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-396": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-397": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-398": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-399": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-400": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-381": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-382": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-383": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-384": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-385": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-386": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-387": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-388": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-389": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-390": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-391": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-392": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-393": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-394": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-395": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-376": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-377": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-378": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-379": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-380": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-416": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-417": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-418": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-419": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-420": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-371": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-372": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-373": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-374": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-375": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-401": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-402": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-403": {
+  "answer": "ok",
+  "explain": "wrong",
+  "n": "C应对应实干担当，D应对应道德追求",
+  "recheck": {
+   "answer": "ok",
+   "explain": "ok",
+   "n": ""
+  }
+ },
+ "zt-404": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-405": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-07": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-08": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-09": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-10": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-11": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-17": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-18": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-01": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-02": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "解析答非所问，讲民族精神凝聚力",
+  "recheck": {
+   "answer": "ok",
+   "explain": "off",
+   "n": "解析讲民族精神，未说明系统非加和性"
+  }
+ },
+ "zrb-pd-03": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-426": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-427": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-428": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-429": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-01": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-421": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-422": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "正确CD；标准为关键期、攻坚期、窗口期",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "正确为CD；B非教材“三期”表述"
+  }
+ },
+ "zt-423": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-424": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-425": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-411": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为BCD，权利公平亦核心",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "正确为BCD；权利公平也属核心"
+  }
+ },
+ "zt-412": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-413": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-414": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为BCD；A应为覆盖全民",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "正确为BCD；应为“覆盖全民”"
+  }
+ },
+ "zt-415": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-12": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-13": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-14": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-15": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-16": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-14": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-15": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-16": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-17": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-18": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-24": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-25": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-26": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "正确(T)；算卦属古代预测形式",
+  "recheck": {
+   "answer": "ok",
+   "explain": "ok",
+   "n": ""
+  }
+ },
+ "zrb-pd-27": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-28": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-19": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-20": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-21": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-22": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-23": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-406": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-407": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-408": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zt-409": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "正确选项：B；A混淆中华文化整体，解析误认A",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "正确为B；A拔高孝文化为精神标识"
+  }
+ },
+ "zt-410": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-02": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-03": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-04": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-05": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-xz-06": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-x901": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "解析仅称记忆，无实质说明",
+  "recheck": {
+   "answer": "ok",
+   "explain": "off",
+   "n": "仅称需记忆，未说明穆勒五法理由"
+  }
+ },
+ "zrb-x902": {
+  "answer": "wrong",
+  "explain": "off",
+  "n": "漏答学科性质：马克思主义哲学分支、交叉学科；解析空泛",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "off",
+   "n": "漏答学科性质：马克思主义哲学组成部分；解析空话"
+  }
+ },
+ "zrb-x903": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-29": {
+  "answer": "wrong",
+  "explain": "off",
+  "n": "波普尔以可证伪性划界，题干应T；解析未扣题意",
+  "recheck": {
+   "answer": "ok",
+   "explain": "ok",
+   "n": ""
+  }
+ },
+ "zrb-pd-30": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "比喻成立，答案应T；解析与F矛盾",
+  "recheck": {
+   "answer": "wrong",
+   "explain": "wrong",
+   "n": "正确应为T；解析称题干成立，与答案矛盾"
+  }
+ },
+ "zrb-pd-31": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-32": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-x900": {
+  "answer": "ok",
+  "explain": "off",
+  "n": "未解释量子力学的统计因果观，空话记忆"
+ },
+ "zrb-pd-04": {
+  "answer": "wrong",
+  "explain": "wrong",
+  "n": "应为正确(T)：分叉处偶然性可决定方向",
+  "recheck": {
+   "answer": "ok",
+   "explain": "ok",
+   "n": ""
+  }
+ },
+ "zrb-pd-05": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-06": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-07": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-08": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-09": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-10": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-11": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-12": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ },
+ "zrb-pd-13": {
+  "answer": "ok",
+  "explain": "ok",
+  "n": ""
+ }
+}
