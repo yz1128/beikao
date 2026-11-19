@@ -1,2 +1,5 @@
 
 .publish_body.json
+
+data/*.bak-*
+data/_audit.log
